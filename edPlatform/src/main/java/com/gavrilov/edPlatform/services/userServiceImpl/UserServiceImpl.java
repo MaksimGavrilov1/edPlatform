@@ -37,4 +37,15 @@ public class UserServiceImpl implements UserService {
 
         return null;
     }
+
+    @Override
+    public PlatformUser findByLogin(String login) {
+        PlatformUser usr = userRepository.findByLogin(login).orElseThrow(()-> new IllegalArgumentException("No user with this login"));
+        return usr;
+    }
+
+    @Override
+    public PlatformUser saveUser(PlatformUser user) {
+        return userRepository.save(user);
+    }
 }

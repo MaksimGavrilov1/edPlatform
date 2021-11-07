@@ -7,4 +7,8 @@ import org.springframework.stereotype.Service;
 
 public interface UserService {
     public PlatformUser addProfileInfo (PlatformUserProfile userProfile, Long id);
+
+    public PlatformUser findByLogin (String login);
+
+    public PlatformUser saveUser(PlatformUser user);
 }

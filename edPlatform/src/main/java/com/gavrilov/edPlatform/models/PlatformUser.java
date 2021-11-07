@@ -30,7 +30,6 @@ public class PlatformUser {
     private String login;
 
     @NonNull
-    @JsonIgnore
     private String password;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -38,7 +37,7 @@ public class PlatformUser {
     private PlatformUserProfile profile;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private final Role role = Role.ADMIN;
 
     @OneToMany(mappedBy = "author")
     private Set<Course> ownedCourses;

@@ -35,12 +35,14 @@ public class Course {
     private String description;
 
     @OneToMany(mappedBy = "course")
+    @ToString.Exclude
     private Set<CourseTheme> themes;
 
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
 
     @ManyToMany(mappedBy = "joinedCourses")
+    @ToString.Exclude
     private Set<PlatformUser> joinedUsers;
 
     protected Course() {
