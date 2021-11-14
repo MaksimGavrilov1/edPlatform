@@ -71,7 +71,7 @@ public class JwtProvider {
         } catch (SignatureException sEx) {
             log.error("Invalid signature", sEx);
         } catch (Exception e) {
-            log.error("invalid token", e);
+            log.error("Invalid token", e);
         }
         return false;
     }

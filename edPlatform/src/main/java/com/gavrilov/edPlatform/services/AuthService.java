@@ -10,7 +10,7 @@ import javax.security.auth.message.AuthException;
 
 public interface AuthService {
 
-    public JwtResponse login(@NonNull JwtRequest authRequest) throws AuthException;
+    public JwtResponse login(@NonNull JwtRequest authRequest);
 
     public PlatformUser register(@NonNull PlatformUser user);
 

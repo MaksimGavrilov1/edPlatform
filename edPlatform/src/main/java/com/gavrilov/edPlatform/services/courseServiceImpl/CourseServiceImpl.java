@@ -22,23 +22,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course createCourse(Course course, Long id) {
 
-        System.out.println(course.getAuthor());
-
         PlatformUser user = userRepository.findById(id).orElse(null);
-
         if (user == null){
           throw new IllegalArgumentException("No user with this id found");
+          //usernotfoundexception свой except и handler
         }
-
         course.setAuthor(user);
-
-        Course courseToDB = course;
-
-        courseRepository.save(courseToDB);
-
-        return courseToDB;
-
-        //?? так ли нужно все сделать?
+        return courseRepository.save(course);
     }
 
     @Override

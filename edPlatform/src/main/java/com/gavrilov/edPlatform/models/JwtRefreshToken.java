@@ -1,16 +1,11 @@
 package com.gavrilov.edPlatform.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.Objects;
 
 @Entity
@@ -18,32 +13,21 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class PlatformUserProfile {
+public class JwtRefreshToken {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @NotBlank
-    private String name;
+    private String login;
 
-    @Pattern(regexp = "[а-яА-ЯёЁ]" )
-    private String surname;
-
-    @Pattern(regexp = "[а-яА-ЯёЁ]" )
-    private String middleName;
-
-    @Pattern(regexp = "[а-яА-ЯёЁ]" )
-    private String selfDescription;
-
-    @OneToOne(mappedBy = "profile")
-    private PlatformUser platformUser;
+    private String token;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        PlatformUserProfile that = (PlatformUserProfile) o;
+        JwtRefreshToken that = (JwtRefreshToken) o;
         return id != null && Objects.equals(id, that.id);
     }
 

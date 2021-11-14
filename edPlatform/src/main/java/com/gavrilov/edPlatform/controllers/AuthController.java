@@ -8,10 +8,8 @@ import com.gavrilov.edPlatform.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.message.AuthException;
 
@@ -22,13 +20,15 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @SneakyThrows
+
     @PostMapping("login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) {
         final JwtResponse token;
         token = authService.login(authRequest);
         return ResponseEntity.ok(token);
     }
+
+
 
     @PostMapping("register")
     public PlatformUser register(@RequestBody PlatformUser user){

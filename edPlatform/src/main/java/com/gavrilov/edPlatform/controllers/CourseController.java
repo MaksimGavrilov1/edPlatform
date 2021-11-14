@@ -1,5 +1,6 @@
 package com.gavrilov.edPlatform.controllers;
 
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.gavrilov.edPlatform.models.Course;
 import com.gavrilov.edPlatform.repositories.CourseRepository;
 import com.gavrilov.edPlatform.services.CourseService;
@@ -24,7 +25,6 @@ public class CourseController {
 
     @PostMapping("/addCourse")
     public Course addCourse(@RequestBody Course course){
-
         return courseService.createCourse(course, Long.valueOf(1));
     }
 

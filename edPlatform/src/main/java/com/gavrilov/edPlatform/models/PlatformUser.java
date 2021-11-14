@@ -32,12 +32,12 @@ public class PlatformUser {
     @NonNull
     private String password;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "platform_user_profile_id", referencedColumnName = "id")
     private PlatformUserProfile profile;
 
     @Enumerated(EnumType.STRING)
-    private final Role role = Role.ADMIN;
+    private Role role = Role.ADMIN;
 
     @OneToMany(mappedBy = "author")
     private Set<Course> ownedCourses;

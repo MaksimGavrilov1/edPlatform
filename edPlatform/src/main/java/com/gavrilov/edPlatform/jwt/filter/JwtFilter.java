@@ -5,8 +5,10 @@ import com.gavrilov.edPlatform.jwt.JwtAuthentication;
 import com.gavrilov.edPlatform.jwt.JwtProvider;
 import com.gavrilov.edPlatform.jwt.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -32,6 +34,7 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain fc)
             throws IOException, ServletException {
+
         final String token = getTokenFromRequest((HttpServletRequest) request);
         if (token != null && jwtProvider.validateAccessToken(token)) {
             final Claims claims = jwtProvider.getAccessClaims(token);
@@ -48,6 +51,6 @@ public class JwtFilter extends GenericFilterBean {
             return bearer.substring(7);
         }
         return null;
-    }
+    }//исправить 7
 
 }
