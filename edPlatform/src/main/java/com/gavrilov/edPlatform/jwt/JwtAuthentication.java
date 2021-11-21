@@ -1,13 +1,12 @@
 package com.gavrilov.edPlatform.jwt;
 
-import com.gavrilov.edPlatform.models.enums.Role;
+import com.gavrilov.edPlatform.model.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter

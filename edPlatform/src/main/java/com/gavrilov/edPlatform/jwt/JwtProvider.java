@@ -1,7 +1,7 @@
 package com.gavrilov.edPlatform.jwt;
 
 
-import com.gavrilov.edPlatform.models.PlatformUser;
+import com.gavrilov.edPlatform.model.PlatformUser;
 import io.jsonwebtoken.*;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,7 @@ public class JwtProvider {
         final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         final String accessToken = Jwts.builder()
-                .setSubject(user.getLogin())
+                .setSubject(user.getUsername())
                 .setExpiration(accessExpiration)
                 .signWith(SignatureAlgorithm.HS512, jwtAccessSecret)
                 .claim("roles", user.getRole().getAuthority())
@@ -43,7 +43,7 @@ public class JwtProvider {
         final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
         final String refreshToken = Jwts.builder()
-                .setSubject(user.getLogin())
+                .setSubject(user.getUsername())
                 .setExpiration(refreshExpiration)
                 .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
                 .compact();

@@ -1,15 +1,13 @@
 package com.gavrilov.edPlatform.jwt.utils;
 
 import com.gavrilov.edPlatform.jwt.JwtAuthentication;
-import com.gavrilov.edPlatform.models.enums.Role;
+import com.gavrilov.edPlatform.model.enums.Role;
 import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class JwtUtils {
