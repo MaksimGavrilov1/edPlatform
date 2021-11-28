@@ -1,6 +1,6 @@
 package com.gavrilov.edPlatform.model;
 
-import com.gavrilov.edPlatform.model.enums.RateMethod;
+import com.gavrilov.edPlatform.model.enumerator.RateMethod;
 import lombok.*;
 import org.hibernate.Hibernate;
 

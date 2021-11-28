@@ -2,7 +2,7 @@ package com.gavrilov.edPlatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.gavrilov.edPlatform.model.enums.CourseStatus;
+import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -19,6 +19,7 @@ import java.util.Set;
         property = "name")
 @Table(name = "course")
 public class Course {
+
 
 
     @Id
@@ -46,7 +47,7 @@ public class Course {
     @ToString.Exclude
     private Set<PlatformUser> joinedUsers;
 
-    protected Course() {
+    public Course() {
     }
 
     @Override

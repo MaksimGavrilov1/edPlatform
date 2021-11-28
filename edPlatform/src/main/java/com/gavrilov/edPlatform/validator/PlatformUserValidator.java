@@ -1,6 +1,7 @@
 package com.gavrilov.edPlatform.validator;
 
 
+import com.gavrilov.edPlatform.constant.ValidationConstants;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +27,17 @@ public class PlatformUserValidator implements Validator {
         PlatformUser user = (PlatformUser) target;
 
         // Check the fields of platformUser.
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "NotEmpty.platformUser.username");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty.platformUser.password");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", "NotEmpty.platformUser.username", ValidationConstants.NOT_EMPTY_USERNAME);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty.platformUser.password", ValidationConstants.NOT_EMPTY_USERNAME_PASSWORD);
 
         //validate if fields are not empty
         if (!errors.hasFieldErrors("username")){
             if (userService.findByUsername(user.getUsername()) != null){
-                errors.rejectValue("username","Duplicate.platformUser.username", "username is taken");
+                errors.rejectValue("username","Duplicate.platformUser.username", ValidationConstants.DUPLICATE_USERNAME);
 
 
             } else if (user.getUsername().length() < MIN_USERNAME_SIZE){
-                errors.rejectValue("username", "Size.platformUser.username");
+                errors.rejectValue("username", "Size.platformUser.username", ValidationConstants.LENGTH_USERNAME);
             }
 
         }

@@ -2,9 +2,8 @@ package com.gavrilov.edPlatform.service;
 
 
 import com.gavrilov.edPlatform.exception.UserNotFoundException;
-import com.gavrilov.edPlatform.repository.UserRepository;
+import com.gavrilov.edPlatform.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

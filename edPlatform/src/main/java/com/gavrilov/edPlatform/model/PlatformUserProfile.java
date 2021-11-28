@@ -20,20 +20,23 @@ public class PlatformUserProfile {
     @GeneratedValue
     private Long id;
 
-    @NotBlank
+
     private String name;
 
-    @Pattern(regexp = "[а-яА-ЯёЁ]" )
+
     private String surname;
 
-    @Pattern(regexp = "[а-яА-ЯёЁ]" )
+
     private String middleName;
 
-    @Pattern(regexp = "[а-яА-ЯёЁ]" )
+
     private String selfDescription;
 
-    @OneToOne(mappedBy = "profile")
+
+    @OneToOne
+    @JoinColumn(name = "platform_user_id", referencedColumnName = "id")
     private PlatformUser platformUser;
+
 
     @Override
     public boolean equals(Object o) {

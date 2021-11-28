@@ -2,8 +2,8 @@ package com.gavrilov.edPlatform.service.courseServiceImpl;
 
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
-import com.gavrilov.edPlatform.repository.CourseRepository;
-import com.gavrilov.edPlatform.repository.UserRepository;
+import com.gavrilov.edPlatform.repo.CourseRepository;
+import com.gavrilov.edPlatform.repo.UserRepository;
 import com.gavrilov.edPlatform.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

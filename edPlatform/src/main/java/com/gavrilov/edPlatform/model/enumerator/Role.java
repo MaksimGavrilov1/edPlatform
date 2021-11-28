@@ -1,4 +1,4 @@
-package com.gavrilov.edPlatform.model.enums;
+package com.gavrilov.edPlatform.model.enumerator;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

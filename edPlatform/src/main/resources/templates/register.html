@@ -3,36 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <title>Create an account</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <style>
-    .error {
-      color: red;
-    }
-  </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #aaa;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input {
+            margin-top: 10px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin button {
+            margin-top: 10px;
+        }
+
+        .has-error {
+            color: red
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
 
-  <form method="POST" class="form-signin" th:object="${user}" th:action="@{/register}">
-    <h2 class="form-signin-heading">Create your account</h2>
-    <div class="form-group">
-      <input type="text" th:field="*{username}" class="form-control" placeholder="Username" autofocus="true">
-      <p class="bd-warning" th:if="${#fields.hasErrors('username')}" th:errorclass="error" th:errors="*{username}"></p>
-    </div>
+    <form method="POST" class="form-signin" th:object="${user}" th:action="@{/register}">
+        <h2 class="form-signin-heading">Create your account</h2>
+        <div class="form-group">
+            <input type="text" th:field="*{username}" class="form-control" placeholder="Username" autofocus="true">
+            <p class="bd-warning" th:if="${#fields.hasErrors('username')}" th:classerror="has-error"
+               th:errors="*{username}"></p>
+        </div>
 
-    <div class="form-group">
-      <input type="password" th:field="*{password}" class="form-control" placeholder="Password">
-      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-    </div>
+        <div class="form-group">
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Password">
+            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+        </div>
 
-    
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-  </form>
+        <div class="form-group">
+            <input type="text" th:field="*{profile.name}" class="form-control" placeholder="name">
+        </div>
+
+        <div class="form-group">
+            <input type="text" th:field="*{profile.surname}" class="form-control" placeholder="surname">
+        </div>
+
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+    </form>
 
 </div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
 </html>

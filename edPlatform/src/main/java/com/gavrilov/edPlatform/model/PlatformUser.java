@@ -2,7 +2,7 @@ package com.gavrilov.edPlatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.gavrilov.edPlatform.model.enums.Role;
+import com.gavrilov.edPlatform.model.enumerator.Role;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +15,6 @@ import java.util.*;
 @Entity
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -28,6 +27,7 @@ public class PlatformUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
     @NonNull
@@ -37,8 +37,7 @@ public class PlatformUser implements UserDetails {
     @NonNull
     private String password;
 
-    @OneToOne
-    @JoinColumn(name = "platform_user_profile_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "platformUser", cascade = CascadeType.ALL)
     private PlatformUserProfile profile;
 
     @Enumerated(EnumType.STRING)
@@ -101,5 +100,14 @@ public class PlatformUser implements UserDetails {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        if (profile != null){
+            return String.format("%s %s", profile.getName(), profile.getSurname());
+        } else {
+            return username;
+        }
     }
 }

@@ -4,13 +4,15 @@ import com.gavrilov.edPlatform.exception.UserNotFoundException;
 import com.gavrilov.edPlatform.exception.UserProfileNotValidException;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.PlatformUserProfile;
-import com.gavrilov.edPlatform.repository.PlatformUserProfileRepository;
-import com.gavrilov.edPlatform.repository.UserRepository;
+import com.gavrilov.edPlatform.repo.PlatformUserProfileRepository;
+import com.gavrilov.edPlatform.repo.UserRepository;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -67,6 +69,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PlatformUser saveUser(PlatformUser user) {
+//        PlatformUserProfile profile = user.getProfile();
+//
+//        user.setProfile(null);
+//        PlatformUser user1 = userRepository.save(user);
+//
+//        user1.setProfile(profile);
+//
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<PlatformUser> findAll() {
+        return userRepository.findAll();
     }
 }

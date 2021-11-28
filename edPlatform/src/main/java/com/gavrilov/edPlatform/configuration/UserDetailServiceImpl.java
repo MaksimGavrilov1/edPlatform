@@ -1,10 +1,9 @@
 package com.gavrilov.edPlatform.configuration;
 
-import com.gavrilov.edPlatform.repository.UserRepository;
+import com.gavrilov.edPlatform.repo.UserRepository;
 import com.gavrilov.edPlatform.service.ApplicationUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

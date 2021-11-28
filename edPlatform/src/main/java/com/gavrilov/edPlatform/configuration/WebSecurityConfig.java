@@ -1,6 +1,6 @@
 package com.gavrilov.edPlatform.configuration;
 
-import com.gavrilov.edPlatform.jwt.filter.JwtFilter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         http
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/courses/all")
+                .logoutSuccessUrl("/login")
                 .and();
 
         //configure url authorization
