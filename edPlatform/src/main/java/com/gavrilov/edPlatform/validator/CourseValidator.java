@@ -37,8 +37,13 @@ public class CourseValidator implements Validator {
         //validate if all fields are not empty and check if author have the same course
         if (!errors.hasErrors()){
             PlatformUser courseAuthor = course.getAuthor();
+            if (courseAuthor == null) {
+                System.out.println("AUTHOR IS NULL");
+            }
             Set<Course> authorCourses = courseAuthor.getOwnedCourses();
+            System.out.println(authorCourses);
             if (authorCourses.stream().anyMatch((x)->x.getName().equals(course.getName()))) {
+                System.out.println("In validator");
                 errors.reject("",ValidationConstants.DUPLICATE_AUTHOR_COURSE);
             }
 

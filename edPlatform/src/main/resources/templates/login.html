@@ -70,9 +70,7 @@
 
             <input name="password" type="password" class="form-control" placeholder="Password"/>
             <span class="has-error" th:text="${error}"></span>
-            <div th:if="${param.error}">
-                <p class="text-danger">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
-            </div>
+
             <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
             <h4 class="text-center"><a th:href="@{/register}">Create an account</a></h4>
         </div>

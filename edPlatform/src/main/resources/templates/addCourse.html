@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Этап 1. Создание курса</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+    .has-error {
+    color: red
+    }
+    </style>
 </head>
 <body class="bg-light">
 
 <div class="container">
     <div class="py-5 text-center">
-        <h2>Создание курса</h2>
+        <h2>Этап 1.Создание курса</h2>
         <p class="lead">Здесь вы сможете создать свой курс. Процесс разработки курса разбит на несколько этапов. Ниже
             вы сможете заполнить основную информацию о своем курсе.</p>
     </div>
@@ -46,20 +51,24 @@
         </div>
         <div class="col-md-6 order-md-1">
             <h4 class="mb-3 row">Ваш курс</h4>
-            <form class="needs-validation" novalidate="">
+            <form class="needs-validation" novalidate="" th:method="post" th:object="${course}" th:action="@{/courses/addCourse}">
 
                 <div class="row">
                     <div class="col-md-8 mb-3">
                         <label for="firstName">Название курса</label>
-                        <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+                        <input type="text" class="form-control" th:field="*{name}" id="firstName" placeholder="" value="" required="">
+                        <p class="bd-warning" th:if="${#fields.hasErrors('name')}" th:classerror="has-error"
+                           th:errors="*{name}"></p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-8 mb-3">
                         <label for="description">Описание</label>
                         <div class="input-group">
-                        <textarea rows="3" class="form-control" id="description" placeholder="Описание"
-                                  required=""></textarea>
+                        <input  th:field="*{description}" class="form-control" id="description" placeholder="Описание"
+                                  required="">
+                            <p class="bd-warning" th:if="${#fields.hasErrors('description')}" th:classerror="has-error"
+                               th:errors="*{description}"></p>
                         </div>
                     </div>
                 </div>

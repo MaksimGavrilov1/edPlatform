@@ -25,9 +25,10 @@ public class CourseServiceImpl implements CourseService {
         PlatformUser user = userRepository.findById(id).orElse(null);
         if (user == null){
           throw new IllegalArgumentException("No user with this id found");
-          //usernotfoundexception свой except и handler
         }
         course.setAuthor(user);
+        user.addOwnedCourse(course);
+        userRepository.save(user);
         return courseRepository.save(course);
     }
 

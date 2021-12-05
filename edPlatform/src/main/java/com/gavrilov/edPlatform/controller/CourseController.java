@@ -4,6 +4,7 @@ import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.UserService;
+import com.gavrilov.edPlatform.validator.CourseValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final UserService userService;
+    private final CourseValidator validator;
 
     @GetMapping("/all")
     public String showCourses (Model model, @AuthenticationPrincipal PlatformUser user){
@@ -36,8 +38,23 @@ public class CourseController {
         return "addCourse";
     }
 
-//    @PostMapping("/addCourse")
-//    public String sendCourse(@ModelAttribute("course") Course course, BindingResult result) {
-//
-//    }
+    @PostMapping("/addCourse")
+    public String sendCourse(@ModelAttribute Course course, BindingResult result, @AuthenticationPrincipal PlatformUser user) {
+        course.setAuthor(user);
+        validator.validate(course, result);
+        System.out.println("in ADDcourse post");
+        if (result.hasErrors()) {
+            System.out.println("error asdasdasd");
+            return "addCourse";
+        }
+
+        courseService.createCourse(course, user.getId());
+        return "redirect:/addThemes";
+    }
+
+    @GetMapping("/addThemes")
+    public String addThemes (Model model){
+
+        return "addThemes";
+    }
 }

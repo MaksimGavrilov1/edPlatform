@@ -43,17 +43,17 @@ public class PlatformUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.ADMIN;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Course> ownedCourses;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_courses",
             joinColumns = @JoinColumn(name = "platform_user_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     @ToString.Exclude
-    private Set<Course> joinedCourses;
+    private Set<Course> joinedCourses = new HashSet<>();
 
 
     public PlatformUser() {
@@ -100,6 +100,10 @@ public class PlatformUser implements UserDetails {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public void addOwnedCourse(Course c) {
+        ownedCourses.add(c);
     }
 
     @Override
