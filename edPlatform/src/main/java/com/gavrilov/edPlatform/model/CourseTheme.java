@@ -24,6 +24,7 @@ public class CourseTheme {
 
     private String name;
 
+    @Column(length = 50_000)
     private String lectureMaterial;
 
     @OneToOne(mappedBy = "theme")
@@ -32,9 +33,9 @@ public class CourseTheme {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         CourseTheme that = (CourseTheme) o;
-        return id != null && Objects.equals(id, that.id);
+        return course.equals(that.course) && name.equals(that.name);
     }
 
     @Override

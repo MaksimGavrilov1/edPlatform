@@ -29,7 +29,7 @@
             самостоятельно создать курс.</p>
         <p sec:authorize="hasAuthority('ADMIN')" class="lead">Общее количество пользователей: <span
                 th:utext="${usersAmount}"></span></p>
-        <a class="btn btn-primary btn-lg" th:href="@{/addCourse}" role="button">Узнать больше</a>
+        <a class="btn btn-primary btn-lg" th:href="@{/courses/addCourse}" role="button">Узнать больше</a>
     </div>
 </div>
 <div class="container">

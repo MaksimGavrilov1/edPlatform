@@ -8,4 +8,6 @@ public interface CourseService {
     public Course createCourse(Course course, Long aLong);
 
     public List<Course> getAll();
+
+    public Course findCourse(Long id);
 }

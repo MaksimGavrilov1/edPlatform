@@ -5,6 +5,20 @@
   <title>Этап 2. Добавление тем курса</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style>
+    p.descript {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 130px;
+    }
+    p.headDescript {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 90px;
+    }
+  </style>
 </head>
 <body class="bg-light">
 
@@ -15,49 +29,56 @@
   </div>
 
   <div class="row">
-    <div class="col-md-5 order-md-2 mb-4">
+    <div class="col-md-3 order-md-2 mb-4">
       <h5 class="d-flex justify-content-between align-items-center mb-3">
         <span class="text-muted">Темы курса</span>
       </h5>
-      <ul class="list-group mb-3">
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">Product name</h6>
-            <small class="text-muted">Brief description</small>
+      <ul class="list-group mb-3" >
+        <li class="list-group-item d-flex justify-content-between lh-condensed"  th:each="theme : ${themes}">
+          <div style="text-overflow: ellipsis">
+            <p class="my-0 headDescript" th:utext="${theme.name}"><b>Product name</b></p>
+            <p class="text-muted descript" th:utext="${theme.lectureMaterial}">Brief description</p>
           </div>
-          <span class="text-muted">$12</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">Second product</h6>
-            <small class="text-muted">Brief description</small>
-          </div>
-          <span class="text-muted">$8</span>
-        </li>
-        <li class="list-group-item d-flex justify-content-between lh-condensed">
-          <div>
-            <h6 class="my-0">Third item</h6>
-            <small class="text-muted">Brief description</small>
-          </div>
-          <span class="text-muted">$5</span>
         </li>
       </ul>
     </div>
-    <div class="col-md-6 order-md-1">
-      <h4 class="mb-3 row">Ваши темы</h4>
-      <form class="needs-validation" novalidate="">
+    <script>
 
+      function f () {
+        let items = document.getElementsByClassName('descript');
+        for (let i = items.length; i<items.length;i++){
+          let content = items[i].textContent;
+          content.substring(0, 15)
+          items[i].innerHTML = content.substring(0,15) + '...';
+        }}
+      function f2 () {
+        let items2 = document.getElementsByClassName('my-0');
+        for (let i = items2.length; i<items2.length;i++){
+          let content = items2[i].textContent;
+          content.substring(0, 15)
+          items2[i].innerHTML = content.substring(0,15) + '...';
+        }}
+      f();
+      f2();
+    </script>
+    <div class="col-md-9 order-md-1">
+      <h4 class="mb-3 row">Темы для курса:</h4>
+      <form class="needs-validation" novalidate=""  th:method="post" th:object="${mainTheme}"
+            th:action="@{/courses/addTheme/{id}(id=${mainTheme.course.id})}">
+    <h3 th:utext="${mainTheme.course.name}"></h3>
         <div class="row">
           <div class="col-md-8 mb-3">
-            <label for="firstName">Название курса</label>
-            <input type="text" class="form-control" id="firstName" placeholder="" value="" required="">
+            <label for="firstName">Название темы</label>
+            <input type="text" class="form-control" id="firstName" th:field="*{name}" placeholder="" value="" required="">
+            <p class="bd-warning" th:if="${#fields.hasErrors('name')}" th:classerror="has-error"
+               th:errors="*{name}"></p>
           </div>
         </div>
         <div class="row">
           <div class="col-md-8 mb-3">
-            <label for="description">Описание</label>
+            <label for="description">Лекционный материал</label>
             <div class="input-group">
-                        <textarea rows="3" class="form-control" id="description" placeholder="Описание"
+                        <textarea th:field="*{lectureMaterial}" rows="3" class="form-control" id="description" placeholder="Описание"
                                   required=""></textarea>
             </div>
           </div>
@@ -65,14 +86,24 @@
 
         <div class="container">
           <hr class="mb-4">
-          <button class="btn btn-primary btn-lg btn-block" type="submit">Готово</button>
+          <button class="btn btn-primary btn-lg btn-block" onclick="f()" type="submit">Добавить тему</button>
+          <button class="btn btn-primary btn-lg btn-block" type="button" th:href="@{/testPage}">Далее</button>
         </div>
       </form>
 
     </div>
   </div>
 </div>
+<script>
 
+  function f () {
+    let items = document.getElementsByClassName('descript');
+    for (let i = items.length; i<items.length;i++){
+      let content = items[i].textContent;
+      content.substring(0, 15)
+      items[i].innerHTML = content + '...';
+  }}
+</script>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
@@ -82,6 +113,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script>
+
 </body>
 </html>

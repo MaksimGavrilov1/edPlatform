@@ -11,7 +11,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import java.util.List;
 import java.util.Set;
 
 @Component
@@ -35,19 +34,19 @@ public class CourseValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "", ValidationConstants.NOT_EMPTY_COURSE_DESCRIPTION);
 
         //validate if all fields are not empty and check if author have the same course
-        if (!errors.hasErrors()){
+        if (!errors.hasErrors()) {
             PlatformUser courseAuthor = course.getAuthor();
             if (courseAuthor == null) {
                 System.out.println("AUTHOR IS NULL");
             }
             Set<Course> authorCourses = courseAuthor.getOwnedCourses();
             System.out.println(authorCourses);
-            if (authorCourses.stream().anyMatch((x)->x.getName().equals(course.getName()))) {
+            if (authorCourses.stream().anyMatch((x) -> x.getName().equals(course.getName()))) {
                 System.out.println("In validator");
-                errors.reject("",ValidationConstants.DUPLICATE_AUTHOR_COURSE);
+                errors.reject("", ValidationConstants.DUPLICATE_AUTHOR_COURSE);
             }
 
 
+        }
     }
-}
 }
