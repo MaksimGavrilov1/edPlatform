@@ -34,6 +34,20 @@ public class CourseController {
         return "showCourses";
     }
 
+    @GetMapping("/{id}")
+    public String viewCourse (@PathVariable Long id, Model model){
+        Course course = courseService.findCourse(id);
+        model.addAttribute("course", course);
+
+        return "viewCourse";
+    }
+
+    @GetMapping("/usersCourses")
+    public String showUserCourses (Model model, @AuthenticationPrincipal PlatformUser user){
+        model.addAttribute("userCourses", courseService.findCoursesByAuthor(user));
+        return "showUserCourses";
+    }
+
     @GetMapping("/addCourse")
     public String addCourse (Model model){
         model.addAttribute("course", new Course());
@@ -54,38 +68,11 @@ public class CourseController {
         }
 
         Course c = courseService.createCourse(course, user.getId());
-        //ploho?
-        return String.format("redirect:/courses/addThemes/%d", c.getId());
+
+        return "redirect:/courses/usersCourses";
+//        return String.format("redirect:/courses/addThemes/%d", c.getId());
     }
 
-    @GetMapping("/addThemes/{courseId}")
-    public String addThemes (@PathVariable(name = "courseId") Long courseId, Model model){
-        Course course= courseService.findCourse(courseId);
-        model.addAttribute("themes", course.getThemes());
-        CourseTheme courseTheme = new CourseTheme();
-        courseTheme.setCourse(course);
-        model.addAttribute("mainTheme", courseTheme);
-        return "addThemes";
-    }
-
-    @PostMapping("/addTheme/{courseId}")
-    public String addTheme (@PathVariable Long courseId,
-                            @ModelAttribute CourseTheme theme,
-                            Model model,
-                            BindingResult result) {
-
-        Course c = courseService.findCourse(courseId);
-        theme.setCourse(c);
-
-        courseThemeValidator.validate(theme, result);
-        if (result.hasErrors()) {
-            return "addThemes";
-        }
-
-        CourseTheme ct = courseThemeRepository.save(theme);
-
-        return String.format("redirect:/courses/addThemes/%d", courseId);
-    }
 
     @GetMapping("/testPage")
     public String showTestPage (Model model){

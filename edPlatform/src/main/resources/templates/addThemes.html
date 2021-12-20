@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
 <head>
   <meta charset="UTF-8">
   <title>Этап 2. Добавление тем курса</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <style>
     p.descript {
       white-space: nowrap;
@@ -18,10 +18,14 @@
       text-overflow: ellipsis;
       width: 90px;
     }
+    .container {
+      width: 75%;
+    }
+
   </style>
 </head>
 <body class="bg-light">
-
+<div th:fragment="content">
 <div class="container">
   <div class="py-5 text-center">
     <h2>Этап 2.Создание тем курса</h2>
@@ -64,21 +68,21 @@
     <div class="col-md-9 order-md-1">
       <h4 class="mb-3 row">Темы для курса:</h4>
       <form class="needs-validation" novalidate=""  th:method="post" th:object="${mainTheme}"
-            th:action="@{/courses/addTheme/{id}(id=${mainTheme.course.id})}">
-    <h3 th:utext="${mainTheme.course.name}"></h3>
+            th:action="@{/courses/addTheme/{id}(id = ${courseId})}">
+<!--    <h3 th:utext="${mainTheme.course.name}"></h3>-->
         <div class="row">
           <div class="col-md-8 mb-3">
-            <label for="firstName">Название темы</label>
-            <input type="text" class="form-control" id="firstName" th:field="*{name}" placeholder="" value="" required="">
+            <label for="name">Название темы</label>
+            <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="" value="" required="">
             <p class="bd-warning" th:if="${#fields.hasErrors('name')}" th:classerror="has-error"
-               th:errors="*{name}"></p>
+               th:utext="asdasdasdasd"></p>
           </div>
         </div>
         <div class="row">
           <div class="col-md-8 mb-3">
-            <label for="description">Лекционный материал</label>
+            <label for="lectureMaterial">Лекционный материал</label>
             <div class="input-group">
-                        <textarea th:field="*{lectureMaterial}" rows="3" class="form-control" id="description" placeholder="Описание"
+                        <textarea th:field="*{lectureMaterial}" rows="3" class="form-control" id="lectureMaterial" placeholder="Описание"
                                   required=""></textarea>
             </div>
           </div>
@@ -104,15 +108,6 @@
       items[i].innerHTML = content + '...';
   }}
 </script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-
+</div>
 </body>
 </html>

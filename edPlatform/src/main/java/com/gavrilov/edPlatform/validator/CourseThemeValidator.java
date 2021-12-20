@@ -36,7 +36,7 @@ public class CourseThemeValidator implements Validator {
 
 
             if (course.getThemes().stream().anyMatch(x->x.equals(courseTheme))) {
-                errors.reject("", ValidationConstants.DUPLICATE_COURSE_THEME);
+                errors.rejectValue("name","", ValidationConstants.DUPLICATE_COURSE_THEME);
             }
         }
     }

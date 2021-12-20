@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container" style="width: 70%">
+
+
+        <div class="card bg-light mb-3" style="max-width: 100%;">
+            <div class="card-header">Структура курса</div>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${course.name}"></h5>
+                <p class="card-text" th:text="${course.description}"></p>
+
+                <table class="table card-text">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Темы</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="theme, iter : ${course.themes}">
+                        <th scope="row" th:utext="${iter.index}+1">index</th>
+                        <td th:utext="${theme.name}">название</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <a th:href="@{themes/constructor}" class="btn">Конструктор тем</a>
+    </div>
+</div>
+</body>
+</html>

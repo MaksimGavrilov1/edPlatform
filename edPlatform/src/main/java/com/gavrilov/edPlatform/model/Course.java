@@ -34,6 +34,7 @@ public class Course {
 
     private String name;
 
+    @Column(length = 50_000)
     private String description;
 
     @OneToMany(mappedBy = "course")

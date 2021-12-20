@@ -43,9 +43,9 @@ public class PlatformUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.ADMIN;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private Set<Course> ownedCourses;
+//    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+//    @ToString.Exclude
+//    private Set<Course> ownedCourses;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -102,9 +102,7 @@ public class PlatformUser implements UserDetails {
         return getClass().hashCode();
     }
 
-    public void addOwnedCourse(Course c) {
-        ownedCourses.add(c);
-    }
+
 
     @Override
     public String toString() {

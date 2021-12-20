@@ -27,7 +27,7 @@ public class CourseServiceImpl implements CourseService {
           throw new IllegalArgumentException("No user with this id found");
         }
         course.setAuthor(user);
-        user.addOwnedCourse(course);
+//        user.addOwnedCourse(course);
         userRepository.save(user);
         return courseRepository.save(course);
     }
@@ -40,5 +40,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course findCourse(Long id) {
         return courseRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Course> findCoursesByAuthor(PlatformUser user) {
+        return courseRepository.findCourseByAuthor(user);
     }
 }

@@ -3,6 +3,7 @@ package com.gavrilov.edPlatform.validator;
 import com.gavrilov.edPlatform.constant.ValidationConstants;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.repo.CourseRepository;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -19,6 +21,7 @@ public class CourseValidator implements Validator {
 
     private final CourseService courseService;
     private final UserService userService;
+    private final CourseRepository courseRepository;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -35,15 +38,13 @@ public class CourseValidator implements Validator {
 
         //validate if all fields are not empty and check if author have the same course
         if (!errors.hasErrors()) {
+
             PlatformUser courseAuthor = course.getAuthor();
-            if (courseAuthor == null) {
-                System.out.println("AUTHOR IS NULL");
-            }
-            Set<Course> authorCourses = courseAuthor.getOwnedCourses();
-            System.out.println(authorCourses);
+            List<Course> authorCourses = courseRepository.findCourseByAuthor(courseAuthor);
+
             if (authorCourses.stream().anyMatch((x) -> x.getName().equals(course.getName()))) {
-                System.out.println("In validator");
-                errors.reject("", ValidationConstants.DUPLICATE_AUTHOR_COURSE);
+
+                errors.rejectValue("name", "", ValidationConstants.DUPLICATE_AUTHOR_COURSE);
             }
 
 

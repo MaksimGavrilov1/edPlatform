@@ -22,6 +22,7 @@ public class CourseTheme {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
+    @Column(length = 1_000)
     private String name;
 
     @Column(length = 50_000)
