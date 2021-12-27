@@ -48,6 +48,10 @@ public class Course {
     @ToString.Exclude
     private Set<PlatformUser> joinedUsers;
 
+    @OneToOne(mappedBy = "course")
+    @ToString.Exclude
+    private CourseTest test;
+
     public Course() {
     }
 

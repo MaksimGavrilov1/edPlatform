@@ -30,9 +30,10 @@
                         <td th:utext="${theme.name}">название</td>
                     </tr>
                 </table>
+                <a th:if="${course.getTest() != null}" th:href="@{/test/edit/{id}/(id=${course.id})}" class="btn">Редактировать тест</a>
             </div>
         </div>
-        <a th:href="@{themes/constructor}" class="btn">Конструктор тем</a>
+
     </div>
 </div>
 </body>

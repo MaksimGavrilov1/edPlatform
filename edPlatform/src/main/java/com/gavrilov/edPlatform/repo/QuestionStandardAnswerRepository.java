@@ -1,9 +1,9 @@
 package com.gavrilov.edPlatform.repo;
 
-import com.gavrilov.edPlatform.model.CourseTest;
+import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ThemeTestRepository extends JpaRepository<CourseTest, Long> {
+public interface QuestionStandardAnswerRepository extends JpaRepository<QuestionStandardAnswer, Long> {
 }

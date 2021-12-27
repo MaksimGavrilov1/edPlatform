@@ -28,9 +28,6 @@ public class CourseTheme {
     @Column(length = 50_000)
     private String lectureMaterial;
 
-    @OneToOne(mappedBy = "theme")
-    private ThemeTest test;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

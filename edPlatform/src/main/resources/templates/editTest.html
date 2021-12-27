@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Редкировать тест</title>
+</head>
+<body>
+<div th:fragment="content">
+    <form th:action="@{/test/saveTest}" th:object="${test}" method="post">
+        <input type="hidden" th:field="*{course}" th:value="${test.course.id}">
+        <input type="hidden" th:field="*{id}" th:value="${test.getId()}"/>
+        <div class="form-group">
+            <label for="name">Название теста</label>
+            <textarea class="form-control" id="name" th:field="*{name}"></textarea>
+            <ul>
+                <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <div class="container" th:each="question, iter : *{testQuestions}">
+            <label th:for="${iter.index}">Содержание вопроса</label>
+            <input type="hidden" th:field="*{testQuestions[__${iter.index}__].id}" th:value="${question.getId()}"/>
+            <input type="hidden" th:field="*{testQuestions[__${iter.index}__].courseTest}" th:value="${question.getCourseTest().getId()}">
+            <input type="text" class="form-control" th:id="${iter.index}"
+                   th:field="*{testQuestions[__${iter.index}__].text}">
+            <ul>
+                <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+            </ul>
+            <ol>
+                <li th:each="answer, iterat : *{testQuestions[__${iter.index}__].questionStandardAnswers}">
+                    <input type="hidden"
+                           th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].id}"
+                           th:value="${answer.id}"/>
+                    <input type="hidden"
+                           th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].testQuestion}"
+                           th:value="${question.id}"/>
+                    <input type="checkbox"
+                           th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].isRight}"/>
+                    <input type="text"
+                           th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].text}">
+                </li>
+            </ol>
+        </div>
+        <input type="submit" >
+    </form>
+</div>
+</body>
+</html>

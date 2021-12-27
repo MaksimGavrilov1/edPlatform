@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:include="layout :: page">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Создание теста</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <form th:action="@{/test/addTest}" th:object="${formTest}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="form-group">
+                <label for="name">Название теста</label>
+                <textarea class="form-control" id="name" th:field="*{name}" ></textarea>
+                <ul>
+                    <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+                </ul>
+            </div>
+            <div class="form-group">
+                <label for="questionAmount">Количество вопросов в тесте</label>
+                <input type="number" max="100" min="2" class="form-control" id="questionAmount" th:field="*{questionAmount}" >
+                    Количество вопросов в тесте
+                </input>
+                <ul>
+                    <li th:each="err : ${#fields.errors('questionAmount')}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="course">Выберите курс, для которого будет создан тест</label>
+                <select id="course" class="form-control" th:field="*{courseId}">
+                    <option th:each="course : ${courses}"
+                            th:value="${course.id}"
+                            th:text="${course.name}"></option>
+                </select>
+                <ul>
+                    <li th:each="err : ${#fields.errors('courseId')}" th:text="${err}"></li>
+                </ul>
+            </div>
+            <button type="submit" class="btn btn-default">Готово</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
