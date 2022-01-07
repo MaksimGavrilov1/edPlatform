@@ -10,7 +10,9 @@ import com.gavrilov.edPlatform.service.ThemeTestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +28,12 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     }
 
     @Override
+    @Transactional
     public CourseTest save(CourseTest courseTest) {
 
         CourseTest courseTestFromDB = themeTestRepository.getById(courseTest.getId());
+
+
         courseTestFromDB.setTestQuestions(courseTest.getTestQuestions());
         themeTestRepository.save(courseTestFromDB);
 

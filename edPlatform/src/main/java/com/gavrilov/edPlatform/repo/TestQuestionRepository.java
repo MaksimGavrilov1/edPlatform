@@ -10,4 +10,6 @@ public interface TestQuestionRepository extends JpaRepository<TestQuestion, Long
 
     List<TestQuestion> findByCourseTest(CourseTest themeTest);
 
+    long deleteByCourseTest_Id(Long id);
+
 }

@@ -10,4 +10,6 @@ public interface TestQuestionService {
     TestQuestion save(TestQuestion question);
 
     List<TestQuestion> findByTest (CourseTest test);
+
+    long deleteByCourseId (Long id);
 }

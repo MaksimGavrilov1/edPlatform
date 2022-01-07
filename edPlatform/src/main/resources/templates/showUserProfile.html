@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Ваш профиль</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container" style="align-items: center; line-height: 2px;">
+        <div class="row justify-content-md-center">
+            <h1>
+                Ваш профиль
+            </h1>
+        </div>
+        <div class="row justify-content-md-center">
+            <h3>Никнейм: </h3>
+            <h3 th:text="${user.getUsername()}"></h3>
+        </div>
+
+        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
+            <h4 th:text="${user.getProfile().getSurname()}"></h4>
+        </div>
+        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
+            <h4 th:text="${user.getProfile().getName()}"></h4>
+        </div>
+        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
+            <h4 th:text="${user.getProfile().getMiddleName()}"></h4>
+        </div>
+        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
+            <h4 th:text="${user.getProfile().getSelfDescription()}"></h4>
+        </div>
+
+        <div class="row justify-content-md-center" style="margin: 10px;">
+            <a th:href="@{/user/editProfile}">Редактировать данные</a>
+        </div>
+        <div class="row">
+            <table class="table">
+                <caption th:if="${user.getJoinedCourses().size()}  == 0">На данный
+                    момент вы не является участником каких-либо курсов
+                </caption>
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название курса</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="course, iter : ${user.getJoinedCourses()}">
+                    <th scope="row" th:utext="${iter.index}+1"></th>
+                    <td th:utext="${course.name}">имя</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

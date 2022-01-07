@@ -27,7 +27,9 @@ public class AuthorizationRegistrationController {
     @GetMapping("/login")
     public String login(Model model, String error, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("error", error);
-
+        if (user != null) {
+            return "redirect:/courses/all";
+        }
         return "login";
     }
 

@@ -6,4 +6,5 @@ public interface QuestionStandardAnswerService {
 
     QuestionStandardAnswer save(QuestionStandardAnswer answer);
 
+    long deleteByQuestionId (Long id);
 }

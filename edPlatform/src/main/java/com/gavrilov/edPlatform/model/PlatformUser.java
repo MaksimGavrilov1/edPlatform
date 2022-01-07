@@ -41,7 +41,7 @@ public class PlatformUser implements UserDetails {
     private PlatformUserProfile profile;
 
     @Enumerated(EnumType.STRING)
-    private Role role = Role.ADMIN;
+    private Role role = Role.STUDENT;
 
 //    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
 //    @ToString.Exclude

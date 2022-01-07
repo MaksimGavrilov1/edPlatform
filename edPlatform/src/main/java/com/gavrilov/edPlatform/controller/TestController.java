@@ -89,7 +89,7 @@ public class TestController {
     public String saveTest (Model model,
                             @ModelAttribute("test") CourseTest test,
                             BindingResult result){
-        themeTestService.initSave(test);
+        themeTestService.save(test);
         return "redirect:/courses/usersCourses";
     }
 }

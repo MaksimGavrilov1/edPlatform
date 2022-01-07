@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface QuestionStandardAnswerRepository extends JpaRepository<QuestionStandardAnswer, Long> {
+    long deleteByTestQuestion_Id(Long id);
 }

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ThemeTestRepository extends JpaRepository<CourseTest, Long> {
+    CourseTest findByName(String name);
 }
