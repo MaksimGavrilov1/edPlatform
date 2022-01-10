@@ -55,6 +55,9 @@ public class PlatformUser implements UserDetails {
     @ToString.Exclude
     private Set<Course> joinedCourses = new HashSet<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ModeratorRoleRequest> requestsForModerator = new ArrayList<>();
+
 
     public PlatformUser() {
     }

@@ -30,6 +30,9 @@
             <li class="nav-item"  sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" >
                 <a class="nav-link" th:href="@{/test/constructor}">Конструктор тестов</a>
             </li>
+            <li class="nav-item"  sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" >
+                <a class="nav-link" th:href="@{/user/moderatorRequest}">Заявка на должность модератора</a>
+            </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('MODERATOR')" >
                 <a class="nav-link" th:href="@{/courses/newCourses}">Курсы для подтверждения</a>
             </li>

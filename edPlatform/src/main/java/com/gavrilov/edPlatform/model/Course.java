@@ -42,7 +42,7 @@ public class Course {
     private Set<CourseTheme> themes;
 
     @Enumerated(EnumType.STRING)
-    private CourseStatus status;
+    private CourseStatus status = CourseStatus.AWAITING_CONFIRMATION;
 
     @ManyToMany(mappedBy = "joinedCourses")
     @ToString.Exclude

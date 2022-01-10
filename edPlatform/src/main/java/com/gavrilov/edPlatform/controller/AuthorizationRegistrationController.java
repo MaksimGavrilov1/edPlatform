@@ -2,6 +2,7 @@ package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.PlatformUserProfile;
+import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.service.UserService;
 import com.gavrilov.edPlatform.validator.PlatformUserValidator;
 import lombok.RequiredArgsConstructor;
@@ -23,10 +24,20 @@ public class AuthorizationRegistrationController {
     private final UserService userService;
     private final PlatformUserValidator userValidator;
     private final BCryptPasswordEncoder encoder;
+    boolean flag = false;
 
     @GetMapping("/login")
     public String login(Model model, String error, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("error", error);
+        if (!flag){
+            PlatformUser admin = new PlatformUser();
+            admin.setRole(Role.ADMIN);
+            admin.setUsername("admin");
+            admin.setPassword("qwerty");
+            userService.saveUser(admin);
+            flag = true;
+        }
+
         if (user != null) {
             return "redirect:/courses/all";
         }

@@ -1,10 +1,12 @@
 package com.gavrilov.edPlatform.controller;
 
+import com.gavrilov.edPlatform.model.ModeratorRoleRequest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.PlatformUserProfile;
 import com.gavrilov.edPlatform.dto.UserRoleDto;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.UserRepository;
+import com.gavrilov.edPlatform.service.ModeratorRoleRequestService;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,7 @@ public class PlatformUserController {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ModeratorRoleRequestService roleRequestService;
 
     @GetMapping("/profile")
     public String showUserProfile(Model model, @AuthenticationPrincipal PlatformUser user) {
@@ -49,6 +52,21 @@ public class PlatformUserController {
         user.setProfile(profile);
         userRepository.save(user);
         return "redirect:/user/profile";
+    }
+
+    @GetMapping("/moderatorRequest")
+    public String showModeratorRequestPage (Model model){
+        model.addAttribute("request", new ModeratorRoleRequest());
+        return "showModeratorRequestPage";
+    }
+
+    @PostMapping("/moderatorRequest")
+    public String saveModeratorRequest (@ModelAttribute("request") ModeratorRoleRequest request,
+                                        @AuthenticationPrincipal PlatformUser user,
+                                        BindingResult result){
+        request.setUser(user);
+        roleRequestService.save(request);
+        return "redirect:/courses/all";
     }
 
 }

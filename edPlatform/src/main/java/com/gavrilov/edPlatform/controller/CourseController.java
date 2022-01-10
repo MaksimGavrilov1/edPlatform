@@ -3,6 +3,8 @@ package com.gavrilov.edPlatform.controller;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
+import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.CourseThemeRepository;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.UserService;
@@ -73,6 +75,22 @@ public class CourseController {
 //        return String.format("redirect:/courses/addThemes/%d", c.getId());
     }
 
+    @GetMapping("/newCourses")
+    public String showCoursesToAccept (Model model){
+        model.addAttribute("courses", courseService.findCoursesAwaitingConfirmation());
+        return "showNewCourses";
+    }
+
+    @GetMapping("/approve/{id}")
+    public String approveCourse (@PathVariable Long id){
+        Course course = courseService.findCourse(id);
+        course.setStatus(CourseStatus.APPROVED);
+        courseService.save(course);
+        PlatformUser user = course.getAuthor();
+        user.setRole(Role.TEACHER);
+        userService.saveUser(user);
+        return "redirect:/courses/newCourses";
+    }
 
     @GetMapping("/testPage")
     public String showTestPage (Model model){

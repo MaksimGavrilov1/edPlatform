@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container" style="align-items: center">
+                <h1 class="display-4">Заявка на должность модератора</h1>
+                <div>
+                    <p class="lead">На этой странице вы можете оставить заявку для модерирования курсов. Ниже вы можете
+                        описать ваш ранее возможный опыт. Обратите внимание, что после положительного ответа от
+                        админстрации сайта, вы больше не сможете создавать или изменять курсы.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <form th:method="post" th:object="${request}"
+              th:action="@{/user/moderatorRequest}">
+            <div class="row">
+                <div class="col-md-8 mb-3">
+                    <label for="experience">Прошлый опыт в модерировании</label>
+                    <div class="input-group">
+                        <textarea th:field="*{experience}" rows="3" class="form-control" id="experience"
+                                  placeholder="Ваш опыт..."
+                                  required=""></textarea>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-default">Отправить</button>
+            <!--            <div class="container">-->
+            <!--                <hr class="mb-4">-->
+            <!--                <button class="btn btn-primary btn-lg btn-block" type="button" th:href="@{/testPage}">Далее</button>-->
+            <!--            </div>-->
+        </form>
+    </div>
+</div>
+</body>
+</html>

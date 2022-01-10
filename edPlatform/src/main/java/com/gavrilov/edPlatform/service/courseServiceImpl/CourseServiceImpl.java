@@ -2,6 +2,7 @@ package com.gavrilov.edPlatform.service.courseServiceImpl;
 
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.repo.CourseRepository;
 import com.gavrilov.edPlatform.repo.UserRepository;
 import com.gavrilov.edPlatform.service.CourseService;
@@ -18,6 +19,11 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public Course save(Course course) {
+        return courseRepository.save(course);
+    }
 
     @Override
     public Course createCourse(Course course, Long id) {
@@ -45,5 +51,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findCoursesByAuthor(PlatformUser user) {
         return courseRepository.findCourseByAuthor(user);
+    }
+
+    @Override
+    public List<Course> findCoursesAwaitingConfirmation() {
+        return courseRepository.findByStatus(CourseStatus.AWAITING_CONFIRMATION);
     }
 }

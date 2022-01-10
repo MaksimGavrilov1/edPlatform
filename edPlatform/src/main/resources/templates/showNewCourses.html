@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <h2>Курсы, ожидающие подтверждения</h2>
+        <table class="table">
+            <caption th:if="${courses.size() == 0}">На данный момент нет курсов</caption>
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Название курса</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course, iter : ${courses}">
+                <th scope="row" th:utext="${iter.index}+1">index</th>
+                <td th:utext="${course.name}">имя</td>
+                <td><a th:href="@{/courses/approve/{id}(id=${course.id})}" class="btn">Принять</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
