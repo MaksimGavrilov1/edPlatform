@@ -12,6 +12,7 @@ import com.gavrilov.edPlatform.service.ThemeTestService;
 import com.gavrilov.edPlatform.validator.ThemeTestValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,11 +86,12 @@ public class TestController {
         return "editTest";
     }
 
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/saveTest")
     public String saveTest (Model model,
                             @ModelAttribute("test") CourseTest test,
                             BindingResult result){
-        themeTestService.save(test);
+        themeTestService.initSave(test);
         return "redirect:/courses/usersCourses";
     }
 }

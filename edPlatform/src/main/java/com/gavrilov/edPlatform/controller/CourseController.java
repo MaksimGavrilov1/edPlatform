@@ -1,7 +1,6 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.model.Course;
-import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.model.enumerator.Role;
@@ -29,7 +28,7 @@ public class CourseController {
     private final CourseThemeRepository courseThemeRepository;
 
     @GetMapping("/all")
-    public String showCourses (Model model, @AuthenticationPrincipal PlatformUser user){
+    public String showCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("usersAmount", userService.findAll().size());
         model.addAttribute("user", user);
         model.addAttribute("courses", courseService.getAll());
@@ -37,21 +36,30 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public String viewCourse (@PathVariable Long id, Model model){
+    public String viewCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
         Course course = courseService.findCourse(id);
+        Boolean joinedFlag = user.getJoinedCourses().contains(course);
         model.addAttribute("course", course);
-
+        model.addAttribute("joinedFlag", joinedFlag);
         return "viewCourse";
     }
 
+    @GetMapping("/owned/{id}")
+    public String viewOwnedCourse(@PathVariable Long id, Model model) {
+        Course course = courseService.findCourse(id);
+        model.addAttribute("course", course);
+
+        return "viewAuthorCourse";
+    }
+
     @GetMapping("/usersCourses")
-    public String showUserCourses (Model model, @AuthenticationPrincipal PlatformUser user){
+    public String showUserCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("userCourses", courseService.findCoursesByAuthor(user));
         return "showUserCourses";
     }
 
     @GetMapping("/addCourse")
-    public String addCourse (Model model){
+    public String addCourse(Model model) {
         model.addAttribute("course", new Course());
         return "addCourse";
     }
@@ -76,13 +84,13 @@ public class CourseController {
     }
 
     @GetMapping("/newCourses")
-    public String showCoursesToAccept (Model model){
+    public String showCoursesToAccept(Model model) {
         model.addAttribute("courses", courseService.findCoursesAwaitingConfirmation());
         return "showNewCourses";
     }
 
     @GetMapping("/approve/{id}")
-    public String approveCourse (@PathVariable Long id){
+    public String approveCourse(@PathVariable Long id) {
         Course course = courseService.findCourse(id);
         course.setStatus(CourseStatus.APPROVED);
         courseService.save(course);
@@ -92,8 +100,19 @@ public class CourseController {
         return "redirect:/courses/newCourses";
     }
 
+    @PostMapping("/joinCourse")
+    public String joinCourse(@ModelAttribute("course") Course course,
+                             @AuthenticationPrincipal PlatformUser user,
+                             Model model,
+                             BindingResult result) {
+        Course courseFromDB = courseService.findCourse(course.getId());
+        user.getJoinedCourses().add(courseFromDB);
+        model.addAttribute("course", courseFromDB);
+        return String.format("redirect:/courses/%d", courseFromDB.getId());
+    }
+
     @GetMapping("/testPage")
-    public String showTestPage (Model model){
+    public String showTestPage(Model model) {
         return "testPage";
     }
 }

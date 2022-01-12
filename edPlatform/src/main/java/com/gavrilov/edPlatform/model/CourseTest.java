@@ -6,8 +6,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,7 +39,8 @@ public class CourseTest {
     @JoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
-    @OneToMany(mappedBy = "courseTest", cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "courseTest")
+    @Cascade({CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     private List<TestQuestion> testQuestions;
 
 

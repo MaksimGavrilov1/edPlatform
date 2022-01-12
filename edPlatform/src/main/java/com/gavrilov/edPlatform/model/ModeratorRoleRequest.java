@@ -1,5 +1,6 @@
 package com.gavrilov.edPlatform.model;
 
+import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,7 +24,9 @@ public class ModeratorRoleRequest {
     @JoinColumn(name = "platform_user_id", referencedColumnName = "id")
     private PlatformUser user;
 
-    @OneToOne(mappedBy = "request")
-    private ModeratorRoleAnswer answer;
+    private RequestStatus status = RequestStatus.PENDING;
 
+    private String reason;
+
+    private String approverUsername;
 }

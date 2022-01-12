@@ -68,6 +68,7 @@ public class AuthorizationRegistrationController {
 
         String userPassword = user.getPassword();
         user.setPassword(encoder.encode(userPassword));
+
         userService.saveUser(user);
         return "redirect:/login";
     }

@@ -44,7 +44,7 @@
                         <h5 class="card-title" th:utext="${course.name}">..</h5>
                         <h6 class="card-subtitle mb-2 text-muted" th:utext="${course.author}">..</h6>
                         <p class="card-text" th:utext="${course.description}">..</p>
-                        <a href="#" class="card-link">Перейти</a>
+                        <a th:href="@{/courses/{id}(id=${course.id})}" class="card-link">Перейти</a>
                         <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
                     </div>
                 </div>

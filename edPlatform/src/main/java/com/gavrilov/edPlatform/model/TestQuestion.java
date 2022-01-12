@@ -4,8 +4,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,11 +34,12 @@ public class TestQuestion {
 
     private Integer rightAnswerAmount;
 
-    @OneToMany(mappedBy = "testQuestion", cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "testQuestion")
+    @Cascade({CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @ToString.Exclude
     private List<QuestionStandardAnswer> questionStandardAnswers = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "course_test_id", referencedColumnName = "id")
     @ToString.Exclude
     private CourseTest courseTest;

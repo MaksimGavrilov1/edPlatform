@@ -8,31 +8,65 @@
 </head>
 <body>
 <div th:fragment="content">
-    <div class="container" style="width: 70%">
-
-
-        <div class="card bg-light mb-3" style="max-width: 100%;">
-            <div class="card-header">Структура курса</div>
-            <div class="card-body">
-                <h5 class="card-title" th:text="${course.name}"></h5>
-                <p class="card-text" th:text="${course.description}"></p>
-
-                <table class="table card-text">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Темы</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="theme, iter : ${course.themes}">
-                        <th scope="row" th:utext="${iter.index}+1">index</th>
-                        <td th:utext="${theme.name}">название</td>
-                    </tr>
-                </table>
-                <a th:if="${course.getTest() != null}" th:href="@{/test/edit/{id}/(id=${course.id})}" class="btn">Редактировать тест</a>
+    <div class="container" style="width: 90%">
+        <h2 style="margin: 10px">Страница курса</h2>
+        <div class="row" style="margin: 5px">
+            <div >
+                <p th:text="${course.getAuthor().toString()}"></p>
             </div>
         </div>
+        <div class="row" style="margin: 3px">
+            <h4 th:text="${course.getName()}"></h4>
+        </div>
+        <div class="row" style="margin: 3px">
+            <p th:text="${course.getDescription()}"></p>
+        </div>
+            <div class="row" style="margin: 5px" th:each="theme : ${course.getThemes()}">
+                <div>
+                    <h5 th:text="${theme.getName()}"></h5>
+                    <p th:if="${joinedFlag == true}" th:text="${theme.getLectureMaterial()}"></p>
+
+                </div>
+            </div>
+        <div class="row">
+            <form th:if="${!joinedFlag}" th:method="post" th:object="${course}" th:action="@{/courses/joinCourse}">
+                <input type="hidden" th:field="*{id}">
+                <button type="submit" th:text="Подписаться"></button>
+            </form>
+            <form th:if="${joinedFlag == true}" th:method="post" th:object="${course}" th:action="@{/courses/all}">
+                <input type="hidden" th:field="*{id}">
+                <button type="submit"> Пройти тест</button>
+            </form>
+        </div>
+        <!--        <div class="card bg-light mb-3" style="max-width: 100%;">-->
+        <!--            <div class="card-header" th:utext="${course.getAuthor()}">Автор:</div>-->
+        <!--            <div class="card-body" style="align-items: center">-->
+        <!--                <h5 class="card-title" th:text="${course.name}"></h5>-->
+        <!--                <p class="card-text" th:text="${course.description}"></p>-->
+
+
+        <!--                <ol class="list-group list-group-numbered">-->
+        <!--                    <li class="list-group-item" th:each="theme : ${course.getThemes()}" th:text="${theme.getName()}">-->
+        <!--                    </li>-->
+        <!--                    <li class="list-group-item">Второй элемент</li>-->
+        <!--                    <li class="list-group-item">Третий элемент</li>-->
+        <!--                    <li class="list-group-item">Четвертый элемент</li>-->
+        <!--                    <li class="list-group-item">И пятый</li>-->
+        <!--                </ol>-->
+
+        <!--                <table class="table card-text">-->
+        <!--                    <thead>-->
+        <!--                    <tr>-->
+        <!--                        <th scope="col">#</th>-->
+        <!--                        <th scope="col">Темы</th>-->
+        <!--                    </tr>-->
+        <!--                    </thead>-->
+        <!--                    <tbody>-->
+        <!--                    <tr th:each="theme, iter : ${course.themes}">-->
+        <!--                        <th scope="row" th:utext="${iter.index}+1">index</th>-->
+        <!--                        <td th:utext="${theme.name}">название</td>-->
+        <!--                    </tr>-->
+        <!--                </table>-->
 
     </div>
 </div>

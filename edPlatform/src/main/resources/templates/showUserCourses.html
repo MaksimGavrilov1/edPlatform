@@ -20,7 +20,7 @@
     <tr th:each="course, iter : ${userCourses}">
       <th scope="row" th:utext="${iter.index}+1">index</th>
       <td th:utext="${course.name}">имя</td>
-      <td><a th:href="@{/courses/{id}(id=${course.id})}" class="btn">Перейти</a></td>
+      <td><a th:href="@{/courses/owned/{id}(id=${course.id})}" class="btn">Перейти</a></td>
     </tr>
     </tbody>
   </table>
