@@ -32,8 +32,6 @@ public class TestQuestion {
 
     private String text;
 
-    private Integer rightAnswerAmount;
-
     @OneToMany(mappedBy = "testQuestion")
     @Cascade({CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
     @ToString.Exclude

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <div class="row justify-content-md-center" style="margin: 15px">
+            <h2>Результат теста</h2>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <h4 th:text="${result.getName()}"></h4>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <h4 th:text="'Количество баллов: ' + ${result.getMark()} + '/' + ${result.getQuestions().size()}"></h4>
+        </div>
+
+        <div class="container" th:each="question, iter : *{result.getQuestions()}">
+            <div class="row">
+                <h6 th:text="${(iter.index + 1) + '. ' + question.getTitle()}"></h6>
+            </div>
+            <ul>
+                <li style="list-style-type: none"
+                        th:each="answer, iterat : *{result.questions[__${iter.index}__].getAnswers()}">
+                    <div class="row">
+                        <span>&#8226;</span>
+                        <p th:text="${answer.getText()}"></p>
+                        <span th:if="${answer.getStatus().equals(chosenRight)}">&#9989;</span>
+                        <span th:if="${answer.getStatus().equals(chosenWrong)}">&#10060;</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <button type="submit" th:href="@{user/profile}" class="btn">Завершить просмотр</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

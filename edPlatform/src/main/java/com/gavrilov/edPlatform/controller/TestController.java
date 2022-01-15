@@ -1,10 +1,10 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.FormTest;
-import com.gavrilov.edPlatform.model.PlatformUser;
-import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
-import com.gavrilov.edPlatform.model.TestQuestion;
-import com.gavrilov.edPlatform.model.CourseTest;
+import com.gavrilov.edPlatform.dto.TestDto;
+import com.gavrilov.edPlatform.dto.TestResultDto;
+import com.gavrilov.edPlatform.model.*;
+import com.gavrilov.edPlatform.model.enumerator.AnswerStatus;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.QuestionStandardAnswerService;
 import com.gavrilov.edPlatform.service.TestQuestionService;
@@ -93,5 +93,30 @@ public class TestController {
                             BindingResult result){
         themeTestService.initSave(test);
         return "redirect:/courses/usersCourses";
+    }
+
+    @PostMapping("/render")
+    public String renderTest (@ModelAttribute("course") Course course,
+                              BindingResult result,
+                              Model model){
+        Course courseFromDB = courseService.findCourse(course.getId());
+        CourseTest test = courseFromDB.getTest();
+        TestDto testDto = new TestDto();
+        testDto = conversionService.convert(test, TestDto.class);
+        model.addAttribute("test", testDto);
+        model.addAttribute("courseName", courseFromDB.getName());
+        return "passTest";
+    }
+
+    @PostMapping("/passTest")
+    public String passTest (@ModelAttribute("test") TestDto test,
+                            BindingResult result,
+                            Model model){
+        //TestResultDto testResult = conversionService.convert(test, TestResultDto.class);
+        TestResultDto testResult = themeTestService.calculateResult(test);
+        model.addAttribute("result", testResult);
+        model.addAttribute("chosenRight", AnswerStatus.CHOSEN_RIGHT);
+        model.addAttribute("chosenWrong", AnswerStatus.CHOSEN_WRONG);
+        return "testResult";
     }
 }

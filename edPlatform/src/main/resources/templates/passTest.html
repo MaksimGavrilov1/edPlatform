@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="row justify-content-md-center" style="margin: 15px">
+        <h2>Тест по курсу: &nbsp;</h2>
+        <h2 th:text="${courseName}"></h2>
+    </div>
+    <form th:action="@{/test/passTest}" th:object="${test}" method="post">
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <input type="hidden" th:field="*{courseId}" th:value="${test.getCourseId()}"/>
+            <input type="hidden" th:field="*{name}" th:value="${test.getName()}"/>
+            <h4 th:text="${test.getName()}"></h4>
+        </div>
+
+        <div class="container" th:each="question, iter : *{questions}">
+            <div class="row">
+                <input type="hidden"
+                       th:field="*{questions[__${iter.index}__].title}"
+                       th:value="${question.title}"/>
+                <input type="hidden"
+                       th:field="*{questions[__${iter.index}__].rightAnswerAmount}"
+                       th:value="${question.rightAnswerAmount}"/>
+                <input type="hidden"
+                       th:field="*{questions[__${iter.index}__].id}"
+                       th:value="${question.getId()}"/>
+                <h6 th:text="${(iter.index + 1) + '. ' + question.title}"></h6>
+            </div>
+
+
+            <ul>
+                <li style="list-style-type: none;"
+                    th:each="answer, iterat : *{questions[__${iter.index}__].getAnswers()}">
+                    <input type="hidden"
+                           th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].id}"
+                           th:value="${answer.id}"/>
+                    <input type="hidden"
+                           th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].questionId}"
+                           th:value="${question.id}"/>
+                    <div th:if="${question.rightAnswerAmount > 1}">
+                        <input type="checkbox" th:id="' ' + ${iterat.index} + ' ' + ${iter.index} + 'checkbox'"
+                               th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}">
+                        <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index} + 'checkbox'"
+                               th:text="${answer.title}"></label>
+                    </div>
+                    <div th:if="${question.rightAnswerAmount == 1}">
+                        <input type="radio" th:id="' ' + ${iterat.index} + ' ' + ${iter.index}"
+                               th:name="' ' + ${iter.index}"
+                               th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}"
+                               th:value="true">
+                        <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index}"
+                               th:text="${answer.getTitle()}"></label>
+                    </div>
+
+
+                </li>
+            </ul>
+        </div>
+        <input type="submit">
+    </form>
+</div>
+</body>
+</html>

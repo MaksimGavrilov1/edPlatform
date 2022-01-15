@@ -1,7 +1,9 @@
 package com.gavrilov.edPlatform.configuration;
 
+import com.gavrilov.edPlatform.converter.CourseTestToTestDtoConverter;
 import com.gavrilov.edPlatform.converter.FormTestToThemeTestConverter;
 import com.gavrilov.edPlatform.converter.FormThemeToCourseThemeConverter;
+import com.gavrilov.edPlatform.converter.TestDtoToTestResultDto;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.TestQuestionService;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new FormThemeToCourseThemeConverter(courseService));
         registry.addConverter(new FormTestToThemeTestConverter(courseService));
+        registry.addConverter(new CourseTestToTestDtoConverter());
+        registry.addConverter(new TestDtoToTestResultDto(courseService));
     }
 }
