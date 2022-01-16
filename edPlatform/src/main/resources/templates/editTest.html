@@ -21,14 +21,15 @@
         <div class="container" th:each="question, iter : *{testQuestions}">
             <label th:for="${iter.index}">Содержание вопроса</label>
             <input type="hidden" th:field="*{testQuestions[__${iter.index}__].id}" th:value="${question.getId()}"/>
-            <input type="hidden" th:field="*{testQuestions[__${iter.index}__].courseTest}" th:value="${question.getCourseTest().getId()}">
+            <input type="hidden" th:field="*{testQuestions[__${iter.index}__].courseTest}"
+                   th:value="${question.getCourseTest().getId()}">
             <input type="text" class="form-control" th:id="${iter.index}"
                    th:field="*{testQuestions[__${iter.index}__].text}">
             <ul>
                 <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
             </ul>
             <ol>
-                <li th:each="answer, iterat : *{testQuestions[__${iter.index}__].questionStandardAnswers}">
+                <li th:each="answer, iterat : *{testQuestions[__${iter.index}__].getQuestionStandardAnswers()}">
                     <input type="hidden"
                            th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].id}"
                            th:value="${answer.id}"/>
@@ -36,13 +37,13 @@
                            th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].testQuestion}"
                            th:value="${question.id}"/>
                     <input type="checkbox"
-                           th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].isRight}"/>
+                           th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].right}"/>
                     <input type="text"
                            th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].text}">
                 </li>
             </ol>
         </div>
-        <input type="submit" >
+        <input type="submit">
     </form>
 </div>
 </body>

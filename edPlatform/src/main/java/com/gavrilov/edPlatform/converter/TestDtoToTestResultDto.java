@@ -1,16 +1,9 @@
 package com.gavrilov.edPlatform.converter;
 
 import com.gavrilov.edPlatform.dto.*;
-import com.gavrilov.edPlatform.model.CourseTest;
-import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
-import com.gavrilov.edPlatform.model.TestQuestion;
-import com.gavrilov.edPlatform.model.enumerator.AnswerStatus;
 import com.gavrilov.edPlatform.service.CourseService;
-import com.gavrilov.edPlatform.service.ThemeTestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class TestDtoToTestResultDto implements Converter<TestDto, TestResultDto> {

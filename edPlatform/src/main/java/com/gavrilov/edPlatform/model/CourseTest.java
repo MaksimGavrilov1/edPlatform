@@ -41,6 +41,7 @@ public class CourseTest {
 
     @OneToMany(mappedBy = "courseTest")
     @Cascade({CascadeType.PERSIST,CascadeType.MERGE, CascadeType.REMOVE})
+    @ToString.Exclude
     private List<TestQuestion> testQuestions;
 
 

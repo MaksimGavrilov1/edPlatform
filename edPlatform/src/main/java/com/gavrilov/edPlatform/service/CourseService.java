@@ -17,4 +17,6 @@ public interface CourseService {
     List<Course> findCoursesByAuthor(PlatformUser user);
 
     List<Course> findCoursesAwaitingConfirmation();
+
+
 }

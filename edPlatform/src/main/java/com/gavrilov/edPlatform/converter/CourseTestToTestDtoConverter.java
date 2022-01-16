@@ -8,9 +8,7 @@ import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
 import com.gavrilov.edPlatform.model.TestQuestion;
 import org.springframework.core.convert.converter.Converter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class CourseTestToTestDtoConverter implements Converter<CourseTest, TestDto> {
 
@@ -28,7 +26,7 @@ public class CourseTestToTestDtoConverter implements Converter<CourseTest, TestD
             QuestionDto questionDto = new QuestionDto();
             questionDto.setId(question.getId());
             questionDto.setTitle(question.getText());
-            List<QuestionStandardAnswer> questionAnswers = randomizeAnswerOrder(question.getQuestionStandardAnswers());
+            List<QuestionStandardAnswer> questionAnswers = question.getQuestionStandardAnswers();
 
             //variable for calculating the right answer amount at one question
             int rightAnswerAmount = 0;
@@ -42,7 +40,7 @@ public class CourseTestToTestDtoConverter implements Converter<CourseTest, TestD
                 answerDto.setQuestionId(question.getId());
 
                 //increment amount of right answers if this answer from source is correct
-                if (answer.getIsRight()) {
+                if (answer.getRight()) {
                     rightAnswerAmount++;
                 }
                 questionDto.getAnswers().add(answerDto);
@@ -51,39 +49,5 @@ public class CourseTestToTestDtoConverter implements Converter<CourseTest, TestD
             test.getQuestions().add(questionDto);
         }
         return test;
-    }
-
-    private List<QuestionStandardAnswer> randomizeAnswerOrder(List<QuestionStandardAnswer> answers) {
-
-        List<QuestionStandardAnswer> result = new ArrayList<>();
-        List<Integer> answerId = new ArrayList<>();
-        Random randomNumb = new Random();
-
-        for (int i = 0; i < answers.size(); i++) {
-            answerId.add(i);
-        }
-
-        for (int i = 0; i < answers.size(); i++) {
-
-            if (i == answers.size() - 1) {
-                int rand = randomNumb.nextInt(answerId.size());
-                int index = answerId.get(rand);
-                result.add(answers.get(index));
-                return result;
-            }
-
-            //pick random index for answerId array
-            int rand = randomNumb.nextInt(answerId.size());
-
-            //random id
-            int index = answerId.get(rand);
-
-            //delete used id
-            answerId.remove(rand);
-
-            //get answer by id
-            result.add(answers.get(index));
-        }
-        return result;
     }
 }

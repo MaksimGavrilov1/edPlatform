@@ -43,20 +43,20 @@
                     <input type="hidden"
                            th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].questionId}"
                            th:value="${question.id}"/>
-                    <div th:if="${question.rightAnswerAmount > 1}">
+                    <div >
                         <input type="checkbox" th:id="' ' + ${iterat.index} + ' ' + ${iter.index} + 'checkbox'"
                                th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}">
                         <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index} + 'checkbox'"
                                th:text="${answer.title}"></label>
                     </div>
-                    <div th:if="${question.rightAnswerAmount == 1}">
-                        <input type="radio" th:id="' ' + ${iterat.index} + ' ' + ${iter.index}"
-                               th:name="' ' + ${iter.index}"
-                               th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}"
-                               th:value="true">
-                        <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index}"
-                               th:text="${answer.getTitle()}"></label>
-                    </div>
+<!--                    <div th:if="${question.rightAnswerAmount == 1}" class="custom-control custom-radio custom-control-inline">-->
+<!--                        <input class="custom-control-input" type="radio"-->
+<!--                               th:id="' ' + ${iterat.index} + ' ' + ${iter.index}"-->
+<!--                               th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}"-->
+<!--                               th:value="true">-->
+<!--                        <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index}"-->
+<!--                               th:text="${answer.getTitle()}"></label>-->
+<!--                    </div>-->
 
 
                 </li>

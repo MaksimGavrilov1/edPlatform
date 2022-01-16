@@ -1,5 +1,6 @@
 package com.gavrilov.edPlatform.dto;
 
+import com.gavrilov.edPlatform.model.UserAnswer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ public class QuestionResultDto {
 
     private Long id;
     private String title;
-    private List<AnswerResultDto> answers = new ArrayList<>();
+    private List<UserAnswer> answers = new ArrayList<>();
     private Integer rightAnswerAmount;
 
 }

@@ -1,10 +1,9 @@
-package com.gavrilov.edPlatform.service.questionStandardAnswerServiceImpl;
+package com.gavrilov.edPlatform.service.standardAnswerServiceImpl;
 
 import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
 import com.gavrilov.edPlatform.repo.QuestionStandardAnswerRepository;
 import com.gavrilov.edPlatform.service.QuestionStandardAnswerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service

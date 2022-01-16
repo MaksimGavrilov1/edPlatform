@@ -44,12 +44,16 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Название курса</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Результат</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="course, iter : ${user.getJoinedCourses()}">
                     <th scope="row" th:utext="${iter.index}+1"></th>
                     <td th:utext="${course.name}">имя</td>
+                    <td>No status</td>
+                    <td><a th:href="@{/test/showResult/{id}(id=${course.id})}">Посмотреть результат</a></td>
                 </tr>
                 </tbody>
             </table>
