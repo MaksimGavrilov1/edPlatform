@@ -60,18 +60,23 @@
 <div th:fragment="content">
 <div class="container" style="max-width:330px;" >
     <form  class="form-signin" method="POST" th:action="@{/login}">
-        <h2 class="form-heading">Log in</h2>
+        <h2 class="form-heading">Авторизация</h2>
 
         <div class="form-group">
 
-            <input name="username" type="text" class="form-control" placeholder="Username"
+            <input name="username" type="text" class="form-control" placeholder="Логин"
                    autoFocus="true"/>
 
-            <input name="password" type="password" class="form-control" placeholder="Password"/>
+            <input name="password" type="password" class="form-control" placeholder="Пароль"/>
             <span class="has-error" th:text="${error}"></span>
+            <div class="row  justify-content-md-center" th:if="${param.error} and ${session}">
+                <div style="padding: 5px; margin: 10px;" class="alert alert-dismissible alert-danger error">
+                    <p style="margin: 0px;">Неверный логин или пароль</p>
+                </div>
+            </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
-            <h4 class="text-center"><a th:href="@{/register}">Create an account</a></h4>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+            <h4 class="text-center"><a th:href="@{/register}">Регистрация</a></h4>
         </div>
     </form>
 </div>

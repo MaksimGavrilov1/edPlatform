@@ -8,57 +8,121 @@
 </head>
 <body>
 <div th:fragment="content">
-    <div class="container" style="align-items: center; line-height: 2px;">
-        <div class="row justify-content-md-center">
-            <h1>
-                Ваш профиль
-            </h1>
-        </div>
-        <div class="row justify-content-md-center">
-            <h3>Никнейм: </h3>
-            <h3 th:text="${user.getUsername()}"></h3>
-        </div>
+<!--    <div class="container" style="align-items: center; line-height: 2px;">-->
+<!--        <div class="row justify-content-md-center">-->
+<!--            <h1>-->
+<!--                Ваш профиль-->
+<!--            </h1>-->
+<!--        </div>-->
+<!--        <div class="row justify-content-md-center">-->
+<!--            <h3>Никнейм: </h3>-->
+<!--            <h3 th:text="${user.getUsername()}"></h3>-->
+<!--        </div>-->
 
-        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
-            <h4 th:text="${user.getProfile().getSurname()}"></h4>
-        </div>
-        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
-            <h4 th:text="${user.getProfile().getName()}"></h4>
-        </div>
-        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
-            <h4 th:text="${user.getProfile().getMiddleName()}"></h4>
-        </div>
-        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >
-            <h4 th:text="${user.getProfile().getSelfDescription()}"></h4>
-        </div>
+<!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
+<!--            <h4 th:text="${user.getProfile().getSurname()}"></h4>-->
+<!--        </div>-->
+<!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
+<!--            <h4 th:text="${user.getProfile().getName()}"></h4>-->
+<!--        </div>-->
+<!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
+<!--            <h4 th:text="${user.getProfile().getMiddleName()}"></h4>-->
+<!--        </div>-->
+<!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
+<!--            <h4 th:text="${user.getProfile().getSelfDescription()}"></h4>-->
+<!--        </div>-->
 
-        <div class="row justify-content-md-center" style="margin: 10px;">
-            <a th:href="@{/user/editProfile}">Редактировать данные</a>
-        </div>
-        <div class="row">
-            <table class="table">
-                <caption th:if="${user.getJoinedCourses().size()}  == 0">На данный
-                    момент вы не является участником каких-либо курсов
-                </caption>
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Название курса</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Результат</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="course, iter : ${user.getJoinedCourses()}">
-                    <th scope="row" th:utext="${iter.index}+1"></th>
-                    <td th:utext="${course.name}">имя</td>
-                    <td>No status</td>
-                    <td><a th:href="@{/test/showResult/{id}(id=${course.id})}">Посмотреть результат</a></td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+<!--        <div class="row justify-content-md-center" style="margin: 10px;">-->
+<!--            <a th:href="@{/user/editProfile}">Редактировать данные</a>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <table class="table">-->
+<!--                <caption th:if="${user.getJoinedCourses().size()}  == 0">На данный-->
+<!--                    момент вы не является участником каких-либо курсов-->
+<!--                </caption>-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th scope="col">#</th>-->
+<!--                    <th scope="col">Название курса</th>-->
+<!--                    <th scope="col">Статус</th>-->
+<!--                    <th scope="col">Результат</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                <tr th:each="course, iter : ${user.getJoinedCourses()}">-->
+<!--                    <th scope="row" th:utext="${iter.index}+1"></th>-->
+<!--                    <td th:utext="${course.name}">имя</td>-->
+<!--                    <td>No status</td>-->
+<!--                    <td><a th:href="@{/test/showResult/{id}(id=${course.id})}">Посмотреть результат</a></td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+<!--        </div>-->
 
+<!--    </div>-->
+<!--</div>-->
+
+
+<div class="container bootdey">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <div class="portlet light">
+                    <div class="profile-usertitle-name"> Marcus Doe </div>
+                    <div class="profile-usertitle-job"> Developer </div>
+                </div>
+                <div class="profile-userbuttons">
+                    <button type="button" class="btn btn-info  btn-sm">Follow</button>
+                    <button type="button" class="btn btn-info  btn-sm">Message</button>
+                </div>
+                <div class="profile-usermenu">
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="#">
+                                 Ticket List </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="icon-settings"></i> Support Staff </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="icon-info"></i> Configurations </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="portlet light bordered">
+                <div class="portlet-title tabbable-line">
+                    <div class="caption caption-md">
+                        <i class="icon-globe theme-font hide"></i>
+                        <span class="caption-subject font-blue-madison bold uppercase">Ticket List</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Column heading</th>
+                            <th>Column heading</th>
+                            <th>Column heading</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="active">
+                            <th scope="row">1</th>
+                            <td>Column content</td>
+                            <td>Column content</td>
+                            <td>Column content</td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </body>

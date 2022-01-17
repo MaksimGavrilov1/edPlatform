@@ -4,87 +4,113 @@
       th:include="layout :: page">
 <head>
     <meta charset="UTF-8">
-    <title>Create an account</title>>
-    <style>
-        body {
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #aaa;
-        }
-
-        .container {
-            max-width: 330px;
-            padding: 15px;
-            margin: 0 auto;
-        }
-
-        .form-signin .form-signin-heading,
-        .form-signin .checkbox {
-            margin-bottom: 10px;
-        }
-
-        .form-signin .checkbox {
-            font-weight: normal;
-        }
-
-        .form-signin .form-control {
-            position: relative;
-            height: auto;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .form-signin .form-control:focus {
-            z-index: 2;
-        }
-
-        .form-signin input {
-            margin-top: 10px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .form-signin button {
-            margin-top: 10px;
-        }
-
-        .has-error {
-            color: red
-        }
-    </style>
+    <title>Создать аккаунт</title>
 </head>
 <body>
 <div th:fragment="content">
-<div class="container" style="max-width:330px;" >
+    <div class="container" style="margin: 20px;">
 
-    <form method="POST" class="form-signin" th:object="${user}" th:action="@{/register}">
-        <h2 class="form-signin-heading">Create your account</h2>
-        <div class="form-group">
-            <input type="text" th:field="*{username}" class="form-control" placeholder="Username" autofocus="true">
-            <p class="bd-warning" th:if="${#fields.hasErrors('username')}" th:classerror="has-error"
-               th:errors="*{username}"></p>
-        </div>
+        <!--        <form method="POST" class="form-signin" th:object="${user}" th:action="@{/register}">-->
+        <!--            <h2 class="form-signin-heading">Создайте ваш аккаунт</h2>-->
+        <!--            <div class="form-group">-->
+        <!--                <label for="login">Логин</label>-->
+        <!--                <input type="text" id="login" th:field="*{username}" class="form-control" placeholder="Логин">-->
+        <!--                <p class="bd-warning" th:if="${#fields.hasErrors('username')}" th:classerror="has-error"-->
+        <!--                   th:errors="*{username}"></p>-->
 
-        <div class="form-group">
-            <input type="password" th:field="*{password}" class="form-control" placeholder="Password">
-            <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-        </div>
+        <!--                <label for="password">Пароль</label>-->
+        <!--                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Password">-->
 
-        <div class="form-group">
-            <input type="text" th:field="*{profile.name}" class="form-control" placeholder="name">
-        </div>
+        <!--                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>-->
+        <!--            </div>-->
 
-        <div class="form-group">
-            <input type="text" th:field="*{profile.surname}" class="form-control" placeholder="surname">
-        </div>
+        <!--            <div class="form-group">-->
+        <!--                <input type="text" th:field="*{profile.name}" class="form-control" placeholder="Имя">-->
+        <!--            </div>-->
+
+        <!--            <div class="form-group">-->
+        <!--                <input type="text" th:field="*{profile.surname}" class="form-control" placeholder="Фамилия">-->
+        <!--            </div>-->
 
 
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
-    </form>
+        <!--            <button class="btn btn-lg btn-primary btn-block" type="submit">Готово</button>-->
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <header class="card-header">
+                        <a th:href="@{/login}" class="float-right btn btn-outline-primary mt-1">Авторизация</a>
+                        <h4 class="card-title mt-2">Регистрация</h4>
+                    </header>
+                    <article class="card-body">
+                        <form method="POST" th:object="${userDto}" th:action="@{/register}">
+                            <div class="form-group">
+                                <label>Ваш логин</label>
+                                <input type="text" th:field="*{username}" class="form-control" placeholder="Логин">
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('username')}" th:text="${err}"></li>
+                                </ul>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label>Ваше имя </label>
+                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Имя">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+                                    </ul>
+                                </div> <!-- form-group end.// -->
+                                <div class="col form-group">
+                                    <label>Ваша фамилия</label>
+                                    <input type="text" th:field="*{surname}" class="form-control" placeholder="Фамилия">
+                                    <ul>
+                                        <li th:each="err : ${#fields.errors('surname')}" th:text="${err}"></li>
+                                    </ul>
+                                </div> <!-- form-group end.// -->
+                            </div> <!-- form-row end.// -->
+                            <div class="form-group">
+                                <label>Ваше отчество</label>
+                                <input type="text" th:field="*{middleName}" class="form-control"
+                                       placeholder="Введите отчество">
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('middleName')}" th:text="${err}"></li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <label>Немного о себе</label>
+                                <textarea th:field="*{selfDescription}" class="form-control"></textarea>
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('selfDescription')}" th:text="${err}"></li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <label>Ваш пароль</label>
+                                <input class="form-control" type="password" th:field="*{password}">
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('password')}" th:text="${err}"></li>
+                                </ul>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group">
+                                <label>Подтверждение пароля</label>
+                                <input class="form-control" type="password" th:field="*{confirmPassword}">
+                                <ul>
+                                    <li th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}"></li>
+                                </ul>
+                            </div> <!-- form-group end.// -->
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block">Готово</button>
+                            </div> <!-- form-group// -->
+                        </form>
+                    </article> <!-- card-body end .// -->
+                    <div class="border-top card-body text-center">Уже есть аккаунт?<a href="">Авторизируйтесь</a></div>
+                </div> <!-- card.// -->
+            </div> <!-- col.//-->
+
+        </div> <!-- row.//-->
+
+
+    </div>
+    <!--container end.//-->
 </div>
-</div>
+<!--</div>-->
 </body>
 </html>

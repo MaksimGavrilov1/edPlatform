@@ -4,7 +4,9 @@ package com.gavrilov.edPlatform.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         //configure url authorization
         http
                 .authorizeRequests()
-                .antMatchers("/register", "/courses/all")
+                .antMatchers("/register", "/courses/all", "/css/*")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -80,6 +82,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder);
     }
-
-
 }
