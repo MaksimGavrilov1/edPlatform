@@ -29,4 +29,7 @@ public class UserAnswer {
     @JoinColumn(name = "platform_user_id", referencedColumnName = "id")
     private PlatformUser user;
 
+    @ManyToOne
+    @JoinColumn(name = "attempt_id", referencedColumnName = "id")
+    private Attempt attempt;
 }

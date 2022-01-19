@@ -1,5 +1,6 @@
 package com.gavrilov.edPlatform.service.userAnswerServiceImpl;
 
+import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.UserAnswer;
 import com.gavrilov.edPlatform.repo.UserAnswerRepository;
@@ -36,5 +37,10 @@ public class UserAnswerServiceImpl implements UserAnswerService {
         return answers.stream()
                 .filter(x-> x.getQuestion().getCourseTest().getCourse().getId().equals(courseId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserAnswer> findByAttempt(Attempt attempt) {
+        return userAnswerRepository.findByAttempt(attempt);
     }
 }

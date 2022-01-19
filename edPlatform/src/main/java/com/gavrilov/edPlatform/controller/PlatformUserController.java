@@ -6,6 +6,7 @@ import com.gavrilov.edPlatform.model.PlatformUserProfile;
 import com.gavrilov.edPlatform.dto.UserRoleDto;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.UserRepository;
+import com.gavrilov.edPlatform.service.AttemptService;
 import com.gavrilov.edPlatform.service.ModeratorRoleRequestService;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,12 @@ public class PlatformUserController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ModeratorRoleRequestService roleRequestService;
+    private final AttemptService attemptService;
 
     @GetMapping("/profile")
     public String showUserProfile(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("user", user);
+        model.addAttribute("attempts", attemptService.findByUser(user));
         return "showUserProfile";
     }
 

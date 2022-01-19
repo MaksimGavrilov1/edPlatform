@@ -44,6 +44,7 @@ public class CourseTest {
     @ToString.Exclude
     private List<TestQuestion> testQuestions;
 
+    private Integer amountOfAttempts;
 
     @Enumerated(EnumType.STRING)
     private RateMethod method;

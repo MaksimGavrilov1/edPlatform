@@ -15,5 +15,6 @@ public class QuestionResultDto {
     private String title;
     private List<UserAnswer> answers = new ArrayList<>();
     private Integer rightAnswerAmount;
+    private Boolean addsAPoint = false;
 
 }

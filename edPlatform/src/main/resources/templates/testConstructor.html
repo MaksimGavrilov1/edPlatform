@@ -30,6 +30,15 @@
                     <li th:each="err : ${#fields.errors('questionAmount')}" th:text="${err}"></li>
                 </ul>
             </div>
+            <div class="form-group">
+                <label for="amountOfAttempts">Количество попыток для прохождения теста</label>
+                <input type="number" max="5" min="1" class="form-control" id="amountOfAttempts" th:field="*{amountOfAttempts}" >
+                Количество вопросов в тесте
+                </input>
+                <ul>
+                    <li th:each="err : ${#fields.errors('amountOfAttempts')}" th:text="${err}"></li>
+                </ul>
+            </div>
 
             <div class="form-group">
                 <label for="course">Выберите курс, для которого будет создан тест</label>

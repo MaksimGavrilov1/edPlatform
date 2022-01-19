@@ -11,5 +11,5 @@ public class FormTest {
     private String name;
     private Long courseId;
     private Integer questionAmount;
-
+    private Integer amountOfAttempts;
 }

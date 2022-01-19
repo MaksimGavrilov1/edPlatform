@@ -23,6 +23,6 @@ public class ValidationConstants {
     public static String USER_PASSWORD_MISMATCH = "Пароли должны совпадать";
 
     public static String ENG_AND_NUMBERS_PATTERN = "^[a-zA-Z0-9]+$";
-    public static String RU_AND_ENG_PATTERN = "^[а-яА-ЯёЁa-zA-Z]+$";
+    public static String RU_AND_ENG_PATTERN = "^[а-яА-ЯёЁa-zA-Z ]+$";
 
 }

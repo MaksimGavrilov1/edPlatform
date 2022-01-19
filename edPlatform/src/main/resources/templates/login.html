@@ -58,28 +58,74 @@
 </head>
 <body>
 <div th:fragment="content">
-<div class="container" style="max-width:330px;" >
-    <form  class="form-signin" method="POST" th:action="@{/login}">
-        <h2 class="form-heading">Авторизация</h2>
+    <!--<div class="container" style="max-width:330px;" >-->
+    <!--    <form  class="form-signin" method="POST" th:action="@{/login}">-->
+    <!--        <h2 class="form-heading">Авторизация</h2>-->
 
-        <div class="form-group">
+    <!--        <div class="form-group">-->
 
-            <input name="username" type="text" class="form-control" placeholder="Логин"
-                   autoFocus="true"/>
+    <!--            <input name="username" type="text" class="form-control" placeholder="Логин"-->
+    <!--                   autoFocus="true"/>-->
 
-            <input name="password" type="password" class="form-control" placeholder="Пароль"/>
-            <span class="has-error" th:text="${error}"></span>
-            <div class="row  justify-content-md-center" th:if="${param.error} and ${session}">
-                <div style="padding: 5px; margin: 10px;" class="alert alert-dismissible alert-danger error">
-                    <p style="margin: 0px;">Неверный логин или пароль</p>
+    <!--            <input name="password" type="password" class="form-control" placeholder="Пароль"/>-->
+    <!--            <span class="has-error" th:text="${error}"></span>-->
+    <!--            <div class="row  justify-content-md-center" th:if="${param.error} and ${session}">-->
+    <!--                <div style="padding: 5px; margin: 10px;" class="alert alert-dismissible alert-danger error">-->
+    <!--                    <p style="margin: 0px;">Неверный логин или пароль</p>-->
+    <!--                </div>-->
+    <!--            </div>-->
+
+    <!--            <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>-->
+    <!--            <h4 class="text-center"><a th:href="@{/register}">Регистрация</a></h4>-->
+    <!--        </div>-->
+    <!--    </form>-->
+    <!--</div>-->
+
+    <div class="container" style="margin-top: 50px">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header"><h3>Авторизация</h3></div>
+                    <div class="card-body">
+                        <form th:action="@{/login}" method="post">
+                            <div class="form-group row">
+                                <label for="username" class="col-md-4 col-form-label text-md-right">Логин</label>
+                                <div class="col-md-6">
+                                    <input name="username" type="text" id="username" class="form-control" required
+                                           autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right">Пароль</label>
+                                <div class="col-md-6">
+                                    <input type="password" id="password" class="form-control" name="password" required>
+                                </div>
+                            </div>
+
+                            <div class="row  justify-content-md-center" th:if="${param.error} and ${session}">
+                                <div style="padding: 5px; margin: 10px;"
+                                     class="alert alert-dismissible alert-danger error">
+                                    <p style="margin: 0px;">Неверный логин или пароль</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Войти
+                                </button>
+                                <a th:href="@{/register}" class="btn btn-link">
+                                    Регистрация
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
-            <h4 class="text-center"><a th:href="@{/register}">Регистрация</a></h4>
         </div>
-    </form>
+    </div>
 </div>
+
 </div>
 </body>
 </html>

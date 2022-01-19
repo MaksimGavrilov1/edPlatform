@@ -61,13 +61,15 @@ public class UserDtoValidator implements Validator {
             }
         }
         if (!errors.hasFieldErrors("middleName")){
-            if (isNotValidString(user.getMiddleName(), ValidationConstants.RU_AND_ENG_PATTERN)){
-                errors.rejectValue("middleName", "ForbiddenSymbol.platformUser.middleName", ValidationConstants.FORBIDDEN_SYMBOL_USER_INITIALS);
+            if (!user.getMiddleName().isBlank()){
+                if (isNotValidString(user.getMiddleName(), ValidationConstants.RU_AND_ENG_PATTERN)){
+                    errors.rejectValue("middleName", "ForbiddenSymbol.platformUser.middleName", ValidationConstants.FORBIDDEN_SYMBOL_USER_INITIALS);
+                }
             }
+
         }
         if (!errors.hasFieldErrors("selfDescription")){
-            if (isNotValidString(user.getSelfDescription(), ValidationConstants.RU_AND_ENG_PATTERN)){
-                errors.rejectValue("selfDescription", "ForbiddenSymbol.platformUser.selfDescription", ValidationConstants.FORBIDDEN_SYMBOL_USER_INITIALS);
+            if (!user.getSelfDescription().isBlank()){
             }
         }
         if (!errors.hasFieldErrors("password") && !errors.hasFieldErrors("confirmPassword")){

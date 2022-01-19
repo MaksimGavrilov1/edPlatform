@@ -33,10 +33,11 @@
                 <input type="hidden" th:field="*{id}" th:value="${id}">
                 <button type="submit" th:text="Подписаться"></button>
             </form>
-            <form th:if="${joinedFlag == true}" th:method="post" th:object="${course}" th:action="@{/test/render}">
+            <form th:if="${joinedFlag == true} and ${isAbleToPass}" th:method="post" th:object="${course}" th:action="@{/test/render}">
                 <input type="hidden" th:field="*{id}">
                 <button type="submit"> Пройти тест</button>
             </form>
+            <p th:if="${!isAbleToPass}">У вас закончились попытки</p>
         </div>
         <!--        <div class="card bg-light mb-3" style="max-width: 100%;">-->
         <!--            <div class="card-header" th:utext="${course.getAuthor()}">Автор:</div>-->

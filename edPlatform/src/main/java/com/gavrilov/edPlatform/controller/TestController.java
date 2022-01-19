@@ -29,6 +29,7 @@ public class TestController {
     private final QuestionStandardAnswerService questionStandardAnswerService;
     private final TestQuestionService testQuestionService;
     private final UserAnswerService userAnswerService;
+    private final AttemptService attemptService;
 
     @GetMapping("/constructor")
     public String testConstructor(Model model, @AuthenticationPrincipal PlatformUser user) {
@@ -118,13 +119,14 @@ public class TestController {
         return "testResult";
     }
 
-    @GetMapping("/showResult/{courseId}")
-    public String showTestResult(@PathVariable("courseId") Long courseId,
+    @GetMapping("/showResult/{attemptId}")
+    public String showTestResult(@PathVariable("attemptId") Long attemptId,
                                  Model model,
                                  @AuthenticationPrincipal PlatformUser user) {
 
-        List<UserAnswer> answers = userAnswerService.findByUserAndCourse(user,courseId);
-        model.addAttribute("result", themeTestService.formResult(answers, courseId));
+        Attempt attempt = attemptService.findById(attemptId);
+        List<UserAnswer> answers = userAnswerService.findByAttempt(attempt);
+        model.addAttribute("result", themeTestService.formResult(answers, attemptId));
         model.addAttribute("chosenRight", AnswerStatus.CHOSEN_RIGHT);
         model.addAttribute("chosenWrong", AnswerStatus.CHOSEN_WRONG);
         return "testResult";

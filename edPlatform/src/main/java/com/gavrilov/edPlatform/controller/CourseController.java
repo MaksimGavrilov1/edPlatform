@@ -1,10 +1,12 @@
 package com.gavrilov.edPlatform.controller;
 
+import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.CourseThemeRepository;
+import com.gavrilov.edPlatform.service.AttemptService;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.UserService;
 import com.gavrilov.edPlatform.validator.CourseThemeValidator;
@@ -16,6 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/courses")
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class CourseController {
     private final CourseValidator validator;
     private final CourseThemeValidator courseThemeValidator;
     private final CourseThemeRepository courseThemeRepository;
+    private final AttemptService attemptService;
 
     @GetMapping("/all")
     public String showCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
@@ -39,6 +45,16 @@ public class CourseController {
     public String viewCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
         Course course = courseService.findCourse(id);
         Boolean joinedFlag = user.getJoinedCourses().contains(course);
+        List<Attempt> userAttempts = attemptService.findByUser(user);
+        int userAttemptsAmount = 0;
+        if (userAttempts != null){
+            userAttemptsAmount = userAttempts.size();
+        }
+        if (course.getTest().getAmountOfAttempts() > userAttemptsAmount) {
+            model.addAttribute("isAbleToPass", true);
+        } else if (course.getTest().getAmountOfAttempts().equals(userAttemptsAmount)){
+            model.addAttribute("isAbleToPass", false);
+        }
         model.addAttribute("course", course);
         model.addAttribute("joinedFlag", joinedFlag);
         return "viewCourse";

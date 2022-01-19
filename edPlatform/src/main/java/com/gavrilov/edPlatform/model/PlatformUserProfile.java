@@ -33,7 +33,7 @@ public class PlatformUserProfile {
     private String selfDescription;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "platform_user_id", referencedColumnName = "id")
     private PlatformUser platformUser;
 

@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -23,6 +25,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     private final CourseService courseService;
     private final UserAnswerService userAnswerService;
     private final ConversionService conversionService;
+    private final AttemptService attemptService;
 
     @Override
     public CourseTest initSave(CourseTest themeTest) {
@@ -36,7 +39,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
 
     @Override
     public CourseTest randomizeAnswers(CourseTest test) {
-        for (TestQuestion question : test.getTestQuestions()){
+        for (TestQuestion question : test.getTestQuestions()) {
             List<QuestionStandardAnswer> randomAnswers = randomizeAnswerOrder(question.getQuestionStandardAnswers());
             question.setQuestionStandardAnswers(randomAnswers);
         }
@@ -80,8 +83,18 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     @Override
     public TestResultDto calculateResult(TestDto source, PlatformUser user) {
         CourseTest testFromDB = courseService.findCourse(source.getCourseId()).getTest();
+
+        //form a result object that will render at view
         TestResultDto result = new TestResultDto();
         result.setName(source.getName());
+
+        //create attempt
+        Attempt attempt = new Attempt();
+        attempt.setCourseTest(testFromDB);
+        attempt.setUser(user);
+        attempt.setTime(new Timestamp(new Date().getTime()));
+        Attempt attemptFromDB =  attemptService.save(attempt);
+
         List<TestQuestion> questionsFromDB = testFromDB.getTestQuestions();
         List<QuestionDto> questionsFromSource = source.getQuestions();
         int mark = 0;
@@ -96,6 +109,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
             questionResult.setRightAnswerAmount(questionFromSource.getRightAnswerAmount());
             result.getQuestions().add(questionResult);
             Integer rightAnswerIter = 0;
+            Integer wrongAnswerIter = 0;
 
             for (QuestionStandardAnswer answerFromDB : questionFromDB.getQuestionStandardAnswers()) {
 
@@ -111,41 +125,47 @@ public class ThemeTestServiceImpl implements ThemeTestService {
                         if (answerFromDB.getRight() && answerFromSource.getChecked()) {
                             answerResult.setStatus(AnswerStatus.CHOSEN_RIGHT);
                             answerResult.setUser(user);
+                            answerResult.setAttempt(attemptFromDB);
                             userAnswerService.save(answerResult);
                             rightAnswerIter++;
                         }
                         if (!answerFromDB.getRight() && answerFromSource.getChecked()) {
                             answerResult.setStatus(AnswerStatus.CHOSEN_WRONG);
                             answerResult.setUser(user);
+                            answerResult.setAttempt(attemptFromDB);
                             userAnswerService.save(answerResult);
-                            answerResult.setUser(user);
+                            wrongAnswerIter++;
                         }
                     }
                 }
             }
 
-            if (rightAnswerIter.equals(questionFromSource.getRightAnswerAmount())) {
+            if (rightAnswerIter.equals(questionFromSource.getRightAnswerAmount()) && wrongAnswerIter.equals(0)) {
                 mark++;
+                questionResult.setAddsAPoint(true);
             }
         }
         result.setMark(mark);
+        attemptFromDB.setMark(mark);
+        attemptService.save(attemptFromDB);
         return result;
     }
 
-    public TestResultDto formResult(List<UserAnswer> answers, Long courseId) {
-        Course course = courseService.findCourse(courseId);
-        CourseTest test = course.getTest();
+    public TestResultDto formResult(List<UserAnswer> answers, Long attemptId) {
+        Attempt attempt = attemptService.findById(attemptId);
+        CourseTest test = attempt.getCourseTest();
 
-        //variable for right answer amount
-        TestDto testDto = conversionService.convert(test,TestDto.class);
+        //variable with right answer amount
+        TestDto testDto = conversionService.convert(test, TestDto.class);
 
         TestResultDto result = new TestResultDto();
         result.setName(test.getName());
-        int mark = 0;
-        Integer rightAnswerIter = 0;
-        boolean skipStandardAnswerFlag = false;
+        result.setMark(attempt.getMark());
+        int rightAnswerIter = 0;
+        int wrongAnswerIter = 0;
+        boolean skipStandardAnswerFlag;
 
-        for (int i = 0; i<test.getTestQuestions().size();i++) {
+        for (int i = 0; i < test.getTestQuestions().size(); i++) {
 
             TestQuestion questionFromDB = test.getTestQuestions().get(i);
             QuestionDto questionWithRightAnswerAmount = testDto.getQuestions().get(i);
@@ -163,14 +183,16 @@ public class ThemeTestServiceImpl implements ThemeTestService {
                 for (UserAnswer userAnswer : answers) {
 
                     //comparing standard answer with user answer by text and question they belong
-                    if ( (questionStandardAnswer.getText().equals(userAnswer.getText()))
-                            && (questionStandardAnswer.getTestQuestion().equals(userAnswer.getQuestion())) ) {
+                    if ((questionStandardAnswer.getText().equals(userAnswer.getText()))
+                            && (questionStandardAnswer.getTestQuestion().equals(userAnswer.getQuestion()))) {
                         //collect only user chosen answer
                         questionDto.getAnswers().add(userAnswer);
                         skipStandardAnswerFlag = true;
 
-                        if (userAnswer.getStatus().equals(AnswerStatus.CHOSEN_RIGHT)){
+                        if (userAnswer.getStatus().equals(AnswerStatus.CHOSEN_RIGHT)) {
                             rightAnswerIter++;
+                        } else if (userAnswer.getStatus().equals(AnswerStatus.CHOSEN_WRONG)) {
+                            wrongAnswerIter++;
                         }
                     }
                 }
@@ -183,12 +205,13 @@ public class ThemeTestServiceImpl implements ThemeTestService {
                     questionDto.getAnswers().add(answer);
                 }
             }
-            if (questionWithRightAnswerAmount.getRightAnswerAmount().equals(rightAnswerIter)){
-                mark++;
+            if (questionWithRightAnswerAmount.getRightAnswerAmount().equals(rightAnswerIter) && wrongAnswerIter == 0) {
                 rightAnswerIter = 0;
+                questionDto.setAddsAPoint(true);
             }
+            wrongAnswerIter = 0;
         }
-        result.setMark(mark);
+
         return result;
     }
 

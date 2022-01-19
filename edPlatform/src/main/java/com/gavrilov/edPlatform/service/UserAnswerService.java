@@ -1,5 +1,6 @@
 package com.gavrilov.edPlatform.service;
 
+import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.UserAnswer;
 
@@ -13,4 +14,5 @@ public interface UserAnswerService {
 
     List<UserAnswer> findByUserAndCourse(PlatformUser user, Long courseId);
 
+    List<UserAnswer> findByAttempt(Attempt attempt);
 }

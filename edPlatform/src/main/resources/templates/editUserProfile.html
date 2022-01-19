@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
       th:include="layout :: page">
 <head>
     <meta charset="UTF-8">
@@ -8,38 +8,44 @@
 </head>
 <body>
 <div th:fragment="content">
-    <div class="container justify-content-md-center">
-        <form th:action="@{/user/editProfile}" th:method="POST" th:object="${userProfile}" >
-            <div class="form-group">
-                <label for="name">Имя</label>
-                <input type="text" class="form-control" id="name" th:field="*{name}" >
-                <ul>
-                    <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
-                </ul>
-            </div>
-            <div class="form-group">
-                <label for="surname">Фамилия</label>
-                <input type="text" class="form-control" id="surname" th:field="*{surname}" >
-                <ul>
-                    <li th:each="err : ${#fields.errors('surname')}" th:text="${err}"></li>
-                </ul>
-            </div>
-            <div class="form-group">
-                <label for="middleName">Отчество</label>
-                <input type="text" class="form-control" id="middleName" th:field="*{middleName}" >
-                <ul>
-                    <li th:each="err : ${#fields.errors('middleName')}" th:text="${err}"></li>
-                </ul>
-            </div>
-            <div class="form-group">
-                <label for="selfDescription">Немного о себе</label>
-                <textarea class="form-control" id="selfDescription" th:field="*{selfDescription}" ></textarea>
-                <ul>
-                    <li th:each="err : ${#fields.errors('selfDescription')}" th:text="${err}"></li>
-                </ul>
-            </div>
-            <input type="submit">
-        </form>
+    <div class="container ">
+        <div class="row justify-content-md-center">
+            <form th:action="@{/user/editProfile}" th:method="POST" th:object="${userProfile}" style="padding: 15px;
+       background: white; margin: 10px; border: 1px; border-radius: 5px;">
+                <h3 style="margin-bottom: 30px; margin-top: 40px;">Редактирование данных профиля</h3>
+                <div class="form-group">
+                    <label for="name">Имя</label>
+                    <input type="text" class="form-control" id="name" th:field="*{name}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <label for="surname">Фамилия</label>
+                    <input type="text" class="form-control" id="surname" th:field="*{surname}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('surname')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <label for="middleName">Отчество</label>
+                    <input type="text" class="form-control" id="middleName" th:field="*{middleName}">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('middleName')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <label for="selfDescription">Немного о себе</label>
+                    <textarea class="form-control" id="selfDescription" th:field="*{selfDescription}"></textarea>
+                    <ul>
+                        <li th:each="err : ${#fields.errors('selfDescription')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                <div class="row justify-content-md-center">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 </body>
