@@ -14,22 +14,16 @@
         <div class="form-group">
             <label for="name">Название теста</label>
             <textarea class="form-control" id="name" th:field="*{name}"></textarea>
-            <ul>
-                <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
-            </ul>
         </div>
         <div class="container" th:each="question, iter : *{testQuestions}">
-            <label th:for="${iter.index}">Содержание вопроса</label>
+            <label th:for="${iter.index}" th:text="'Содержание вопроса №' + ${iter.index+1} + ':'"></label>
             <input type="hidden" th:field="*{testQuestions[__${iter.index}__].id}" th:value="${question.getId()}"/>
             <input type="hidden" th:field="*{testQuestions[__${iter.index}__].courseTest}"
                    th:value="${question.getCourseTest().getId()}">
             <input type="text" class="form-control" th:id="${iter.index}"
                    th:field="*{testQuestions[__${iter.index}__].text}">
-            <ul>
-                <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
-            </ul>
-            <ol>
-                <li th:each="answer, iterat : *{testQuestions[__${iter.index}__].getQuestionStandardAnswers()}">
+            <ol style="margin: 4px;">
+                <li th:each="answer, iterat : *{testQuestions[__${iter.index}__].getQuestionStandardAnswers()}" style="margin: 2px;">
                     <input type="hidden"
                            th:field="*{testQuestions[__${iter.index}__].questionStandardAnswers[__${iterat.index}__].id}"
                            th:value="${answer.id}"/>
@@ -43,7 +37,18 @@
                 </li>
             </ol>
         </div>
-        <input type="submit">
+        <div class="row">
+            <div style="padding: 10px; margin: 10px;"
+                 class="alert alert-dismissible alert-danger error">
+                <ul style="list-style-type: none; padding: 0">
+                    <li style="margin: 0;" th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <button class="btn btn-primary" type="submit">Сохранить</button>
+        </div>
+
     </form>
 </div>
 </body>

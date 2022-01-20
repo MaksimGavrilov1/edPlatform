@@ -20,5 +20,5 @@ public interface ThemeTestService {
 
     TestResultDto calculateResult(TestDto source, PlatformUser user);
 
-    TestResultDto formResult(List<UserAnswer> ansers, Long courseId);
+    TestResultDto formResult(List<UserAnswer> answers, Long courseId);
 }

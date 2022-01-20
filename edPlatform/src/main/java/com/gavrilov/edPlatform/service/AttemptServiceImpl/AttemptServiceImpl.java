@@ -1,6 +1,7 @@
 package com.gavrilov.edPlatform.service.AttemptServiceImpl;
 
 import com.gavrilov.edPlatform.model.Attempt;
+import com.gavrilov.edPlatform.model.CourseTest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.repo.AttemptRepository;
 import com.gavrilov.edPlatform.service.AttemptService;
@@ -28,5 +29,10 @@ public class AttemptServiceImpl implements AttemptService {
     @Override
     public List<Attempt> findByUser(PlatformUser user) {
         return attemptRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Attempt> findByUserAndTest(PlatformUser user, CourseTest test) {
+        return attemptRepository.findByCourseTestAndUser(test, user);
     }
 }

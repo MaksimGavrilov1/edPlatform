@@ -16,8 +16,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd";>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item" sec:authorize="isAuthenticated()">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
                 <a  class="nav-link" th:href="@{/courses/all}">На главную</a>
             </li>
             <li class="nav-item navbar-right" sec:authorize="isAuthenticated()">
@@ -48,6 +48,24 @@
                 <a class="nav-link" th:href="@{/user/newModerators}">Заявки на модератора</a>
             </li>
         </ul>
+        <ul class="navbar-nav">
+            <li  class="nav-item">
+                <a class="nav-link" th:replace="/user :: main"></a>
+            </li>
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <a class="nav-link" th:href="@{/login}">Авторизация</a>
+            </li>
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <a class="nav-link" th:href="@{/register}">Регистрация</a>
+            </li>
+
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" th:method="get" class="form-inline my-2 my-lg-0">
+                    <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
+                </form>
+            </li>
+        </ul>
+
     </div>
 </nav>
 

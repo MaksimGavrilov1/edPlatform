@@ -1,6 +1,6 @@
 package com.gavrilov.edPlatform.validator;
 
-import com.gavrilov.edPlatform.constant.ValidationConstants;
+import com.gavrilov.edPlatform.constant.ValidationUtils;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.repo.CourseRepository;
@@ -9,11 +9,9 @@ import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -33,8 +31,8 @@ public class CourseValidator implements Validator {
         Course course = (Course) target;
 
         // Check the fields of course.
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "", ValidationConstants.NOT_EMPTY_COURSE_NAME);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "", ValidationConstants.NOT_EMPTY_COURSE_DESCRIPTION);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "", ValidationUtils.NOT_EMPTY_COURSE_NAME);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "", ValidationUtils.NOT_EMPTY_COURSE_DESCRIPTION);
 
         //validate if all fields are not empty and check if author have the same course
         if (!errors.hasErrors()) {
@@ -44,7 +42,7 @@ public class CourseValidator implements Validator {
 
             if (authorCourses.stream().anyMatch((x) -> x.getName().equals(course.getName()))) {
 
-                errors.rejectValue("name", "", ValidationConstants.DUPLICATE_AUTHOR_COURSE);
+                errors.rejectValue("name", "", ValidationUtils.DUPLICATE_AUTHOR_COURSE);
             }
 
 

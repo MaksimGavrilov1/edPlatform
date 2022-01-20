@@ -40,15 +40,15 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     @Override
     public CourseTest randomizeAnswers(CourseTest test) {
         for (TestQuestion question : test.getTestQuestions()) {
-            List<QuestionStandardAnswer> randomAnswers = randomizeAnswerOrder(question.getQuestionStandardAnswers());
+            List<QuestionStandardAnswer> randomAnswers = this.<QuestionStandardAnswer>randomizeAnswerOrder(question.getQuestionStandardAnswers());
             question.setQuestionStandardAnswers(randomAnswers);
         }
         return test;
     }
 
-    private List<QuestionStandardAnswer> randomizeAnswerOrder(List<QuestionStandardAnswer> answers) {
+    private <T> List<T> randomizeAnswerOrder(List<T> answers) {
 
-        List<QuestionStandardAnswer> result = new ArrayList<>();
+        List<T> result = new ArrayList<>();
         List<Integer> answerId = new ArrayList<>();
         Random randomNumb = new Random();
 
@@ -83,7 +83,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     @Override
     public TestResultDto calculateResult(TestDto source, PlatformUser user) {
         CourseTest testFromDB = courseService.findCourse(source.getCourseId()).getTest();
-
+        testFromDB = randomizeAnswers(testFromDB);
         //form a result object that will render at view
         TestResultDto result = new TestResultDto();
         result.setName(source.getName());
@@ -93,7 +93,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
         attempt.setCourseTest(testFromDB);
         attempt.setUser(user);
         attempt.setTime(new Timestamp(new Date().getTime()));
-        Attempt attemptFromDB =  attemptService.save(attempt);
+        Attempt attemptFromDB = attemptService.save(attempt);
 
         List<TestQuestion> questionsFromDB = testFromDB.getTestQuestions();
         List<QuestionDto> questionsFromSource = source.getQuestions();
@@ -154,15 +154,15 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     public TestResultDto formResult(List<UserAnswer> answers, Long attemptId) {
         Attempt attempt = attemptService.findById(attemptId);
         CourseTest test = attempt.getCourseTest();
-
+        test = randomizeAnswers(test);
         //variable with right answer amount
         TestDto testDto = conversionService.convert(test, TestDto.class);
 
         TestResultDto result = new TestResultDto();
         result.setName(test.getName());
         result.setMark(attempt.getMark());
-        int rightAnswerIter = 0;
-        int wrongAnswerIter = 0;
+        int rightAnswerIter;
+        int wrongAnswerIter;
         boolean skipStandardAnswerFlag;
 
         for (int i = 0; i < test.getTestQuestions().size(); i++) {
@@ -173,7 +173,8 @@ public class ThemeTestServiceImpl implements ThemeTestService {
             questionDto.setId(questionFromDB.getId());
             questionDto.setTitle(questionFromDB.getText());
             result.getQuestions().add(questionDto);
-
+            rightAnswerIter = 0;
+            wrongAnswerIter = 0;
 
             for (QuestionStandardAnswer questionStandardAnswer : questionFromDB.getQuestionStandardAnswers()) {
 

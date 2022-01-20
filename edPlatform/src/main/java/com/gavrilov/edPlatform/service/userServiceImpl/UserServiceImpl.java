@@ -69,13 +69,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PlatformUser saveUser(PlatformUser user) {
-//        PlatformUserProfile profile = user.getProfile();
-//
-//        user.setProfile(null);
-//        PlatformUser user1 = userRepository.save(user);
-//
-//        user1.setProfile(profile);
-//
         return userRepository.save(user);
     }
 

@@ -1,0 +1,10 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="main">
+    <a class="navbar-brand"  th:if="${userProfileName != null}" th:text="'Привет, ' + ${userProfileName}">
+    </a>
+    <a class="navbar-brand"  th:if="${userProfileName == null}" th:text="'Привет, гость'">
+    </a>
+</div>
+</body>
+</html>

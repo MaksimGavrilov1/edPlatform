@@ -6,6 +6,7 @@ import com.gavrilov.edPlatform.dto.TestResultDto;
 import com.gavrilov.edPlatform.model.*;
 import com.gavrilov.edPlatform.model.enumerator.AnswerStatus;
 import com.gavrilov.edPlatform.service.*;
+import com.gavrilov.edPlatform.validator.CourseTestValidator;
 import com.gavrilov.edPlatform.validator.ThemeTestValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -30,11 +31,13 @@ public class TestController {
     private final TestQuestionService testQuestionService;
     private final UserAnswerService userAnswerService;
     private final AttemptService attemptService;
+    private final CourseTestValidator courseTestValidator;
 
     @GetMapping("/constructor")
     public String testConstructor(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("courses", courseService.findCoursesByAuthor(user));
         model.addAttribute("formTest", new FormTest());
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "testConstructor";
     }
 
@@ -51,6 +54,7 @@ public class TestController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("courses", courseService.findCoursesByAuthor(user));
+            model.addAttribute("userProfileName", user.getProfile().getName());
             return "testConstructor";
         }
 
@@ -78,10 +82,12 @@ public class TestController {
 
     @GetMapping("/edit/{courseId}")
     public String editTest(@PathVariable Long courseId,
-                           Model model) {
+                           Model model,
+                           @AuthenticationPrincipal PlatformUser user) {
         CourseTest test = courseService.findCourse(courseId).getTest();
-        System.out.println(test.getTestQuestions());
+
         model.addAttribute("test", test);
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "editTest";
     }
 
@@ -90,6 +96,11 @@ public class TestController {
     public String saveTest(Model model,
                            @ModelAttribute("test") CourseTest test,
                            BindingResult result) {
+        courseTestValidator.validate(test, result);
+        if (result.hasErrors()){
+            model.addAttribute("test", test);
+            return "editTest";
+        }
         themeTestService.initSave(test);
         return "redirect:/courses/usersCourses";
     }
@@ -97,12 +108,14 @@ public class TestController {
     @PostMapping("/render")
     public String renderTest(@ModelAttribute("course") Course course,
                              BindingResult result,
-                             Model model) {
+                             Model model,
+                             @AuthenticationPrincipal PlatformUser user) {
         Course courseFromDB = courseService.findCourse(course.getId());
         CourseTest randAnswerTest = themeTestService.randomizeAnswers(courseFromDB.getTest());
         TestDto testDto = conversionService.convert(randAnswerTest, TestDto.class);
         model.addAttribute("test", testDto);
         model.addAttribute("courseName", courseFromDB.getName());
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "passTest";
     }
 
@@ -116,6 +129,7 @@ public class TestController {
         model.addAttribute("result", testResult);
         model.addAttribute("chosenRight", AnswerStatus.CHOSEN_RIGHT);
         model.addAttribute("chosenWrong", AnswerStatus.CHOSEN_WRONG);
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "testResult";
     }
 
@@ -129,6 +143,7 @@ public class TestController {
         model.addAttribute("result", themeTestService.formResult(answers, attemptId));
         model.addAttribute("chosenRight", AnswerStatus.CHOSEN_RIGHT);
         model.addAttribute("chosenWrong", AnswerStatus.CHOSEN_WRONG);
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "testResult";
     }
 }

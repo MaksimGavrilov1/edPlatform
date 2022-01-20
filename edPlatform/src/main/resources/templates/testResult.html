@@ -19,7 +19,7 @@
             <h4 th:text="'Количество баллов: ' + ${result.getMark()} + '/' + ${result.getQuestions().size()}"></h4>
         </div>
 
-        <div class="container" th:each="question, iter : *{result.getQuestions()}">
+        <div class="container" th:each="question, iter : *{result.getQuestions()}" style="margin: 10px; background: white; border-radius: 7px;">
             <div class="row">
                 <h6 th:text="${(iter.index + 1) + '. ' + question.getTitle()}"></h6>
                 <h6 th:if="${question.getAddsAPoint()}">&nbsp; Баллов:&nbsp;1/1</h6>
@@ -31,14 +31,14 @@
                     <div class="row">
                         <span>&#8226; &nbsp;</span>
                         <p th:text="${answer.getText()}"></p>
-                        <span th:if="${answer.getStatus().equals(chosenRight) or answer.getStatus().equals(chosenWrong)}">(выбран)</span>
+                        <span th:if="${answer.getStatus().equals(chosenRight) or answer.getStatus().equals(chosenWrong)}">&nbsp;(выбран)</span>
                     </div>
                 </li>
             </ul>
         </div>
         <div class="row justify-content-md-center" style="margin: 15px;">
             <form th:action="@{/user/profile}" th:method="get">
-            <button type="submit"  class="btn">Завершить просмотр</button>
+            <button type="submit"  class="btn btn-primary">Завершить просмотр</button>
             </form>
         </div>
     </div>

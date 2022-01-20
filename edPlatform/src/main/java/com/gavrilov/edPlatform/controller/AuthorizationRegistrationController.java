@@ -5,7 +5,6 @@ import com.gavrilov.edPlatform.model.*;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.PlatformUserProfileRepository;
 import com.gavrilov.edPlatform.service.*;
-import com.gavrilov.edPlatform.service.themeTestServiceImpl.ThemeTestServiceImpl;
 import com.gavrilov.edPlatform.validator.PlatformUserValidator;
 import com.gavrilov.edPlatform.validator.UserDtoValidator;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.management.QueryEval;
 import java.util.Objects;
 
 @Controller
@@ -35,6 +33,7 @@ public class AuthorizationRegistrationController {
     private final ConversionService conversionService;
     private final PlatformUserProfileRepository platformUserProfileRepository;
     private final CourseService courseService;
+    private final CourseThemeService courseThemeService;
     private final ThemeTestService testService;
     private final TestQuestionService testQuestionService;
     private final QuestionStandardAnswerService questionStandardAnswerService;
@@ -43,7 +42,7 @@ public class AuthorizationRegistrationController {
     @GetMapping("/login")
     public String login(Model model, String error, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("error", error);
-        if (!flag){
+        if (!flag) {
             PlatformUser admin = new PlatformUser();
             PlatformUserProfile profile = new PlatformUserProfile();
             admin.setRole(Role.ADMIN);
@@ -75,13 +74,49 @@ public class AuthorizationRegistrationController {
             Course course = new Course();
             course.setAuthor(newStudent);
             course.setName("Введение в программирование. Курс для начинающих.");
-            course.setDescription("Этот курс предназначен для тех, кто хочет стать программистом");
+            course.setDescription("Этот курс предназначен для тех, кто хочет стать программистом. Избранные разделы высшей математики в контексте Data Science с упором на решение задач. Для сильных духом.");
             Course newCourse = courseService.save(course);
+
+            Course course1 = new Course();
+            course1.setAuthor(newStudent);
+            course1.setName("Структуры данных предметной области");
+            course1.setDescription("Целью курса «Структуры данных в предметной области» является изучение структур данных, которые используются при программировании решения задач из предметной области указанной специальности и освоение алгоритмов обработки данных (на примерах из предметной области деятельности).");
+            courseService.save(course1);
+
+            Course course2 = new Course();
+            course2.setAuthor(newStudent);
+            course2.setName("Функциональное программирование на F#");
+            course2.setDescription("Излагаются принципы написания программ в рамках функциональной парадигмы программирования. В качестве основного языка взят F#, интегрированный в среду разработки Visual Studio 2019, но приводятся соответствующие примеры на других языках.");
+            courseService.save(course2);
+
+            Course course3 = new Course();
+            course3.setAuthor(newStudent);
+            course3.setName("Легкий старт в Java. Вводный курс для чайников");
+            course3.setDescription("Вводный курс по языку программирования Java. Доступно изложенный материал и большое количество задач.");
+            courseService.save(course3);
+
+            CourseTheme theme1 = new CourseTheme();
+            theme1.setName("Алгоритмы");
+            theme1.setLectureMaterial("Конечная совокупность точно заданных правил решения некоторого класса задач или набор инструкций, описывающих порядок действий исполнителя для решения определённой задачи. В старой трактовке вместо слова «порядок» использовалось слово «последовательность», но по мере развития параллельности в работе компьютеров слово «последовательность» стали заменять более общим словом «порядок». Независимые инструкции могут выполняться в произвольном порядке, параллельно, если это позволяют используемые исполнители.");
+            theme1.setCourse(newCourse);
+            courseThemeService.saveTheme(theme1);
+            CourseTheme theme2 = new CourseTheme();
+            theme2.setName("Типы данных");
+            theme2.setLectureMaterial("Одной из основных особенностей Java является то, что данный язык является строго типизированным. А это значит, что каждая переменная и константа представляет определенный тип и данный тип строго определен. Тип данных определяет диапазон значений, которые может хранить переменная или константа.\n" +
+                    "\n" +
+                    "Итак, рассмотрим систему встроенных базовых типов данных, которая используется для создания переменных в Java. А она представлена следующими типами.");
+            theme2.setCourse(newCourse);
+            courseThemeService.saveTheme(theme2);
+            CourseTheme theme3 = new CourseTheme();
+            theme3.setName("Языки программирования");
+            theme3.setLectureMaterial("Язы́к программи́рования — формальный язык, предназначенный для записи компьютерных программ.");
+            theme3.setCourse(newCourse);
+            courseThemeService.saveTheme(theme3);
 
             CourseTest test = new CourseTest();
             test.setName("Тест для проверки знаний");
             test.setCourse(newCourse);
-            test.setAmountOfAttempts(1);
+            test.setAmountOfAttempts(2);
             CourseTest newTest = testService.initSave(test);
 
             TestQuestion quest1 = new TestQuestion();
@@ -179,9 +214,9 @@ public class AuthorizationRegistrationController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute(value = "userDto")UserDto userDto, BindingResult result){
+    public String register(@ModelAttribute(value = "userDto") UserDto userDto, BindingResult result) {
         userDtoValidator.validate(userDto, result);
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             return "register";
         }
         PlatformUser user = conversionService.convert(userDto, PlatformUser.class);

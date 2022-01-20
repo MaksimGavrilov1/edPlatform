@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:with="user=${user}"
       th:include="layout :: page">
 <head>
     <meta charset="UTF-8">
@@ -27,7 +28,7 @@
         <div class="container">
             <h1 class="display-4">Приветствуем, <b th:utext="${user}"></b></h1>
             <div sec:authorize="hasAuthority('STUDENT')">
-                <p  class="lead">Хорошего дня! На нашей платформе вы можете
+                <p class="lead">Хорошего дня! На нашей платформе вы можете
                     самостоятельно создать курс.</p>
                 <a class="btn btn-primary btn-lg" th:href="@{/courses/addCourse}" role="button">Узнать больше</a>
             </div>
@@ -39,17 +40,63 @@
         <div class="row">
             <th:block th:each="course, iterStat : ${courses}">
                 <!--        <div th:class="${iterStat.index} % 3 == 0 ? 'row': ''">-->
-                <div class="card" style="width: 22rem;">
+                <div class="card" style="width: 22rem; text-overflow: ellipsis; margin: 5px;">
                     <div class="card-body">
-                        <h5 class="card-title" th:utext="${course.name}">..</h5>
-                        <h6 class="card-subtitle mb-2 text-muted" th:utext="${course.author}">..</h6>
-                        <p class="card-text" th:utext="${course.description}">..</p>
+                        <h5 style="text-overflow: ellipsis" class="card-title courseName"
+                            th:utext="${course.name}">..</h5>
+                        <h6 class="card-subtitle mb-2 text-muted"
+                            th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
+                        </h6>
+                        <p style="text-overflow: ellipsis" class="card-text courseDescription"
+                           th:utext="${course.description}"></p>
                         <a th:href="@{/courses/{id}(id=${course.id})}" class="card-link">Перейти</a>
                         <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
                     </div>
                 </div>
                 <!--        </div>-->
             </th:block>
+            <script>
+                if (document.readyState == 'complete') {
+                    // ещё загружается, ждём события
+                    alert("done")
+                } else {
+
+                }
+            </script>
+            <script>
+
+                function cutName() {
+
+                    let elem, size, text;
+                    elem = document.getElementsByClassName('courseName');
+                    size = 30;
+
+                    for (let i = 0; i < elem.length; i++) {
+                        text = elem[i].innerText;
+                        if (elem[i].innerHTML.length > size) {
+                            text = elem[i].innerHTML.substr(0, size);
+                        }
+                        elem[i].innerHTML = text + '...';
+                    }
+                }
+
+                function cutDescription() {
+                    let elem, size, text;
+                    elem = document.getElementsByClassName('courseDescription');
+                    size = 100;
+
+                    for (let i = 0; i < elem.length; i++) {
+                        text = elem[i].innerText;
+                        if (elem[i].innerHTML.length > size) {
+                            text = elem[i].innerHTML.substr(0, size);
+                        }
+                        elem[i].innerHTML = text + '...';
+                    }
+                }
+
+                cutDescription()
+                cutName()
+            </script>
         </div>
     </div>
 </div>

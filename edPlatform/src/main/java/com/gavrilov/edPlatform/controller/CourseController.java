@@ -37,6 +37,9 @@ public class CourseController {
     public String showCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("usersAmount", userService.findAll().size());
         model.addAttribute("user", user);
+        if (user != null){
+            model.addAttribute("userProfileName", user.getProfile().getName());
+        }
         model.addAttribute("courses", courseService.getAll());
         return "showCourses";
     }
@@ -45,38 +48,42 @@ public class CourseController {
     public String viewCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
         Course course = courseService.findCourse(id);
         Boolean joinedFlag = user.getJoinedCourses().contains(course);
-        List<Attempt> userAttempts = attemptService.findByUser(user);
-        int userAttemptsAmount = 0;
+        List<Attempt> userAttempts = attemptService.findByUserAndTest(user, course.getTest());
+        int userAttemptsLeft = course.getTest().getAmountOfAttempts();
+        int maxMark = course.getTest().getTestQuestions().size();
         if (userAttempts != null){
-            userAttemptsAmount = userAttempts.size();
+            userAttemptsLeft = userAttemptsLeft - userAttempts.size();
+        } else {
+            userAttempts = new ArrayList<>();
         }
-        if (course.getTest().getAmountOfAttempts() > userAttemptsAmount) {
-            model.addAttribute("isAbleToPass", true);
-        } else if (course.getTest().getAmountOfAttempts().equals(userAttemptsAmount)){
-            model.addAttribute("isAbleToPass", false);
-        }
+        model.addAttribute("maxMark", maxMark);
+        model.addAttribute("attempts", userAttempts);
+        model.addAttribute("attemptsLeft", userAttemptsLeft);
         model.addAttribute("course", course);
         model.addAttribute("joinedFlag", joinedFlag);
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "viewCourse";
     }
 
     @GetMapping("/owned/{id}")
-    public String viewOwnedCourse(@PathVariable Long id, Model model) {
+    public String viewOwnedCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
         Course course = courseService.findCourse(id);
         model.addAttribute("course", course);
-
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "viewAuthorCourse";
     }
 
     @GetMapping("/usersCourses")
     public String showUserCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("userCourses", courseService.findCoursesByAuthor(user));
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "showUserCourses";
     }
 
     @GetMapping("/addCourse")
-    public String addCourse(Model model) {
+    public String addCourse(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("course", new Course());
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "addCourse";
     }
 
@@ -90,6 +97,7 @@ public class CourseController {
         validator.validate(course, result);
 
         if (result.hasErrors()) {
+            model.addAttribute("userProfileName", user.getProfile().getName());
             return "addCourse";
         }
 
@@ -100,8 +108,9 @@ public class CourseController {
     }
 
     @GetMapping("/newCourses")
-    public String showCoursesToAccept(Model model) {
+    public String showCoursesToAccept(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("courses", courseService.findCoursesAwaitingConfirmation());
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "showNewCourses";
     }
 
@@ -127,8 +136,4 @@ public class CourseController {
         return String.format("redirect:/courses/%d", courseFromDB.getId());
     }
 
-    @GetMapping("/testPage")
-    public String showTestPage(Model model) {
-        return "testPage";
-    }
 }

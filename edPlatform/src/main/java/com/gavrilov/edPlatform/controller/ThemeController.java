@@ -31,6 +31,7 @@ public class ThemeController {
     public String themesConstructor(Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("courses", courseService.findCoursesByAuthor(user));
         model.addAttribute("formTheme", new FormTheme());
+        model.addAttribute("userProfileName", user.getProfile().getName());
         return "themeConstructor";
     }
 
@@ -45,6 +46,8 @@ public class ThemeController {
 
         if (result.hasErrors()){
             model.addAttribute("courses", courseService.findCoursesByAuthor(user));
+            model.addAttribute("formTheme", formTheme);
+            model.addAttribute("userProfileName", user.getProfile().getName());
             return "themeConstructor";
         }
 

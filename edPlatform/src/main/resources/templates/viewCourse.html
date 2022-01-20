@@ -7,69 +7,121 @@
     <title>Title</title>
 </head>
 <body>
-<div th:fragment="content">
-    <div class="container" style="width: 90%">
-        <h2 style="margin: 10px">Страница курса</h2>
-        <div class="row" style="margin: 5px">
-            <div >
-                <p th:text="${course.getAuthor().toString()}"></p>
-            </div>
+<div th:fragment="content" style="max-width: 100%;">
+    <div class="container" style="width: 90%; background: #ffffff; margin-top: 10px; border: 1px; border-radius: 5px;">
+        <div class="row" style="padding:10px;">
+            <h3 th:text="${course.getName()}"></h3>
         </div>
-        <div class="row" style="margin: 3px">
-            <h4 th:text="${course.getName()}"></h4>
+        <div class="row" style="margin: 5px">
+            <h5 th:text="${'Автор: ' + course.getAuthor().toString()}"></h5>
         </div>
         <div class="row" style="margin: 3px">
             <p th:text="${course.getDescription()}"></p>
         </div>
-            <div class="row" style="margin: 5px" th:each="theme : ${course.getThemes()}">
-                <div>
-                    <h5 th:text="${theme.getName()}"></h5>
-                    <p th:if="${joinedFlag == true}" th:text="${theme.getLectureMaterial()}"></p>
+        <div class="row justify-content-md-center" style="margin-top: 10px;">
+            <h5>Темы курса:</h5>
+        </div>
 
-                </div>
+        <div th:if="${!joinedFlag}" class="row justify-content-md-center" style="margin: 20px"
+             th:each="theme : ${course.getThemes()}">
+            <div>
+                <h5 th:text="${theme.getName()}"></h5>
+                <p th:if="${joinedFlag == true}" th:text="${theme.getLectureMaterial()}"></p>
             </div>
-        <div class="row">
+        </div>
+        <div th:if="${joinedFlag}" class="row" style="margin: 20px" th:each="theme : ${course.getThemes()}">
+            <div>
+                <h5 th:text="${theme.getName()}"></h5>
+                <p th:if="${joinedFlag == true}" th:text="${theme.getLectureMaterial()}"></p>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
             <form th:if="${!joinedFlag}" th:method="post" th:object="${course}" th:action="@{/courses/joinCourse}">
                 <input type="hidden" th:field="*{id}" th:value="${id}">
-                <button type="submit" th:text="Подписаться"></button>
+                <button style="margin-bottom: 15px;" class="btn btn-primary" type="submit"
+                        th:text="Подписаться"></button>
             </form>
-            <form th:if="${joinedFlag == true} and ${isAbleToPass}" th:method="post" th:object="${course}" th:action="@{/test/render}">
-                <input type="hidden" th:field="*{id}">
-                <button type="submit"> Пройти тест</button>
-            </form>
-            <p th:if="${!isAbleToPass}">У вас закончились попытки</p>
+
         </div>
-        <!--        <div class="card bg-light mb-3" style="max-width: 100%;">-->
-        <!--            <div class="card-header" th:utext="${course.getAuthor()}">Автор:</div>-->
-        <!--            <div class="card-body" style="align-items: center">-->
-        <!--                <h5 class="card-title" th:text="${course.name}"></h5>-->
-        <!--                <p class="card-text" th:text="${course.description}"></p>-->
-
-
-        <!--                <ol class="list-group list-group-numbered">-->
-        <!--                    <li class="list-group-item" th:each="theme : ${course.getThemes()}" th:text="${theme.getName()}">-->
-        <!--                    </li>-->
-        <!--                    <li class="list-group-item">Второй элемент</li>-->
-        <!--                    <li class="list-group-item">Третий элемент</li>-->
-        <!--                    <li class="list-group-item">Четвертый элемент</li>-->
-        <!--                    <li class="list-group-item">И пятый</li>-->
-        <!--                </ol>-->
-
-        <!--                <table class="table card-text">-->
-        <!--                    <thead>-->
-        <!--                    <tr>-->
-        <!--                        <th scope="col">#</th>-->
-        <!--                        <th scope="col">Темы</th>-->
-        <!--                    </tr>-->
-        <!--                    </thead>-->
-        <!--                    <tbody>-->
-        <!--                    <tr th:each="theme, iter : ${course.themes}">-->
-        <!--                        <th scope="row" th:utext="${iter.index}+1">index</th>-->
-        <!--                        <td th:utext="${theme.name}">название</td>-->
-        <!--                    </tr>-->
-        <!--                </table>-->
+    </div>
+    <div th:if="${joinedFlag}" class="container"
+         style="width: 70%; background: #ffffff; margin-top: 10px; margin-bottom: 20px; border: 1px; border-radius: 5px;">
+        <div class="row justify-content-md-center">
+            <h6 style="margin: 15px;">Результаты прохождения теста</h6>
+        </div>
+        <div class="row justify-content-md-center" th:if="${attemptsLeft != 0}" style="margin: 10px;">
+            <p th:text="${'Попыток осталось: ' + attemptsLeft}"></p>
+        </div>
+        <div class="row justify-content-md-center" th:if="${attemptsLeft == 0}" style="margin: 10px;">
+            <p>У вас закончились попытки</p>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 10px;">
+            <form th:if="${joinedFlag == true} and ${attemptsLeft > 0}" th:method="post" th:object="${course}"
+                  th:action="@{/test/render}">
+                <input type="hidden" th:field="*{id}">
+                <button style="margin-bottom: 15px;" class="btn btn-primary" type="submit"> Пройти тест</button>
+            </form>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 5px;">
+            <table class="table">
+                <caption th:if="${attempts.size()}  == 0">На данный
+                    момент вы еще не проходили этот тест
+                </caption>
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата прохождения</th>
+                    <th align="center" valign="center" scope="col">Количество баллов</th>
+                    <th align="center" valign="center" scope="col">Ваши ответы</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="attempt, iter : ${attempts}">
+                    <th scope="row" th:utext="${iter.index}+1"></th>
+                    <td th:text="${attempt.getTime().toString().subSequence(0,attempt.getTime().toString().length()-4)}"></td>
+                    <td align="center" valign="center" th:text="${attempt.getMark()} + '/' + ${maxMark}"></td>
+                    <td align="center" valign="center" ><a th:href="@{/test/showResult/{id}(id=${attempt.id})}">Подробнее</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
     </div>
+    <script>
+        function changeOrientation() {
+
+        }
+    </script>
+    <!--        <div class="card bg-light mb-3" style="max-width: 100%;">-->
+    <!--            <div class="card-header" th:utext="${course.getAuthor()}">Автор:</div>-->
+    <!--            <div class="card-body" style="align-items: center">-->
+    <!--                <h5 class="card-title" th:text="${course.name}"></h5>-->
+    <!--                <p class="card-text" th:text="${course.description}"></p>-->
+
+
+    <!--                <ol class="list-group list-group-numbered">-->
+    <!--                    <li class="list-group-item" th:each="theme : ${course.getThemes()}" th:text="${theme.getName()}">-->
+    <!--                    </li>-->
+    <!--                    <li class="list-group-item">Второй элемент</li>-->
+    <!--                    <li class="list-group-item">Третий элемент</li>-->
+    <!--                    <li class="list-group-item">Четвертый элемент</li>-->
+    <!--                    <li class="list-group-item">И пятый</li>-->
+    <!--                </ol>-->
+
+    <!--                <table class="table card-text">-->
+    <!--                    <thead>-->
+    <!--                    <tr>-->
+    <!--                        <th scope="col">#</th>-->
+    <!--                        <th scope="col">Темы</th>-->
+    <!--                    </tr>-->
+    <!--                    </thead>-->
+    <!--                    <tbody>-->
+    <!--                    <tr th:each="theme, iter : ${course.themes}">-->
+    <!--                        <th scope="row" th:utext="${iter.index}+1">index</th>-->
+    <!--                        <td th:utext="${theme.name}">название</td>-->
+    <!--                    </tr>-->
+    <!--                </table>-->
+
 </div>
 </body>
 </html>
