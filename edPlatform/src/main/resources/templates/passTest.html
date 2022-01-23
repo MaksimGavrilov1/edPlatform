@@ -12,14 +12,15 @@
         <h2>Тест по курсу: &nbsp;</h2>
         <h2 th:text="${courseName}"></h2>
     </div>
-    <form th:action="@{/test/passTest}" th:object="${test}" method="post">
+    <form th:action="@{/test/passTest}" th:object="${test}" method="post" onsubmit="setFormSubmitting()">
         <div class="row justify-content-md-center" style="margin: 15px;">
             <input type="hidden" th:field="*{courseId}" th:value="${test.getCourseId()}"/>
             <input type="hidden" th:field="*{name}" th:value="${test.getName()}"/>
             <h4 th:text="${test.getName()}"></h4>
         </div>
 
-        <div class="container" th:each="question, iter : *{questions}" style="margin: 10px; background: white; border-radius: 7px;">
+        <div class="container" th:each="question, iter : *{questions}"
+             style="margin: 10px; background: white; border-radius: 7px;">
             <div class="row" style="margin: 5px;">
                 <input type="hidden"
                        th:field="*{questions[__${iter.index}__].title}"
@@ -66,6 +67,25 @@
             <button class="btn btn-primary" type="submit">Завершить</button>
         </div>
     </form>
+    <script>
+        let formSubmitting = false;
+        let setFormSubmitting = function () {
+            formSubmitting = true;
+        };
+
+        window.onload = function () {
+            window.addEventListener("beforeunload", function (e) {
+                if (formSubmitting) {
+                    return undefined;
+                }
+
+                let confirmationMessage = 'Внимание, ваша попытка будет засчитана, если вы покинете страницу.';
+
+                (e || window.event).returnValue = confirmationMessage;
+                return confirmationMessage;
+            });
+        };
+    </script>
 </div>
 </body>
 </html>

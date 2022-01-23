@@ -5,8 +5,10 @@ import com.gavrilov.edPlatform.dto.TestDto;
 import com.gavrilov.edPlatform.dto.TestResultDto;
 import com.gavrilov.edPlatform.model.*;
 import com.gavrilov.edPlatform.model.enumerator.AnswerStatus;
+import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
 import com.gavrilov.edPlatform.service.*;
 import com.gavrilov.edPlatform.validator.CourseTestValidator;
+import com.gavrilov.edPlatform.validator.FormTestValidator;
 import com.gavrilov.edPlatform.validator.ThemeTestValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -16,6 +18,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -32,10 +36,12 @@ public class TestController {
     private final UserAnswerService userAnswerService;
     private final AttemptService attemptService;
     private final CourseTestValidator courseTestValidator;
+    private final FormTestValidator formTestValidator;
+    private final SubscriptionService subscriptionService;
 
     @GetMapping("/constructor")
     public String testConstructor(Model model, @AuthenticationPrincipal PlatformUser user) {
-        model.addAttribute("courses", courseService.findCoursesByAuthor(user));
+        model.addAttribute("courses", courseService.findCoursesWithEmptyTestByAuthor(user));
         model.addAttribute("formTest", new FormTest());
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "testConstructor";
@@ -47,13 +53,15 @@ public class TestController {
                           BindingResult bindingResult,
                           @AuthenticationPrincipal PlatformUser user) {
 
+        formTestValidator.validate(formTest, bindingResult);
         CourseTest test = conversionService.convert(formTest, CourseTest.class);
 
-        themeTestValidator.validate(test, bindingResult);
+        //themeTestValidator.validate(test, bindingResult);
 
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("courses", courseService.findCoursesByAuthor(user));
+            model.addAttribute("formTest", formTest);
             model.addAttribute("userProfileName", user.getProfile().getName());
             return "testConstructor";
         }
@@ -105,14 +113,35 @@ public class TestController {
         return "redirect:/courses/usersCourses";
     }
 
-    @PostMapping("/render")
-    public String renderTest(@ModelAttribute("course") Course course,
-                             BindingResult result,
+    @GetMapping("/render/{courseId}")
+    public String renderTest(@PathVariable Long courseId,
                              Model model,
                              @AuthenticationPrincipal PlatformUser user) {
-        Course courseFromDB = courseService.findCourse(course.getId());
+
+        Course courseFromDB = courseService.findCourse(courseId);
+        subscriptionService.updateSubscriptionStatus(user);
+        if (!subscriptionService.isUserSubOnCourse(user, courseFromDB)){
+            //? view or view with exception
+        }
+        if (!subscriptionService.findByUserAndCourse(user,courseFromDB).getStatus().equals(CourseSubscriptionStatus.OPEN)){
+            return String.format("redirect:/courses/%d", courseId);
+        }
+
         CourseTest randAnswerTest = themeTestService.randomizeAnswers(courseFromDB.getTest());
+        List<Attempt> userAttempts = attemptService.findByUserAndTest(user, randAnswerTest);
+        if (userAttempts.size() >= randAnswerTest.getAmountOfAttempts()){
+            model.addAttribute("userProfileName", user.getProfile().getName());
+            return "noAttemptsLeft";
+        }
         TestDto testDto = conversionService.convert(randAnswerTest, TestDto.class);
+
+        Attempt attempt = new Attempt();
+        attempt.setUser(user);
+        attempt.setTime(new Timestamp(new Date().getTime()));
+        attempt.setCourseTest(randAnswerTest);
+        attempt.setMark(0);
+        attemptService.save(attempt);
+
         model.addAttribute("test", testDto);
         model.addAttribute("courseName", courseFromDB.getName());
         model.addAttribute("userProfileName", user.getProfile().getName());

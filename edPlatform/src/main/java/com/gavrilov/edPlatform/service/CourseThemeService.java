@@ -1,9 +1,14 @@
 package com.gavrilov.edPlatform.service;
 
+import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 
 public interface CourseThemeService {
 
     public CourseTheme saveTheme(CourseTheme courseTheme);
+
+    CourseTheme findTheme(Long id);
+
+    void deleteTheme(Long id);
 
 }

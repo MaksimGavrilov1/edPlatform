@@ -46,6 +46,8 @@ public class CourseTest {
 
     private Integer amountOfAttempts;
 
+    private Integer minThreshold;
+
     @Enumerated(EnumType.STRING)
     private RateMethod method;
 

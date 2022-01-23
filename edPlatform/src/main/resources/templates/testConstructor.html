@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       th:include="layout :: page">
 
 <head>
@@ -10,49 +9,94 @@
 </head>
 <body>
 <div th:fragment="content">
-    <div class="container">
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="py-5 text-center">
+            <h2>Создание теста</h2>
+            <p class="lead">Ниже вы можете создать тест для одного из своих курсов. Здесь вы указываете основные
+                параметры вашего курса. Перейти к детальной разработке вашего теста вы сможете на странице курса</p>
+        </div>
+        <div class="row justify-content-md-center">
         <form th:action="@{/test/addTest}" th:object="${formTest}" method="post">
-            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{id}"/>
 
             <div class="form-group">
                 <label for="name">Название теста</label>
-                <textarea class="form-control" id="name" th:field="*{name}" ></textarea>
-                <ul>
-                    <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
-                </ul>
+                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                <div class="row" th:if="${#fields.errors('name').size() != 0}">
+                    <div th:if="${#fields.errors('name')}" style="padding: 10px; margin: 10px;"
+                         class="alert alert-dismissible alert-danger error">
+                        <ul style="list-style-type: none; padding: 0">
+                            <li style="margin: 0;" th:each="err : ${#fields.errors('name')}"
+                                th:text="${err}"></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label for="questionAmount">Количество вопросов в тесте</label>
-                <input type="number" max="100" min="2" class="form-control" id="questionAmount" th:field="*{questionAmount}" >
-                    Количество вопросов в тесте
-                </input>
-                <ul>
-                    <li th:each="err : ${#fields.errors('questionAmount')}" th:text="${err}"></li>
-                </ul>
+                <input type="number" max="100" min="2" class="form-control" id="questionAmount"
+                       th:field="*{questionAmount}" required>
+                <div class="row" th:if="${#fields.errors('questionAmount').size() != 0}">
+                    <div th:if="${#fields.errors('questionAmount')}" style="padding: 10px; margin: 10px;"
+                         class="alert alert-dismissible alert-danger error">
+                        <ul style="list-style-type: none; padding: 0">
+                            <li style="margin: 0;" th:each="err : ${#fields.errors('questionAmount')}"
+                                th:text="${err}"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="minThreshold">Минимальное количество вопросов для прохождения (по умолчанию - 50%)</label>
+                <input type="number" min="0" class="form-control" id="minThreshold"
+                       th:field="*{minThreshold}" required>
+                <div class="row" th:if="${#fields.errors('minThreshold').size() != 0}">
+                    <div th:if="${#fields.errors('minThreshold')}" style="padding: 10px; margin: 10px;"
+                         class="alert alert-dismissible alert-danger error">
+                        <ul style="list-style-type: none; padding: 0">
+                            <li style="margin: 0;" th:each="err : ${#fields.errors('minThreshold')}"
+                                th:text="${err}"></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label for="amountOfAttempts">Количество попыток для прохождения теста</label>
-                <input type="number" max="5" min="1" class="form-control" id="amountOfAttempts" th:field="*{amountOfAttempts}" >
-                Количество вопросов в тесте
-                </input>
-                <ul>
-                    <li th:each="err : ${#fields.errors('amountOfAttempts')}" th:text="${err}"></li>
-                </ul>
+                <input type="number" max="5" min="1" class="form-control" id="amountOfAttempts"
+                       th:field="*{amountOfAttempts}" required>
+                <div class="row" th:if="${#fields.errors('amountOfAttempts').size() != 0}">
+                    <div th:if="${#fields.errors('amountOfAttempts')}" style="padding: 10px; margin: 10px;"
+                         class="alert alert-dismissible alert-danger error">
+                        <ul style="list-style-type: none; padding: 0">
+                            <li style="margin: 0;" th:each="err : ${#fields.errors('amountOfAttempts')}"
+                                th:text="${err}"></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="course">Выберите курс, для которого будет создан тест</label>
-                <select id="course" class="form-control" th:field="*{courseId}">
+                <select id="course" class="form-control" th:field="*{courseId}" required>
                     <option th:each="course : ${courses}"
                             th:value="${course.id}"
                             th:text="${course.name}"></option>
                 </select>
-                <ul>
-                    <li th:each="err : ${#fields.errors('courseId')}" th:text="${err}"></li>
-                </ul>
+                <div class="row" th:if="${#fields.errors('courseId').size() != 0}">
+                    <div th:if="${#fields.errors('courseId')}" style="padding: 10px; margin: 10px;"
+                         class="alert alert-dismissible alert-danger error">
+                        <ul style="list-style-type: none; padding: 0">
+                            <li style="margin: 0;" th:each="err : ${#fields.errors('courseId')}"
+                                th:text="${err}"></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-default">Готово</button>
+            <div class="row justify-content-md-center">
+                <button style="margin: 5px;" type="submit" class="btn btn-primary">Готово</button>
+            </div>
         </form>
+        </div>
     </div>
 </div>
 </body>

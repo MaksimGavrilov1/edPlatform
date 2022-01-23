@@ -4,27 +4,20 @@
       th:include="layout :: page">
 <head>
     <meta charset="UTF-8">
-    <title>Этап 1. Создание курса</title>
-
-    <style>
-        .has-error {
-            color: red
-        }
-    </style>
+    <title>Title</title>
 </head>
-<body class="bg-light">
+<body>
 <div th:fragment="content">
-    <div class="container">
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
         <div class="py-5 text-center">
-            <h2>Создание курса</h2>
-            <p class="lead">Здесь вы сможете создать свой курс. Процесс разработки курса разбит на несколько этапов.
-                Ниже
-                вы сможете заполнить основную информацию о своем курсе.</p>
+            <h2>Редактирование курса</h2>
+            <p class="lead">Ниже вы можете изменить название курса и его описание</p>
         </div>
         <div class="row justify-content-md-center">
             <div class="col order-md-1">
                 <form class="needs-validation" th:method="post" th:object="${course}"
-                      th:action="@{/courses/addCourse}">
+                      th:action="@{/courses/edit}">
+                    <input type="hidden" th:field="*{id}" th:value="${course.getId()}">
                     <div class="row justify-content-md-center">
                         <div class="col-md-8 mb-3">
                             <label for="courseName">Название курса</label>
@@ -34,7 +27,7 @@
                             <input type="text" max="80" class="form-control" th:field="*{name}" id="courseName"
                                    placeholder="Название"
                                    required="required">
-                            <div class="row" th:if="${#fields.errors('name').size() != 0}">
+                            <div class="row justify-content-md-center" th:if="${#fields.errors('name').size() != 0}">
                                 <div th:if="${#fields.errors('name')}" style="padding: 10px; margin: 10px;"
                                      class="alert alert-dismissible alert-danger error">
                                     <ul style="list-style-type: none; padding: 0">
@@ -52,7 +45,9 @@
                                 <textarea rows="5" th:field="*{description}" class="form-control" id="description"
                                           placeholder="Описание"
                                           required="required"></textarea>
+
                             </div>
+
                         </div>
                     </div>
                     <div class="row justify-content-md-center" th:if="${#fields.errors('description').size() != 0}">
@@ -118,7 +113,6 @@
             </div>
         </div>
     </div>
-
     <script>
         courseName.oninput = courseName.onkeyp = courseName.onchange = function () {
             let len = this.value.length;
@@ -136,6 +130,5 @@
         }
     </script>
 </div>
-
 </body>
 </html>

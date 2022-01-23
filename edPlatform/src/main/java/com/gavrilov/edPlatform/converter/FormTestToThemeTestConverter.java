@@ -21,6 +21,7 @@ public class FormTestToThemeTestConverter implements Converter<FormTest, CourseT
         test.setCourse(course);
         test.setName(source.getName());
         test.setAmountOfAttempts(source.getAmountOfAttempts());
+        test.setMinThreshold(source.getMinThreshold());
 
         return test;
     }

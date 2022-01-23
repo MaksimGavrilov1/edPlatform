@@ -26,23 +26,16 @@
 <div th:fragment="content">
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Приветствуем, <b th:utext="${user}"></b></h1>
-            <div sec:authorize="hasAuthority('STUDENT')">
-                <p class="lead">Хорошего дня! На нашей платформе вы можете
-                    самостоятельно создать курс.</p>
-                <a class="btn btn-primary btn-lg" th:href="@{/courses/addCourse}" role="button">Узнать больше</a>
-            </div>
-            <p sec:authorize="hasAuthority('ADMIN')" class="lead">Общее количество пользователей: <span
-                    th:utext="${usersAmount}"></span></p>
+
         </div>
     </div>
     <div class="container">
         <div class="row">
             <th:block th:each="course, iterStat : ${courses}">
                 <!--        <div th:class="${iterStat.index} % 3 == 0 ? 'row': ''">-->
-                <div class="card" style="width: 22rem; text-overflow: ellipsis; margin: 5px;">
+                <div class="card" style="width: 22rem; margin: 5px;">
                     <div class="card-body">
-                        <h5 style="text-overflow: ellipsis" class="card-title courseName"
+                        <h5 class="card-title courseName"
                             th:utext="${course.name}">..</h5>
                         <h6 class="card-subtitle mb-2 text-muted"
                             th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
@@ -65,25 +58,25 @@
             </script>
             <script>
 
-                function cutName() {
-
-                    let elem, size, text;
-                    elem = document.getElementsByClassName('courseName');
-                    size = 30;
-
-                    for (let i = 0; i < elem.length; i++) {
-                        text = elem[i].innerText;
-                        if (elem[i].innerHTML.length > size) {
-                            text = elem[i].innerHTML.substr(0, size);
-                        }
-                        elem[i].innerHTML = text + '...';
-                    }
-                }
+                // function cutName() {
+                //
+                //     let elem, size, text;
+                //     elem = document.getElementsByClassName('courseName');
+                //     size = 80;
+                //
+                //     for (let i = 0; i < elem.length; i++) {
+                //         text = elem[i].innerText;
+                //         if (elem[i].innerHTML.length > size) {
+                //             text = elem[i].innerHTML.substr(0, size);
+                //         }
+                //         elem[i].innerHTML = text;
+                //     }
+                // }
 
                 function cutDescription() {
                     let elem, size, text;
                     elem = document.getElementsByClassName('courseDescription');
-                    size = 100;
+                    size = 150;
 
                     for (let i = 0; i < elem.length; i++) {
                         text = elem[i].innerText;

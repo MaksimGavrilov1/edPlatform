@@ -6,7 +6,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-@Getter
 @Setter
 @Entity
 @Table(name = "attempt")
@@ -27,4 +26,38 @@ public class Attempt {
     private Timestamp time;
 
     private Integer mark;
+
+    private Boolean pass;
+
+    public Long getId() {
+        return id;
+    }
+
+    public CourseTest getCourseTest() {
+        return courseTest;
+    }
+
+    public PlatformUser getUser() {
+        return user;
+    }
+
+    public Timestamp getTime() {
+
+        return time;
+    }
+
+    public String getFormattedTime(){
+        String timeVal = time.toString();
+        String [] splitTime = timeVal.split("\\.");
+        int timeValWithoutNanosIndex = 0;
+        return splitTime[timeValWithoutNanosIndex];
+    }
+
+    public Integer getMark() {
+        return mark;
+    }
+
+    public Boolean getPass() {
+        return pass;
+    }
 }

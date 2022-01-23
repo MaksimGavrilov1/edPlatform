@@ -18,5 +18,7 @@ public interface CourseService {
 
     List<Course> findCoursesAwaitingConfirmation();
 
+    List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user);
+
 
 }

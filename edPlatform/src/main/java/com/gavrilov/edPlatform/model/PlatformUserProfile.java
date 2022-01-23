@@ -29,7 +29,7 @@ public class PlatformUserProfile {
 
     private String middleName;
 
-
+    @Column(length = 1_000)
     private String selfDescription;
 
 

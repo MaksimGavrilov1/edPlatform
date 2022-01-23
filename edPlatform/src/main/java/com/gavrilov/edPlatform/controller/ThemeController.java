@@ -1,6 +1,7 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.FormTheme;
+import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.service.CourseService;
@@ -12,10 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,5 +51,22 @@ public class ThemeController {
 
         courseThemeService.saveTheme(ct);
         return "redirect:/courses/usersCourses";
+    }
+
+    @GetMapping("/edit/{themeId}")
+    public String renderEditTheme(Model model,
+                                  @AuthenticationPrincipal PlatformUser user,
+                                  @PathVariable Long themeId){
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("theme", courseThemeService.findTheme(themeId));
+        return "editTheme";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteTheme(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user){
+        CourseTheme theme = courseThemeService.findTheme(id);
+        Course course  = theme.getCourse();
+        courseThemeService.deleteTheme(id);
+        return String.format("redirect:/courses/owned/%d", course.getId()) ;
     }
 }

@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 
@@ -52,6 +53,10 @@ public class Course {
     @ToString.Exclude
     private CourseTest test;
 
+    private Timestamp activeTime;
+
+    private Boolean isAlwaysOpen;
+
     public Course() {
     }
 
@@ -66,5 +71,9 @@ public class Course {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public Integer getActiveDays(){
+        return Math.toIntExact(activeTime.getTime() / 1000 / 60 / 60 / 24);
     }
 }

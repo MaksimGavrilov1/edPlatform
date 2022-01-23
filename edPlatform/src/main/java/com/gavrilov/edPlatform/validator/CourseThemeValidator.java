@@ -1,18 +1,23 @@
 package com.gavrilov.edPlatform.validator;
 
-import com.gavrilov.edPlatform.constant.ValidationUtils;
+import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
+import com.gavrilov.edPlatform.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
+import java.util.List;
 
 import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace;
 
 @Component
 @RequiredArgsConstructor
 public class CourseThemeValidator implements Validator {
+
+    private final CourseService courseService;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -22,9 +27,8 @@ public class CourseThemeValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         CourseTheme courseTheme = (CourseTheme) target;
-
         // Check the fields of course theme.
-        rejectIfEmptyOrWhitespace(errors, "name", "", ValidationUtils.NOT_EMPTY_COURSE_THEME_NAME);
+        rejectIfEmptyOrWhitespace(errors, "name", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_THEME_NAME);
 
 
         //
@@ -33,7 +37,7 @@ public class CourseThemeValidator implements Validator {
 
 
             if (course.getThemes().stream().anyMatch(x->x.equals(courseTheme))) {
-                errors.rejectValue("name","", ValidationUtils.DUPLICATE_COURSE_THEME);
+                errors.rejectValue("name","", PlatformValidationUtilities.DUPLICATE_COURSE_THEME);
             }
         }
     }

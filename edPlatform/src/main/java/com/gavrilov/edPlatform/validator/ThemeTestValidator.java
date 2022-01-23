@@ -1,6 +1,6 @@
 package com.gavrilov.edPlatform.validator;
 
-import com.gavrilov.edPlatform.constant.ValidationUtils;
+import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.model.CourseTest;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -22,7 +22,7 @@ public class ThemeTestValidator implements Validator {
                 errors,
                 "name",
                 "",
-                ValidationUtils.NOT_EMPTY_THEME_TEST_NAME);
+                PlatformValidationUtilities.NOT_EMPTY_THEME_TEST_NAME);
 
 
     }

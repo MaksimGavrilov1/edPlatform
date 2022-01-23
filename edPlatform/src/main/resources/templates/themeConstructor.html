@@ -8,39 +8,64 @@
 </head>
 <body>
 <div th:fragment="content">
-    <div class="container">
-        <form th:action="@{/themes/addTheme}" th:object="${formTheme}" method="post">
-            <input type="hidden" th:field="*{id}" />
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="py-5 text-center">
+            <h2>Создание темы</h2>
+            <p class="lead">Ниже вы можете создать тему для одного из своих курсов</p>
+        </div>
+        <div class="row justify-content-md-center">
+            <form th:action="@{/themes/addTheme}" th:object="${formTheme}" method="post">
+                <input type="hidden" th:field="*{id}"/>
 
-            <div class="form-group">
-                <label for="name">Название темы</label>
-                <textarea class="form-control" id="name" th:field="*{name}" ></textarea>
-                <ul>
-                    <li th:each="err : ${#fields.errors('name')}" th:text="${err}"></li>
-                </ul>
-            </div>
-            <div class="form-group">
-                <label for="description">Лекционный материал</label>
-                <textarea class="form-control" id="description" th:field="*{description}" ></textarea>
-                <ul>
-                    <li th:each="err : ${#fields.errors('description')}" th:text="${err}"></li>
-                </ul>
-            </div>
+                <div class="form-group">
+                    <label for="name">Название темы</label>
+                    <input class="form-control" id="name" th:field="*{name}" required>
+                    <div class="row" th:if="${#fields.errors('name').size() != 0}">
+                        <div th:if="${#fields.errors('name')}" style="padding: 10px; margin: 10px;"
+                             class="alert alert-dismissible alert-danger error">
+                            <ul style="list-style-type: none; padding: 0">
+                                <li style="margin: 0;" th:each="err : ${#fields.errors('name')}"
+                                    th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Лекционный материал</label>
+                    <textarea class="form-control" id="description" th:field="*{description}"></textarea>
+                    <div class="row" th:if="${#fields.errors('description').size() != 0}">
+                        <div th:if="${#fields.errors('description')}" style="padding: 10px; margin: 10px;"
+                             class="alert alert-dismissible alert-danger error">
+                            <ul style="list-style-type: none; padding: 0">
+                                <li style="margin: 0;" th:each="err : ${#fields.errors('description')}"
+                                    th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label for="course">Выберите курс, к которому будет прикреплена тема</label>
-                <select id="course" class="form-control" th:field="*{courseId}">
-                    <option th:each="course : ${courses}"
-                            th:value="${course.id}"
-                            th:text="${course.name}"></option>
-                </select>
-                <ul>
-                    <li th:each="err : ${#fields.errors('courseId')}" th:text="${err}"></li>
-                </ul>
-            </div>
-            <button type="submit" class="btn btn-default">Готово</button>
-        </form>
+                <div class="form-group">
+                    <label for="course">Выберите курс, к которому будет прикреплена тема</label>
+                    <select id="course" class="form-control" th:field="*{courseId}">
+                        <option th:each="course : ${courses}"
+                                th:value="${course.id}"
+                                th:text="${course.name}"></option>
+                    </select>
+                    <div class="row" th:if="${#fields.errors('courseId').size() != 0}">
+                        <div th:if="${#fields.errors('courseId')}" style="padding: 10px; margin: 10px;"
+                             class="alert alert-dismissible alert-danger error">
+                            <ul style="list-style-type: none; padding: 0">
+                                <li style="margin: 0;" th:each="err : ${#fields.errors('courseId')}"
+                                    th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-md-center">
+                    <button style="margin: 5px" type="submit" class="btn btn-primary">Готово</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 </body>
 </html>

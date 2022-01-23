@@ -16,4 +16,14 @@ public class CourseThemeServiceImpl implements CourseThemeService {
     public CourseTheme saveTheme(CourseTheme courseTheme) {
         return courseThemeRepository.save(courseTheme);
     }
+
+    @Override
+    public CourseTheme findTheme(Long id) {
+        return courseThemeRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteTheme(Long id) {
+        courseThemeRepository.deleteById(id);
+    }
 }

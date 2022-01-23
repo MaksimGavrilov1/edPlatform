@@ -8,59 +8,6 @@
 </head>
 <body>
 <div th:fragment="content" style="max-width: 95%">
-    <!--    <div class="container" style="align-items: center; line-height: 2px;">-->
-    <!--        <div class="row justify-content-md-center">-->
-    <!--            <h1>-->
-    <!--                Ваш профиль-->
-    <!--            </h1>-->
-    <!--        </div>-->
-    <!--        <div class="row justify-content-md-center">-->
-    <!--            <h3>Никнейм: </h3>-->
-    <!--            <h3 th:text="${user.getUsername()}"></h3>-->
-    <!--        </div>-->
-
-    <!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
-    <!--            <h4 th:text="${user.getProfile().getSurname()}"></h4>-->
-    <!--        </div>-->
-    <!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
-    <!--            <h4 th:text="${user.getProfile().getName()}"></h4>-->
-    <!--        </div>-->
-    <!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
-    <!--            <h4 th:text="${user.getProfile().getMiddleName()}"></h4>-->
-    <!--        </div>-->
-    <!--        <div class="row  justify-content-md-center" th:if="${user.getProfile()} != null" >-->
-    <!--            <h4 th:text="${user.getProfile().getSelfDescription()}"></h4>-->
-    <!--        </div>-->
-
-    <!--        <div class="row justify-content-md-center" style="margin: 10px;">-->
-    <!--            <a th:href="@{/user/editProfile}">Редактировать данные</a>-->
-    <!--        </div>-->
-    <!--        <div class="row">-->
-    <!--            <table class="table">-->
-    <!--                <caption th:if="${user.getJoinedCourses().size()}  == 0">На данный-->
-    <!--                    момент вы не является участником каких-либо курсов-->
-    <!--                </caption>-->
-    <!--                <thead>-->
-    <!--                <tr>-->
-    <!--                    <th scope="col">#</th>-->
-    <!--                    <th scope="col">Название курса</th>-->
-    <!--                    <th scope="col">Статус</th>-->
-    <!--                    <th scope="col">Результат</th>-->
-    <!--                </tr>-->
-    <!--                </thead>-->
-    <!--                <tbody>-->
-    <!--                <tr th:each="course, iter : ${user.getJoinedCourses()}">-->
-    <!--                    <th scope="row" th:utext="${iter.index}+1"></th>-->
-    <!--                    <td th:utext="${course.name}">имя</td>-->
-    <!--                    <td>No status</td>-->
-    <!--                    <td><a th:href="@{/test/showResult/{id}(id=${course.id})}">Посмотреть результат</a></td>-->
-    <!--                </tr>-->
-    <!--                </tbody>-->
-    <!--            </table>-->
-    <!--        </div>-->
-
-    <!--    </div>-->
-    <!--</div>-->
     <div class="container" style="max-width:95%">
         <div class="row justify-content-md-center" style="margin: 30px;">
             <div class="col col-lg-3" style="background-color:white; margin-right:10px; border-radius: 3px;">
@@ -76,16 +23,11 @@
                     <h5 style="padding-bottom:20px;" th:if="${user.getRole().name().equals('MODERATOR')}">Модератор</h5>
                 </div>
                 <div class="row justify-content-md-center">
-                    <form th:action="@{/user/changePassword}" th:method="get">
-                        <button type="submit" class="btn btn-outline-primary"
-                                style="margin-right: 3px; margin-bottom: 3px;">Сменить пароль
-                        </button>
-                    </form>
-                    <form th:action="@{/user/editProfile}" th:method="get">
-                        <button type="submit" class="btn btn-outline-primary" style="margin-top: 2px; ">Редактировать
-                            профиль
-                        </button>
-                    </form>
+                    <a class="btn btn-outline-primary"
+                       style="margin-right: 3px; margin-bottom: 3px;" th:href="@{/user/changePassword}">Сменить
+                        пароль</a>
+                    <a class="btn btn-outline-primary"
+                       style="margin-top: 2px;" th:href="@{/user/editProfile}">Редактировать профиль</a>
                 </div>
 
                 <div class="list-group" style="margin-top: 30px; margin-bottom: 20px;">
@@ -108,21 +50,26 @@
                         <h4 style="margin: 20px;">Подписки</h4>
                     </div>
                     <table class="table">
-                        <caption th:if="${user.getJoinedCourses().size()}  == 0">На данный
+                        <caption th:if="${subs == null}">На данный
                             момент вы не является участником каких-либо курсов
                         </caption>
                         <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Название курса</th>
+                            <th scope="col">Дата подписки</th>
+                            <th scope="col">Дата окончания</th>
                             <th scope="col">Статус</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr th:each="course, iter : ${user.getJoinedCourses()}">
+                        <tbody th:if="${subs != null and subs.size() != 0}">
+                        <tr th:each="sub, iter : ${subs}">
                             <th scope="row" th:utext="${iter.index}+1"></th>
-                            <td><a th:href="@{/courses/{id}(id=${course.id})}" th:utext="${course.name}"></a></td>
-                            <td>No status</td>
+                            <td><a th:href="@{/courses/{id}(id=${sub.getCourse().getId()})}"
+                                   th:utext="${sub.getCourse().getName()}"></a></td>
+                            <td th:text="${sub.getFormattedBeginDate()}" ></td>
+                            <td th:text="${sub.getFormattedEndDate()}"></td>
+                            <td th:text="${sub.getStatus().getValue()}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -130,7 +77,7 @@
                 <div id="attempts"
                      style="background-color:white; border-radius: 3px; display: none; padding: 20px;">
                     <div style="padding:10px;">
-                        <h4 style="margin: 20px;">Попытки прохождения тестов</h4>
+                        <h4 style="margin: 20px;">Последние попытки прохождения тестов</h4>
                     </div>
                     <table class="table">
                         <caption th:if="${attempts.size()}  == 0">На данный
@@ -142,25 +89,47 @@
                             <th scope="col">Название курса</th>
                             <th scope="col">Дата прохождения</th>
                             <th scope="col">Результат</th>
+                            <th scope="col">Итоговый комментарий</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="attempt, iter : ${attempts}">
                             <th scope="row" th:utext="${iter.index}+1"></th>
                             <td th:utext="${attempt.getCourseTest().getCourse().getName()}">название курса</td>
-                            <!--                        <td th:utext="${attempt.getTime().getDay() +-->
-                            <!--                         ':' + attempt.getTime().getMonth() +-->
-                            <!--                         ':' + attempt.getTime().getYear() +-->
-                            <!--                         ' ' + attempt.getTime().getHours() % 24 +-->
-                            <!--                         ':' + attempt.getTime().getMinutes() % 60}"></td>-->
-                            <td th:text="${attempt.getTime().toString().subSequence(0,attempt.getTime().toString().length()-4)}"></td>
+                            <td th:text="${attempt.getFormattedTime()}"></td>
                             <td th:text="${attempt.getMark()}"></td>
+                            <td>
+                                <span class="badge badge-success" th:if="${attempt.getPass()}" >Пройден</span>
+                                <span class="badge badge-danger" th:if="${!attempt.getPass()}" >Не пройден</span>
+                            </td>
                             <td><a th:href="@{/test/showResult/{id}(id=${attempt.id})}">Подробнее</a></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
-                <div id="userInfo" style="display: none"><h1>User</h1></div>
+                <div id="userInfo"
+                     style="display: none; background-color:white; border-radius: 3px; display: none; padding-top: 20px; padding-left: 40px; padding-bottom: 30px;">
+                    <div class="row">
+                        <h4 style="" th:text="${user.getProfile.getSurname() + ' '}">&nbsp;</h4>
+                        &nbsp;
+                        <h4 style="" th:text="${user.getProfile.getName()+ ' '}">&nbsp;</h4>
+                        &nbsp;
+                        <h4 style=""
+                            th:text="${user.getProfile.getMiddleName() != null ? user.getProfile.getMiddleName() : ''}"></h4>
+                    </div>
+                    <hr>
+                    <p th:if="${user.getRole().name().equals('ADMIN')}">Статус: Администратор</p>
+                    <p th:if="${user.getRole().name().equals('TEACHER')}">
+                        Статус: Преподаватель</p>
+                    <p th:if="${user.getRole().name().equals('STUDENT')}">Статус: Студент</p>
+                    <p th:if="${user.getRole().name().equals('MODERATOR')}">Статус: Модератор</p>
+                    <hr>
+                    <div style="padding:10px;">
+
+                        <h4>О себе</h4>
+                    </div>
+                    <p th:text="${user.getProfile().getSelfDescription() != null ? user.getProfile().getSelfDescription() : ''}"></p>
+                </div>
             </div>
         </div>
     </div>

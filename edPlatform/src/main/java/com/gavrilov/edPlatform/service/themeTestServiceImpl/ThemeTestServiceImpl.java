@@ -89,7 +89,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
         result.setName(source.getName());
 
         //create attempt
-        Attempt attempt = new Attempt();
+        Attempt attempt = attemptService.findLastAttemptByUserAndTest(user,testFromDB);
         attempt.setCourseTest(testFromDB);
         attempt.setUser(user);
         attempt.setTime(new Timestamp(new Date().getTime()));
@@ -144,6 +144,12 @@ public class ThemeTestServiceImpl implements ThemeTestService {
                 mark++;
                 questionResult.setAddsAPoint(true);
             }
+
+        }
+        if (mark >= testFromDB.getMinThreshold()){
+            attemptFromDB.setPass(true);
+        } else {
+            attemptFromDB.setPass(false);
         }
         result.setMark(mark);
         attemptFromDB.setMark(mark);

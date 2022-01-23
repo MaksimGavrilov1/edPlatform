@@ -12,4 +12,5 @@ public class FormTest {
     private Long courseId;
     private Integer questionAmount;
     private Integer amountOfAttempts;
+    private Integer minThreshold;
 }

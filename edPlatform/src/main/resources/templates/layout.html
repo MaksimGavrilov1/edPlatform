@@ -60,9 +60,7 @@
             </li>
 
             <li class="nav-item" sec:authorize="isAuthenticated()">
-                <form th:action="@{/logout}" th:method="get" class="form-inline my-2 my-lg-0">
-                    <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Выйти</button>
-                </form>
+                <a th:href="@{/logout}" class="btn btn-outline-danger my-2 my-sm-0 nav-link">Выйти</a>
             </li>
         </ul>
 
@@ -82,5 +80,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+
 </body>
 </html>

@@ -4,26 +4,19 @@ import com.gavrilov.edPlatform.dto.PasswordDto;
 import com.gavrilov.edPlatform.model.ModeratorRoleRequest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.PlatformUserProfile;
-import com.gavrilov.edPlatform.dto.UserRoleDto;
-import com.gavrilov.edPlatform.model.enumerator.Role;
-import com.gavrilov.edPlatform.repo.UserRepository;
 import com.gavrilov.edPlatform.service.AttemptService;
 import com.gavrilov.edPlatform.service.ModeratorRoleRequestService;
+import com.gavrilov.edPlatform.service.SubscriptionService;
 import com.gavrilov.edPlatform.service.UserService;
 import com.gavrilov.edPlatform.validator.PasswordDtoValidator;
 import com.gavrilov.edPlatform.validator.PlatformUserProfileValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,13 +29,16 @@ public class PlatformUserController {
     private final PasswordDtoValidator passwordDtoValidator;
     private final BCryptPasswordEncoder encoder;
     private final PlatformUserProfileValidator profileValidator;
+    private final SubscriptionService subscriptionService;
 
 
 
     @GetMapping("/profile")
     public String showUserProfile(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("user", user);
-        model.addAttribute("attempts", attemptService.findByUser(user));
+        subscriptionService.updateSubscriptionStatus(user);
+        model.addAttribute("subs", subscriptionService.findByUser(user));
+        model.addAttribute("attempts", attemptService.findLastTenAttempts(user));
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "showUserProfile";
     }
@@ -85,13 +81,13 @@ public class PlatformUserController {
                                  Model model){
         formPassword.setUser(user);
         passwordDtoValidator.validate(formPassword, result);
-
+        PlatformUser userFromDB = userService.findByUsername(user.getUsername());
         if (result.hasErrors()){
             model.addAttribute("userProfileName", user.getProfile().getName());
             return "changePassword";
         }
-        user.setPassword(encoder.encode(formPassword.getNewPassword()));
-        userService.saveUser(user);
+        userFromDB.setPassword(encoder.encode(formPassword.getNewPassword()));
+        userService.saveUser(userFromDB);
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "successfulPasswordChange";
     }
@@ -100,7 +96,7 @@ public class PlatformUserController {
     public String showModeratorRequestPage (Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("request", new ModeratorRoleRequest());
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "showModeratorRequestPage";
+        return "moderatorRequestPage";
     }
 
     @PostMapping("/moderatorRequest")

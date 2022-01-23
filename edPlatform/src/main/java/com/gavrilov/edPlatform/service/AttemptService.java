@@ -1,6 +1,7 @@
 package com.gavrilov.edPlatform.service;
 
 import com.gavrilov.edPlatform.model.Attempt;
+import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 
@@ -15,5 +16,9 @@ public interface AttemptService {
     List<Attempt> findByUser(PlatformUser user);
 
     List<Attempt> findByUserAndTest(PlatformUser user, CourseTest test);
+
+    List<Attempt> findLastTenAttempts(PlatformUser user);
+
+    Attempt findLastAttemptByUserAndTest(PlatformUser user, CourseTest test);
 
 }

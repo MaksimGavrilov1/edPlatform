@@ -21,5 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new CourseTestToTestDtoConverter());
         registry.addConverter(new TestDtoToTestResultDto(courseService));
         registry.addConverter(new UserDtoToPlatformUser());
+        registry.addConverter(new FormCourseToCourseConverter());
     }
 }

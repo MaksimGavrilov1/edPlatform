@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Controller
@@ -46,8 +48,8 @@ public class AuthorizationRegistrationController {
             PlatformUser admin = new PlatformUser();
             PlatformUserProfile profile = new PlatformUserProfile();
             admin.setRole(Role.ADMIN);
-            admin.setUsername("admin");
-            admin.setPassword(encoder.encode("qwerty"));
+            admin.setUsername("admin123");
+            admin.setPassword(encoder.encode("qwerty12"));
             admin.setProfile(profile);
             profile.setName("Ivan");
             profile.setSurname("Ivanov");
@@ -60,12 +62,15 @@ public class AuthorizationRegistrationController {
             PlatformUserProfile studProf = new PlatformUserProfile();
             student.setRole(Role.STUDENT);
             student.setUsername("qwerty12");
-            student.setPassword(encoder.encode("qwerty"));
+            student.setPassword(encoder.encode("qwerty12"));
             PlatformUser newStudent = userService.saveUser(student);
             studProf.setName("Николай");
             studProf.setSurname("Николаев");
             studProf.setMiddleName("Николаевич");
-            studProf.setSelfDescription("I m student");
+            studProf.setSelfDescription("Я преподаю информатику с 2008 года, когда предмет ещё назывался ИКТ. Начинал со школы, учил детей разбираться\n" +
+                    "          в программировании и сдавать ЕГЭ на 90 баллов и выше. За два года вывел нашу школу на второе место в районе по\n" +
+                    "          олимпиадам по информатике. Вёл два класса коррекции — пятый и одиннадцатый — и знаю, как объяснить основы\n" +
+                    "          теории вероятности даже тем, кто не хочет ничему учиться.");
             studProf.setPlatformUser(newStudent);
             platformUserProfileRepository.save(studProf);
             //PlatformUser newStudent = userService.saveUser(student);
@@ -75,6 +80,8 @@ public class AuthorizationRegistrationController {
             course.setAuthor(newStudent);
             course.setName("Введение в программирование. Курс для начинающих.");
             course.setDescription("Этот курс предназначен для тех, кто хочет стать программистом. Избранные разделы высшей математики в контексте Data Science с упором на решение задач. Для сильных духом.");
+            course.setActiveTime(new Timestamp(1000 * 60 * 60 * 25));
+            course.setIsAlwaysOpen(true);
             Course newCourse = courseService.save(course);
 
             Course course1 = new Course();
@@ -117,6 +124,7 @@ public class AuthorizationRegistrationController {
             test.setName("Тест для проверки знаний");
             test.setCourse(newCourse);
             test.setAmountOfAttempts(2);
+            test.setMinThreshold(1);
             CourseTest newTest = testService.initSave(test);
 
             TestQuestion quest1 = new TestQuestion();
@@ -223,6 +231,14 @@ public class AuthorizationRegistrationController {
         String userPassword = Objects.requireNonNull(user).getPassword();
         user.setPassword(encoder.encode(userPassword));
         PlatformUser newUser = userService.saveUser(user);
+        if (newUser != null){
+            return "redirect:/successfulRegistration";
+        }
+        return "successfulRegister";
+    }
+
+    @GetMapping("/successfulRegistration")
+    public String renderSuccessfulRegistration(){
         return "successfulRegister";
     }
 }

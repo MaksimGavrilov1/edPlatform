@@ -10,7 +10,12 @@ import java.util.List;
 
 @Repository
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
+    List<Attempt> findByUserOrderByTimeDesc(PlatformUser user);
     List<Attempt> findByUser(PlatformUser user);
 
     List<Attempt> findByCourseTestAndUser(CourseTest courseTest, PlatformUser user);
+
+    Attempt findFirstByUserAndCourseTestOrderByTimeDesc(PlatformUser user, CourseTest courseTest);
+
+
 }

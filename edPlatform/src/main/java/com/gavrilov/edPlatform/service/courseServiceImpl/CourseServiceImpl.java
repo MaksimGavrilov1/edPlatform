@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class CourseServiceImpl implements CourseService {
         }
         course.setAuthor(user);
 //        user.addOwnedCourse(course);
-        userRepository.save(user);
+        //userRepository.save(user);
         return courseRepository.save(course);
     }
 
@@ -56,5 +57,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findCoursesAwaitingConfirmation() {
         return courseRepository.findByStatus(CourseStatus.AWAITING_CONFIRMATION);
+    }
+
+    @Override
+    public List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user) {
+        return courseRepository.findCourseByAuthor(user).stream()
+                .filter(x->x.getTest() == null)
+                .collect(Collectors.toList());
     }
 }

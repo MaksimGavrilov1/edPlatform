@@ -1,6 +1,6 @@
 package com.gavrilov.edPlatform.validator;
 
-import com.gavrilov.edPlatform.constant.ValidationUtils;
+import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.dto.PasswordDto;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import lombok.RequiredArgsConstructor;
@@ -24,25 +24,30 @@ public class PasswordDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         PasswordDto formPassword = (PasswordDto) target;
         PlatformUser user = formPassword.getUser();
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "Empty.passwordDto.currentPassword", ValidationUtils.NOT_EMPTY_COURSE_NAME);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "Empty.passwordDto.newPassword", ValidationUtils.NOT_EMPTY_COURSE_DESCRIPTION);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "Empty.passwordDto.confirmPassword", ValidationUtils.NOT_EMPTY_COURSE_DESCRIPTION);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "Empty.passwordDto.currentPassword", PlatformValidationUtilities.NOT_EMPTY_COURSE_NAME);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "Empty.passwordDto.newPassword", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "Empty.passwordDto.confirmPassword", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
 
-        if (!errors.hasFieldErrors("currentPassword")){
-            if (!encoder.matches(formPassword.getCurrentPassword().trim(), user.getPassword())){
-                errors.rejectValue("currentPassword", "PasswordMismatch.passwordDto.currentPassword", ValidationUtils.USER_CURRENT_PASSWORD_MISMATCH);
+        if (!errors.hasErrors()) {
+            if (!encoder.matches(formPassword.getCurrentPassword().trim(), user.getPassword())) {
+                errors.rejectValue("currentPassword", "PasswordMismatch.passwordDto.currentPassword", PlatformValidationUtilities.USER_CURRENT_PASSWORD_MISMATCH);
             }
+            if (!errors.hasFieldErrors("newPassword") && !errors.hasFieldErrors("confirmPassword")) {
+                if (formPassword.getNewPassword().contains(" ")) {
+                    errors.rejectValue("newPassword", "ForbiddenSymbol.passwordDto.newPassword", PlatformValidationUtilities.FORBIDDEN_SYMBOL_WHITESPACE_PASSWORD);
+                }
+                if (formPassword.getNewPassword().length() < PlatformValidationUtilities.MIN_PASSWORD_SIZE) {
+                    errors.rejectValue("newPassword", "Length.passwordDto.newPassword", PlatformValidationUtilities.LENGTH_PASSWORD);
+                }
+                if (!formPassword.getNewPassword().trim().equals(formPassword.getConfirmPassword().trim())) {
+                    errors.rejectValue("confirmPassword", "PasswordMismatch.passwordDto.confirmPassword", PlatformValidationUtilities.USER_PASSWORD_MISMATCH);
+                }
+            }
+            if (encoder.matches(formPassword.getNewPassword().trim(), user.getPassword())) {
+                errors.rejectValue("newPassword", "PasswordMatch.passwordDto.newPassword", PlatformValidationUtilities.USER_NEW_CURRENT_PASSWORD_MATCH);
+            }
+
         }
-        if (!errors.hasFieldErrors("newPassword") && !errors.hasFieldErrors("confirmPassword")){
-            if (formPassword.getNewPassword().contains(" ")){
-                errors.rejectValue("newPassword", "ForbiddenSymbol.passwordDto.newPassword", ValidationUtils.FORBIDDEN_SYMBOL_WHITESPACE_PASSWORD);
-            }
-            if (formPassword.getNewPassword().length() < ValidationUtils.MIN_PASSWORD_SIZE){
-                errors.rejectValue("newPassword", "Length.passwordDto.newPassword", ValidationUtils.LENGTH_PASSWORD);
-            }
-            if (!formPassword.getNewPassword().trim().equals(formPassword.getConfirmPassword().trim())){
-                errors.rejectValue("confirmPassword", "PasswordMismatch.passwordDto.confirmPassword", ValidationUtils.USER_PASSWORD_MISMATCH);
-            }
-        }
+
     }
 }

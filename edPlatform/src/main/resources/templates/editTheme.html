@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="py-5 text-center">
+            <h2>Редактирование темы</h2>
+            <p style="margin-top: 10px;" class="lead">Тема курса: &nbsp;<span style="font-weight: bold" th:text="${theme.getCourse().getName()}"></span></p>
+            <p class="lead" th:text="'Ниже вы можете изменить название темы и ее лекционный материал'"></p>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="col order-md-1">
+                <form class="needs-validation" novalidate="" th:method="post" th:object="${theme}"
+                      th:action="@{/themes/edit}">
+                    <input type="hidden" th:field="*{id}" th:value="${theme.getId()}">
+                    <input type="hidden" th:field="*{course}" th:value="${theme.getCourse()}">
+                    <div class="row justify-content-md-center">
+                        <div class="col-md-8 mb-3">
+                            <label for="name">Название темы</label>
+                            <input type="text" class="form-control" th:field="*{name}" id="name" placeholder="Название"
+                                   required="required">
+                            <p class="bd-warning" th:if="${#fields.hasErrors('name')}" th:classerror="has-error"
+                               th:errors="*{name}"></p>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <div class="col-md-8 mb-3">
+                            <label for="lectureMaterial">Лекционный материал</label>
+                            <div class="input-group">
+                                <textarea rows="9" th:field="*{lectureMaterial}" class="form-control" id="lectureMaterial"
+                                          placeholder="Описание"
+                                          required="required"></textarea>
+                                <p class="bd-warning" th:if="${#fields.hasErrors('lectureMaterial')}"
+                                   th:classerror="has-error"
+                                   th:errors="*{lectureMaterial}"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <button style="margin: 10px;" class="btn btn-primary" type="submit">Готово</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
