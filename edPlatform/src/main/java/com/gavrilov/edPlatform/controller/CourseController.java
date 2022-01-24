@@ -46,6 +46,8 @@ public class CourseController {
 
     @GetMapping("/all")
     public String showCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
+        model.addAttribute("popularCourses", courseService.findTenMostPopular());
+        model.addAttribute("newCourses", courseService.findTenNewest());
         model.addAttribute("usersAmount", userService.findAll().size());
         model.addAttribute("user", user);
         if (user != null) {
@@ -60,7 +62,7 @@ public class CourseController {
         subscriptionService.updateSubscriptionStatus(user);
         Course course = courseService.findCourse(id);
         Boolean joinedFlag = false;
-        if (subscriptionService.isUserSubOnCourse(user, course)){
+        if (subscriptionService.isUserSubOnCourse(user, course)) {
             joinedFlag = true;
         }
         List<Attempt> userAttempts = attemptService.findByUserAndTest(user, course.getTest());
@@ -203,5 +205,19 @@ public class CourseController {
         courseFromDB.setDescription(course.getDescription());
         courseService.save(courseFromDB);
         return String.format("redirect:/courses/owned/%d", course.getId());
+    }
+
+    @GetMapping("/search")
+    public String renderCourseSearch(Model model,
+                                     @AuthenticationPrincipal PlatformUser user,
+                                     @RequestParam(value = "name", required = false) String name) {
+
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        if (name != null){
+            model.addAttribute("courses", courseService.findByPartName(name));
+        } else {
+            model.addAttribute("courses", courseService.getAll());
+        }
+        return "courseSearch";
     }
 }

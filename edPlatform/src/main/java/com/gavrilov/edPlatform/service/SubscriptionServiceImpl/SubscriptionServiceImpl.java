@@ -58,4 +58,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public Subscription findByUserAndCourse(PlatformUser user, Course course) {
         return subscriptionRepository.findByUserAndCourse(user, course);
     }
+
+    @Override
+    public List<Subscription> findByCourse(Course course) {
+        return subscriptionRepository.findByCourse(course);
+    }
 }

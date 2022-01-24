@@ -8,6 +8,8 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -49,9 +51,17 @@ public class Course {
     @ToString.Exclude
     private Set<PlatformUser> joinedUsers;
 
+    @OneToMany(mappedBy = "course")
+    @ToString.Exclude
+    private List<Subscription> subscriptions = new ArrayList<>();
+
     @OneToOne(mappedBy = "course")
     @ToString.Exclude
     private CourseTest test;
+
+    @OneToMany(mappedBy = "course")
+    @ToString.Exclude
+    private List<Tag> tags;
 
     private Timestamp activeTime;
 

@@ -12,4 +12,7 @@ import java.util.List;
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     Subscription findByUserAndCourse(PlatformUser user, Course course);
     List<Subscription> findByUser(PlatformUser user);
+
+    List<Subscription> findByCourse(Course course);
+
 }

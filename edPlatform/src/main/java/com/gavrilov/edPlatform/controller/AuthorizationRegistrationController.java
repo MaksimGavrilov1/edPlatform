@@ -39,6 +39,8 @@ public class AuthorizationRegistrationController {
     private final ThemeTestService testService;
     private final TestQuestionService testQuestionService;
     private final QuestionStandardAnswerService questionStandardAnswerService;
+    private final SubscriptionService subscriptionService;
+    private final TagService tagService;
     boolean flag = false;
 
     @GetMapping("/login")
@@ -83,12 +85,36 @@ public class AuthorizationRegistrationController {
             course.setActiveTime(new Timestamp(1000 * 60 * 60 * 25));
             course.setIsAlwaysOpen(true);
             Course newCourse = courseService.save(course);
+            Tag tag = new Tag();
+            tag.setName("программирование");
+            tag.setCourse(course);
+            tagService.save(tag);
+            Tag tag1 = new Tag();
+            tag1.setName("алгоритмы");
+            tag1.setCourse(course);
+            tagService.save(tag1);
+            Tag tag2 = new Tag();
+            tag2.setName("java");
+            tag2.setCourse(course);
+            tagService.save(tag2);
 
             Course course1 = new Course();
             course1.setAuthor(newStudent);
             course1.setName("Структуры данных предметной области");
             course1.setDescription("Целью курса «Структуры данных в предметной области» является изучение структур данных, которые используются при программировании решения задач из предметной области указанной специальности и освоение алгоритмов обработки данных (на примерах из предметной области деятельности).");
             courseService.save(course1);
+            Subscription sub1 = new Subscription();
+            sub1.setCourse(course1);
+            sub1.setUser(newStudent);
+            Subscription sub2 = new Subscription();
+            sub2.setCourse(course1);
+            sub2.setUser(newStudent);
+            Subscription sub3 = new Subscription();
+            sub3.setCourse(course1);
+            sub3.setUser(newStudent);
+            subscriptionService.save(sub1);
+            subscriptionService.save(sub2);
+            subscriptionService.save(sub3);
 
             Course course2 = new Course();
             course2.setAuthor(newStudent);
@@ -101,6 +127,14 @@ public class AuthorizationRegistrationController {
             course3.setName("Легкий старт в Java. Вводный курс для чайников");
             course3.setDescription("Вводный курс по языку программирования Java. Доступно изложенный материал и большое количество задач.");
             courseService.save(course3);
+            Subscription sub4 = new Subscription();
+            sub4.setCourse(course3);
+            sub4.setUser(newStudent);
+            Subscription sub5 = new Subscription();
+            sub5.setCourse(course3);
+            sub5.setUser(newStudent);
+            subscriptionService.save(sub4);
+            subscriptionService.save(sub5);
 
             CourseTheme theme1 = new CourseTheme();
             theme1.setName("Алгоритмы");

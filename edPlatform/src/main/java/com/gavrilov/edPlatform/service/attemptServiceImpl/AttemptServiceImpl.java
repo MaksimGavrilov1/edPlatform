@@ -1,4 +1,4 @@
-package com.gavrilov.edPlatform.service.AttemptServiceImpl;
+package com.gavrilov.edPlatform.service.attemptServiceImpl;
 
 import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.CourseTest;

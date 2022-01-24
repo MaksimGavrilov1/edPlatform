@@ -24,14 +24,30 @@
 </head>
 <body>
 <div th:fragment="content">
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-
+    <div class="container">
+        <div class="row justify-content-md-center" style="margin: 30px;">
+            <div style="margin: 10px;">
+                <a href="#" id="popularCoursesOption" class="list-group-item active" onclick="showPopularCourses()">
+                    Самые популярные курсы
+                </a>
+            </div>
+            <div style="margin: 10px;">
+                <a href="#" id="newestCoursesOption" class="list-group-item " onclick="showNewCourses()">
+                    Недавно добавленные курсы
+                </a>
+            </div>
         </div>
     </div>
-    <div class="container">
+    <div class="container" style="max-width: 30%">
+        <div class="row justify-content-md-center" style="margin: 10px;">
+            <a th:href="@{/courses/search}" class="list-group-item ">
+                Поиск по курсам
+            </a>
+        </div>
+    </div>
+    <div class="container" id="popular">
         <div class="row">
-            <th:block th:each="course, iterStat : ${courses}">
+            <th:block th:each="course, iterStat : ${popularCourses}">
                 <!--        <div th:class="${iterStat.index} % 3 == 0 ? 'row': ''">-->
                 <div class="card" style="width: 22rem; margin: 5px;">
                     <div class="card-body">
@@ -46,52 +62,61 @@
                         <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
                     </div>
                 </div>
-                <!--        </div>-->
             </th:block>
-            <script>
-                if (document.readyState == 'complete') {
-                    // ещё загружается, ждём события
-                    alert("done")
-                } else {
-
-                }
-            </script>
-            <script>
-
-                // function cutName() {
-                //
-                //     let elem, size, text;
-                //     elem = document.getElementsByClassName('courseName');
-                //     size = 80;
-                //
-                //     for (let i = 0; i < elem.length; i++) {
-                //         text = elem[i].innerText;
-                //         if (elem[i].innerHTML.length > size) {
-                //             text = elem[i].innerHTML.substr(0, size);
-                //         }
-                //         elem[i].innerHTML = text;
-                //     }
-                // }
-
-                function cutDescription() {
-                    let elem, size, text;
-                    elem = document.getElementsByClassName('courseDescription');
-                    size = 150;
-
-                    for (let i = 0; i < elem.length; i++) {
-                        text = elem[i].innerText;
-                        if (elem[i].innerHTML.length > size) {
-                            text = elem[i].innerHTML.substr(0, size);
-                        }
-                        elem[i].innerHTML = text + '...';
-                    }
-                }
-
-                cutDescription()
-                cutName()
-            </script>
         </div>
     </div>
+    <div class="container" id="new" style="display: none">
+        <div class="row">
+            <th:block th:each="course, iterStat : ${newCourses}">
+                <!--        <div th:class="${iterStat.index} % 3 == 0 ? 'row': ''">-->
+                <div class="card" style="width: 22rem; margin: 5px;">
+                    <div class="card-body">
+                        <h5 class="card-title courseName"
+                            th:utext="${course.name}">..</h5>
+                        <h6 class="card-subtitle mb-2 text-muted"
+                            th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
+                        </h6>
+                        <p style="text-overflow: ellipsis" class="card-text courseDescription"
+                           th:utext="${course.description}"></p>
+                        <a th:href="@{/courses/{id}(id=${course.id})}" class="card-link">Перейти</a>
+                        <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <script>
+        function showNewCourses() {
+            document.getElementById("new").style.display = "block";
+            document.getElementById("popular").style.display = "none";
+            document.getElementById("newestCoursesOption").classList.add("active");
+            document.getElementById("popularCoursesOption").classList.remove("active");
+        }
+
+        function showPopularCourses() {
+            document.getElementById("popular").style.display = "block";
+            document.getElementById("new").style.display = "none";
+            document.getElementById("popularCoursesOption").classList.add("active");
+            document.getElementById("newestCoursesOption").classList.remove("active");
+        }
+
+        function cutDescription() {
+            let elem, size, text;
+            elem = document.getElementsByClassName('courseDescription');
+            size = 150;
+
+            for (let i = 0; i < elem.length; i++) {
+                text = elem[i].innerText;
+                if (elem[i].innerHTML.length > size) {
+                    text = elem[i].innerHTML.substr(0, size);
+                }
+                elem[i].innerHTML = text + '...';
+            }
+        }
+
+        cutDescription()
+    </script>
+
 </div>
 </body>
 </html>

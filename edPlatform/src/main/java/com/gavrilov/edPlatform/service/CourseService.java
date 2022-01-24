@@ -20,5 +20,9 @@ public interface CourseService {
 
     List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user);
 
+    List<Course> findTenMostPopular();
 
+    List<Course> findTenNewest();
+
+    List<Course> findByPartName(String partName);
 }

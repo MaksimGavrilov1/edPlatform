@@ -19,4 +19,6 @@ public interface SubscriptionService {
 
     Subscription findByUserAndCourse(PlatformUser user, Course course);
 
+    List<Subscription> findByCourse (Course course);
+
 }
