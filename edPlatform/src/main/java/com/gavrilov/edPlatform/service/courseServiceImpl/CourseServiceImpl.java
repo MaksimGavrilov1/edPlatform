@@ -1,16 +1,23 @@
 package com.gavrilov.edPlatform.service.courseServiceImpl;
 
 import com.gavrilov.edPlatform.model.Course;
+import com.gavrilov.edPlatform.model.CourseConfirmationRequest;
 import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.Tag;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
+import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
+import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.CourseRepository;
 import com.gavrilov.edPlatform.repo.UserRepository;
+import com.gavrilov.edPlatform.service.CourseConfirmationRequestService;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.SubscriptionService;
+import com.gavrilov.edPlatform.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +29,8 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final SubscriptionService subscriptionService;
+    private final TagService tagService;
+    private final CourseConfirmationRequestService courseConfirmationRequestService;
     private final int COURSES_TO_SHOW_AMOUNT = 10;
 
     @Override
@@ -73,17 +82,18 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> findTenMostPopular() {
         List<Course> courses = courseRepository.findAll();
         int size = courses.size();
-        PriorityQueue<Course> res = new PriorityQueue<>(Comparator.comparingInt((c)->c.getSubscriptions().size()));
-        res.addAll(courses);
-        List<Course> result = new ArrayList<>();
-        for (Course course : courses){
-            result.add(res.poll());
-        }
-        Collections.reverse(result);
+        courses.sort(Comparator.comparingInt(c->c.getSubscriptions().size()));
+//        PriorityQueue<Course> res = new PriorityQueue<>(Comparator.comparingInt((c)->c.getSubscriptions().size()));
+//        res.addAll(courses);
+//        List<Course> result = new ArrayList<>();
+//        for (Course course : courses){
+//            result.add(res.poll());
+//        }
+        Collections.reverse(courses);
         if (size < COURSES_TO_SHOW_AMOUNT){
-            return result;
+            return courses;
         } else {
-            return result.subList(0, COURSES_TO_SHOW_AMOUNT);
+            return courses.subList(0, COURSES_TO_SHOW_AMOUNT);
         }
     }
 
@@ -100,10 +110,47 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> findByPartName(String partName) {
-        List<Course> allCourses = courseRepository.findAll();
-        String name = partName.toLowerCase(Locale.ROOT).trim();
-        return allCourses.stream()
-                .filter(x->x.getName().toLowerCase(Locale.ROOT).contains(name))
-                .collect(Collectors.toList());
+        return courseRepository.findCourseByNameContainingIgnoreCase(partName).orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public List<Course> findCoursesByTag(String tag) {
+        return courseRepository.findCoursesByTagName(tag).orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public void denyCourse(Course course, String reason) {
+        course.setStatus(CourseStatus.DRAFT);
+        courseRepository.save(course);
+        CourseConfirmationRequest request = courseConfirmationRequestService.findByCourseAndStatus(course, RequestStatus.PENDING);
+        request.setStatus(RequestStatus.DECLINED);
+        request.setReason(reason);
+        request.setAnswerDate(new Timestamp(new Date().getTime()));
+        courseConfirmationRequestService.save(request);
+    }
+
+    @Override
+    public void approveCourse(Course course, PlatformUser user) {
+        course.setStatus(CourseStatus.APPROVED);
+        courseRepository.save(course);
+        CourseConfirmationRequest request = courseConfirmationRequestService.findByCourseAndStatus(course, RequestStatus.PENDING);
+        request.setStatus(RequestStatus.APPROVED);
+        request.setReason("Курс одобрен");
+        request.setAnswerDate(new Timestamp(new Date().getTime()));
+        courseConfirmationRequestService.save(request);
+        user.setRole(Role.TEACHER);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void submitToApprove(Course course, PlatformUser user) {
+        course.setStatus(CourseStatus.AWAITING_CONFIRMATION);
+        courseRepository.save(course);
+        CourseConfirmationRequest request = new CourseConfirmationRequest();
+        request.setCourse(course);
+        request.setUser(user);
+        request.setSubmitDate(new Timestamp(new Date().getTime()));
+        request.setStatus(RequestStatus.PENDING);
+        courseConfirmationRequestService.save(request);
     }
 }

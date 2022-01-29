@@ -10,14 +10,19 @@
 <div th:fragment="content">
     <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
         <div class="py-5 text-center">
-            <h2>Поиск курсов</h2>
+            <h2>Поиск курсов по тегам</h2>
         </div>
         <div class="row justify-content-md-center">
-            <form class="form-inline" th:action="@{/courses/search}" th:method="get">
+            <form class="form-inline" th:action="@{/courses/search/tag}" th:method="post">
                 <div class="input-group">
-                    <input name="name" class="form-control" id="name"
+                    <input list="allTags" th:value="${name != null ? name : ''}" name="name" class="form-control" id="name"
                            placeholder="Название"
                            required="required">
+                    <datalist id="allTags">
+                        <option th:each="tag, iter : ${tagCollection}" th:text="${tag.getName()}">
+
+                        </option>
+                    </datalist>
                 </div>
                 <button style="margin: 30px;" class="btn btn-primary" type="submit">Найти</button>
             </form>
@@ -43,6 +48,23 @@
             </th:block>
         </div>
     </div>
+    <script>
+        function cutDescription() {
+            let elem, size, text;
+            elem = document.getElementsByClassName('courseDescription');
+            size = 150;
+
+            for (let i = 0; i < elem.length; i++) {
+                text = elem[i].innerText;
+                if (elem[i].innerHTML.length > size) {
+                    text = elem[i].innerHTML.substr(0, size);
+                }
+                elem[i].innerHTML = text + '...';
+            }
+        }
+
+        cutDescription()
+    </script>
 </div>
 </body>
 </html>

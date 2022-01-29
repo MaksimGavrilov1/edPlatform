@@ -14,6 +14,10 @@
     <div th:if="${(joinedFlag and  !sub.getStatus().getValue().equals('Закрыт')) or (!joinedFlag)}" class="container" style="width: 90%; background: #ffffff; margin-top: 10px; border: 1px; border-radius: 5px;">
         <div class="row" style="padding:10px;">
             <h3 th:text="${course.getName()}"></h3>
+            <br>
+            <div class="row" style="margin-left:10px;">
+                <a th:each="tag : ${course.getTags()}" th:href="@{/courses/search/tag(name=${'#' + tag.getName()})}" th:text="${'#' + tag.getName() + ' '}"></a>
+            </div>
         </div>
         <div class="row" style="margin: 5px">
             <h5 th:text="${'Автор: ' + course.getAuthor().toString()}"></h5>

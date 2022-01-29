@@ -11,7 +11,9 @@
     <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
         <div class="py-5 text-center">
             <h2>Ваши курсы</h2>
-            <p class="lead">На этой странице представлены курсы, которые ранее были созданы вами</p>
+            <p class="lead">На этой странице представлены курсы, которые ранее были созданы вами. После работы с
+                определенным курсом, вы можете отправить его на проверку, однако в этом случае вы больше не сможете его
+                редактировать</p>
         </div>
         <table class="table">
             <caption th:if="${userCourses.size() == 0}">На данный момент у вас нет созданных курсов</caption>
@@ -26,8 +28,42 @@
             <tr th:each="course, iter : ${userCourses}">
                 <th scope="row" th:utext="${iter.index}+1">index</th>
                 <td th:utext="${course.name}">имя</td>
-                <td>---</td>
-                <td><a th:href="@{/courses/owned/{id}(id=${course.id})}" class="btn btn-outline-primary ">Подробнее</a></td>
+                <td th:text="${course.getStatus().getValue()}"></td>
+                <td><a th:if="${course.getStatus.equals(draft)}" th:href="@{/courses/owned/{id}(id=${course.id})}"
+                       class="btn btn-outline-primary ">Подробнее</a></td>
+                <td><a class="btn btn-outline-warning" th:if="${course.getStatus.equals(draft)}" th:href="@{/courses/approve/request/{id}(id=${course.id})}">Отправить на проверку</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row justify-content-md-center" style="background: white; margin: 40px; border-radius: 7px;">
+        <h4 style="margin-top: 20px;">Заявки на подтверждение курсов</h4>
+        <table class="table" style="margin: 5px;">
+            <caption th:if="${requests.size()}  == 0">На данный
+                вы еще не отправляли заявок
+            </caption>
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Курс</th>
+                <th align="center" valign="center" scope="col">Статус</th>
+                <th scope="col">Дата отправки</th>
+                <th scope="col">Дата ответа</th>
+                <th scope="col">Комментарий</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="request, iter : ${requests}">
+                <th scope="row" th:utext="${iter.index}+1"></th>
+                <td th:text="${request.getCourse()}"></td>
+                <td align="center" valign="center" th:text="${request.getStatus().getValue()}"></td>
+                <td th:text="${request.getFormattedSubmitDate()}"></td>
+                <td th:text="${request.getFormattedAnswerDate()}"></td>
+                <td th:if="${request.getStatus().equals(declined)}" th:text="${request.getReason()}">
+                </td>
+
+
             </tr>
             </tbody>
         </table>

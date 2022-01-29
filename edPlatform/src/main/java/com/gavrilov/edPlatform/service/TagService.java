@@ -9,6 +9,8 @@ public interface TagService {
 
     Tag save(Tag tag);
 
-    List<Tag> findByCourse(Course course);
+    List<Tag> findAll();
+
+    Tag findByName(String name);
 
 }

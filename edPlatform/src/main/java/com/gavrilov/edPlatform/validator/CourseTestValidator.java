@@ -5,6 +5,7 @@ import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.model.CourseTest;
 import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
 import com.gavrilov.edPlatform.model.TestQuestion;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -17,6 +18,10 @@ import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhit
 
 @Component
 public class CourseTestValidator implements Validator {
+
+    @Value("${app.max.test.attempts}")
+    private Integer maxTestAttempts;
+
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz == CourseTest.class;
@@ -30,7 +35,7 @@ public class CourseTestValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, "name", "", PlatformValidationUtilities.NOT_EMPTY_THEME_TEST_NAME);
         rejectIfEmptyOrWhitespace(errors, "amountOfAttempts", "", PlatformValidationUtilities.NOT_EMPTY_TEST_ATTEMPTS_AMOUNT);
 
-        if (courseTest.getAmountOfAttempts() < PlatformValidationUtilities.MIN_TEST_ATTEMPT_AMOUNT || courseTest.getAmountOfAttempts() > PlatformValidationUtilities.MAX_TEST_ATTEMPT_AMOUNT) {
+        if (courseTest.getAmountOfAttempts() < PlatformValidationUtilities.MIN_TEST_ATTEMPT_AMOUNT || courseTest.getAmountOfAttempts() > maxTestAttempts) {
             errors.rejectValue("amountOfAttempts","", PlatformValidationUtilities.INCORRECT_TEST_ATTEMPTS_AMOUNT);
         }
 

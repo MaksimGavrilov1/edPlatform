@@ -3,6 +3,9 @@ package com.gavrilov.edPlatform.controller;
 import com.gavrilov.edPlatform.dto.FormTest;
 import com.gavrilov.edPlatform.dto.TestDto;
 import com.gavrilov.edPlatform.dto.TestResultDto;
+import com.gavrilov.edPlatform.exception.AccessTestException;
+import com.gavrilov.edPlatform.exception.CourseExpiredException;
+import com.gavrilov.edPlatform.exception.OutOfAttemptsException;
 import com.gavrilov.edPlatform.model.*;
 import com.gavrilov.edPlatform.model.enumerator.AnswerStatus;
 import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
@@ -12,6 +15,7 @@ import com.gavrilov.edPlatform.validator.FormTestValidator;
 import com.gavrilov.edPlatform.validator.ThemeTestValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -119,19 +123,21 @@ public class TestController {
                              @AuthenticationPrincipal PlatformUser user) {
 
         Course courseFromDB = courseService.findCourse(courseId);
-        subscriptionService.updateSubscriptionStatus(user);
+
         if (!subscriptionService.isUserSubOnCourse(user, courseFromDB)){
-            //? view or view with exception
+            throw new AccessTestException("Вы не подписаны на курс");
+        } else {
+            subscriptionService.updateSubscriptionStatus(user);
         }
         if (!subscriptionService.findByUserAndCourse(user,courseFromDB).getStatus().equals(CourseSubscriptionStatus.OPEN)){
-            return String.format("redirect:/courses/%d", courseId);
+            throw new CourseExpiredException("Ваше время для выполнения теста закончилось");
         }
 
         CourseTest randAnswerTest = themeTestService.randomizeAnswers(courseFromDB.getTest());
         List<Attempt> userAttempts = attemptService.findByUserAndTest(user, randAnswerTest);
+
         if (userAttempts.size() >= randAnswerTest.getAmountOfAttempts()){
-            model.addAttribute("userProfileName", user.getProfile().getName());
-            return "noAttemptsLeft";
+            throw new OutOfAttemptsException("У вас закончились попытки");
         }
         TestDto testDto = conversionService.convert(randAnswerTest, TestDto.class);
 
@@ -140,6 +146,7 @@ public class TestController {
         attempt.setTime(new Timestamp(new Date().getTime()));
         attempt.setCourseTest(randAnswerTest);
         attempt.setMark(0);
+        attempt.setPass(false);
         attemptService.save(attempt);
 
         model.addAttribute("test", testDto);
@@ -174,5 +181,13 @@ public class TestController {
         model.addAttribute("chosenWrong", AnswerStatus.CHOSEN_WRONG);
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "testResult";
+    }
+
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    @GetMapping("/moderator/view/{id}")
+    public String viewCourseToApprove(Model model, @AuthenticationPrincipal PlatformUser user, @PathVariable Long id){
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("test", themeTestService.findTest(id));
+        return "viewTestForModer";
     }
 }

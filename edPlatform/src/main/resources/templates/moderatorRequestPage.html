@@ -13,14 +13,19 @@
             <div class="container" style="align-items: center">
                 <h1 class="display-4">Заявка на должность модератора</h1>
                 <div>
-                    <p class="lead">На этой странице вы можете оставить заявку для модерирования курсов. Ниже вы можете
+                    <p th:if="${!isActiveRequest and !isApprovedRequest}" class="lead">На этой странице вы можете оставить заявку для модерирования курсов. Ниже вы можете
                         описать ваш ранее возможный опыт. Обратите внимание, что после положительного ответа от
-                        админстрации сайта, вы больше не сможете создавать или изменять курсы.
+                        админстрации сайта, вы больше не сможете создавать или изменять курсы. Вы можете увидеть историю своих заявок ниже.
                     </p>
+                    <p th:if="${isActiveRequest}" class="lead">На данный момент ваша заявка обрабатывается.</p>
+                    <p th:if="${isApprovedRequest}" class="lead">Поздравляем, ваша заявка была одобрена. Нажмите кнопку ниже, чтобы стать модератором.</p>
                 </div>
             </div>
         </div>
-        <form th:method="post" th:object="${request}"
+        <div th:if="${isApprovedRequest}" class="row justify-content-md-center" style="margin: 5px;">
+            <a th:href="@{/user/moderator/ready}" class="btn btn-success">Стать модератором</a>
+        </div>
+        <form th:if="${!isActiveRequest and !isApprovedRequest}" th:method="post" th:object="${request}"
               th:action="@{/user/moderatorRequest}">
             <div class="row">
                 <div class="col-md-8 mb-3">
@@ -33,11 +38,32 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Отправить</button>
-            <!--            <div class="container">-->
-            <!--                <hr class="mb-4">-->
-            <!--                <button class="btn btn-primary btn-lg btn-block" type="button" th:href="@{/testPage}">Далее</button>-->
-            <!--            </div>-->
         </form>
+        <div  class="row justify-content-md-center" style="margin: 5px;">
+            <table class="table">
+                <caption th:if="${requests.size()}  == 0">На данный
+                    вы еще не отправляли заявок
+                </caption>
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Ваш опыт</th>
+                    <th align="center" valign="center" scope="col">Статус</th>
+                    <th scope="col">Причина</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="request, iter : ${requests}">
+                    <th scope="row" th:utext="${iter.index}+1"></th>
+                    <td th:text="${request.getExperience()}"></td>
+                    <td align="center" valign="center" th:text="${request.getStatus()}"></td>
+                    <td th:if="${request.getStatus().equals(declined)}" th:text="${request.getReason()}">
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </body>

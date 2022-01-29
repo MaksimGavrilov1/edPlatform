@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="py-5 text-center">
+            <h2>Поиск курсов</h2>
+        </div>
+        <div class="row justify-content-md-center">
+            <form class="form-inline" th:action="@{/courses/search}" th:method="post">
+                <div class="input-group">
+                    <input name="name" th:value="${name != null ? name : ''}" class="form-control" id="name"
+                           placeholder="Название"
+                           required="required">
+                </div>
+                <button style="margin: 30px;" class="btn btn-primary" type="submit">Найти</button>
+            </form>
+        </div>
+    </div>
+    <div class="container" id="popular">
+        <div class="row">
+            <th:block th:each="course, iterStat : ${courses}">
+                <!--        <div th:class="${iterStat.index} % 3 == 0 ? 'row': ''">-->
+                <div class="card" style="width: 22rem; margin: 5px;">
+                    <div class="card-body">
+                        <h5 class="card-title courseName"
+                            th:utext="${course.name}">..</h5>
+                        <h6 class="card-subtitle mb-2 text-muted"
+                            th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
+                        </h6>
+                        <p style="text-overflow: ellipsis" class="card-text courseDescription"
+                           th:utext="${course.description}"></p>
+                        <a th:href="@{/courses/{id}(id=${course.id})}" class="card-link">Перейти</a>
+                        <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <script>
+        function cutDescription() {
+            let elem, size, text;
+            elem = document.getElementsByClassName('courseDescription');
+            size = 150;
+
+            for (let i = 0; i < elem.length; i++) {
+                text = elem[i].innerText;
+                if (elem[i].innerHTML.length > size) {
+                    text = elem[i].innerHTML.substr(0, size);
+                }
+                elem[i].innerHTML = text + '...';
+            }
+        }
+
+        cutDescription()
+    </script>
+</div>
+</body>
+</html>

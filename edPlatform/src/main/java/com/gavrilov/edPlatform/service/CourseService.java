@@ -2,6 +2,7 @@ package com.gavrilov.edPlatform.service;
 
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.Tag;
 
 import java.util.List;
 
@@ -25,4 +26,12 @@ public interface CourseService {
     List<Course> findTenNewest();
 
     List<Course> findByPartName(String partName);
+
+    List<Course> findCoursesByTag(String tag);
+
+    void denyCourse(Course course, String reason);
+
+    void approveCourse(Course course, PlatformUser user);
+
+    void submitToApprove(Course course, PlatformUser user);
 }

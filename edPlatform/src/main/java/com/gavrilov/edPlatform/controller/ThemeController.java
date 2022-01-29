@@ -1,6 +1,7 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.FormTheme;
+import com.gavrilov.edPlatform.exception.CourseEditingException;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.model.PlatformUser;
@@ -62,10 +63,14 @@ public class ThemeController {
         return "editTheme";
     }
 
-    @PostMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteTheme(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user){
+
         CourseTheme theme = courseThemeService.findTheme(id);
         Course course  = theme.getCourse();
+        if (!course.getAuthor().equals(user)) {
+            throw new CourseEditingException("Вы не являетесь автором курса, для того чтобы удалять темы этого курса");
+        }
         courseThemeService.deleteTheme(id);
         return String.format("redirect:/courses/owned/%d", course.getId()) ;
     }

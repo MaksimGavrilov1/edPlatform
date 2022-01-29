@@ -1,9 +1,12 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.PasswordDto;
+import com.gavrilov.edPlatform.exception.RoleChangeException;
 import com.gavrilov.edPlatform.model.ModeratorRoleRequest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.PlatformUserProfile;
+import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
+import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.service.AttemptService;
 import com.gavrilov.edPlatform.service.ModeratorRoleRequestService;
 import com.gavrilov.edPlatform.service.SubscriptionService;
@@ -11,6 +14,7 @@ import com.gavrilov.edPlatform.service.UserService;
 import com.gavrilov.edPlatform.validator.PasswordDtoValidator;
 import com.gavrilov.edPlatform.validator.PlatformUserProfileValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -30,7 +34,7 @@ public class PlatformUserController {
     private final BCryptPasswordEncoder encoder;
     private final PlatformUserProfileValidator profileValidator;
     private final SubscriptionService subscriptionService;
-
+    private final ModeratorRoleRequestService moderatorRoleRequestService;
 
 
     @GetMapping("/profile")
@@ -95,6 +99,10 @@ public class PlatformUserController {
     @GetMapping("/moderatorRequest")
     public String showModeratorRequestPage (Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("request", new ModeratorRoleRequest());
+        model.addAttribute("requests", moderatorRoleRequestService.findByUser(user));
+        model.addAttribute("isApprovedRequest", moderatorRoleRequestService.isUserHaveApproved(user));
+        model.addAttribute("isActiveRequest", moderatorRoleRequestService.isUserHaveAnyActiveRequest(user));
+        model.addAttribute("declined", RequestStatus.DECLINED);
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "moderatorRequestPage";
     }
@@ -108,4 +116,47 @@ public class PlatformUserController {
         return "redirect:/courses/all";
     }
 
+    @GetMapping("/moderators")
+    public String showModerators(Model model, @AuthenticationPrincipal PlatformUser user){
+
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("moderators", userService.findModeratorsAndApprovedCoursesSize());
+        return "moderatorsList";
+    }
+
+    @GetMapping("/newModerators")
+    public String showModeratorRequests(Model model, @AuthenticationPrincipal PlatformUser user){
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("requests", moderatorRoleRequestService.findByStatus(RequestStatus.PENDING));
+        return "newModerators";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/moderator/approve/{id}")
+    public String approveModerator (Model model, @AuthenticationPrincipal PlatformUser user,
+                                    @PathVariable(name = "id") Long id){
+        moderatorRoleRequestService.approveUser(userService.findById(id));
+        return "redirect:/user/newModerators";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/moderator/deny/{id}")
+    public String denyModerator(Model model, @AuthenticationPrincipal PlatformUser user,
+                                @PathVariable(name="id") Long id,
+                                @RequestParam(name = "reason") String reason){
+        moderatorRoleRequestService.denyUser(userService.findById(id), reason);
+        return "redirect:/user/newModerators";
+    }
+
+    @GetMapping("/moderator/ready")
+    public String readyToChangeRole(@AuthenticationPrincipal PlatformUser user){
+        if (moderatorRoleRequestService.isUserHaveApproved(user)){
+            PlatformUser userFromDB = userService.findByUsername(user.getUsername());
+            userFromDB.setRole(Role.MODERATOR);
+            PlatformUser newUser = userService.saveUser(userFromDB);
+            return "redirect:/logout";
+        } else {
+            throw new RoleChangeException("Ваша заявка на роль модератора еще не была одобрена");
+        }
+    }
 }

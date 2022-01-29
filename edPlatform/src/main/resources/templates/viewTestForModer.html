@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <h4 th:text="${test.getName()}"></h4>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <h4 th:text="'Количество баллов: ' + ${test.getTestQuestions().size()}"></h4>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <h4 th:text="'Количество попыток: ' + ${test.getAmountOfAttempts()}"></h4>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <h4 th:text="'Минимальный порог: ' + ${test.getMinThreshold()}"></h4>
+        </div>
+        <div class="container" th:each="question, iter : ${test.getTestQuestions()}" style="margin: 10px; background: white; border-radius: 7px;">
+            <div class="row">
+                <h6 th:text="${(iter.index + 1) + '. ' + question.getText()}"></h6>
+
+            </div>
+            <ul>
+                <li style="list-style-type: none"
+                    th:each="answer, iterat : ${question.getQuestionStandardAnswers()}">
+                    <div class="row">
+                        <span>&#8226; &nbsp;</span>
+                        <p th:text="${answer.getText()}"></p>
+                        <span th:if="${answer.getRight()}">&nbsp; (верный ответ)</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="row justify-content-md-center" style="margin: 15px;">
+            <a class="btn  btn-primary" th:href="@{/courses/newCourses}">Вернуться</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

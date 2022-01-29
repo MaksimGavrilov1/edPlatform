@@ -22,6 +22,11 @@
             <div class="card-header">Структура курса</div>
             <div class="card-body" style="align-items: center">
                 <h5 class="card-title" th:text="${course.name}"></h5>
+                <div class="row" style="margin-left:10px;">
+                    <a th:each="tag : ${course.getTags()}" th:href="@{/courses/search/tag(name=${'#' + tag.getName()})}" th:text="${'#' + tag.getName() + ' '}">
+                        <th:block th:text="${tag.name}"></th:block>>
+                    </a>
+                </div>
                 <p class="card-text" th:text="${course.description}"></p>
                 <a class="card-text btn btn-primary btn-sm" style="margin: 5px;"
                    th:href="@{/courses/edit/{id}/(id = ${course.getId()})}">Редактировать основную информацию</a>
@@ -62,10 +67,8 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить
                                         </button>
-                                        <form th:method="post"
-                                              th:action="@{/themes/delete/{id}/(id = ${theme.getId()})}">
-                                            <button type="submit" class="btn btn-danger">Удалить</button>
-                                        </form>
+                                        <a class="btn btn-danger" th:href="@{/themes/delete/{id}/(id = ${theme.getId()})}"></a>
+
                                     </div>
                                 </div>
                             </div>

@@ -7,6 +7,7 @@ import com.gavrilov.edPlatform.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,7 +24,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<Tag> findByCourse(Course course) {
-        return tagRepository.findByCourse(course);
+    public List<Tag> findAll() {
+        return tagRepository.findAll();
     }
+
+    @Override
+    public Tag findByName(String name) {
+        return tagRepository.findByName(name);
+    }
+
 }

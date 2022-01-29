@@ -16,13 +16,48 @@
             <tr>
                 <th scope="col">#</th>
                 <th scope="col">Название курса</th>
+                <th scope="col">Содержание курса</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="course, iter : ${courses}">
                 <th scope="row" th:utext="${iter.index}+1">index</th>
                 <td th:utext="${course.name}">имя</td>
-                <td><a th:href="@{/courses/approve/{id}(id=${course.id})}" class="btn">Принять</a></td>
+                <td><a th:href="@{/courses/viewToApprove/{id}(id = ${course.getId()})}" class="btn btn-dark btn-sm">Подробнее</a></td>
+                <td><a th:href="@{/courses/approve/{id}(id=${course.id})}" class="btn btn-success btn-sm">Принять</a></td>
+                <td>
+                    <button style="font-size: 0.875rem" type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                            data-target="#denyRequest">
+                        Отклонить
+                    </button>
+                </td>
+                <div class="modal fade" id="denyRequest" tabindex="-1" role="dialog"
+                     aria-labelledby="deleteTheme" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteThemeLongTitle"
+                                    th:text="'Отклонение заявки'"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" th:action="@{/courses/deny/{id}(id=${course.getId()})}">
+                                    <label th:for="${iter.index}">Причина:</label>
+                                    <input th:id="${iter.index}" name="reason" required>
+                                    <button type="submit" class="btn btn-primary">Отправить</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить
+                                </button>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </tr>
             </tbody>
         </table>

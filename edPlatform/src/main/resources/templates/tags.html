@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="py-5 text-center">
+            <h2>Добавление тегов</h2>
+        </div>
+        <div class="row justify-content-md-center">
+            <form class="form-inline" th:action="@{/tag/add}" th:object="${formTag}" th:method="post">
+                <div class="input-group">
+                    <input th:field="*{name}" class="form-control" id="name"
+                           placeholder="Тег..."
+                           required="required">
+                </div>
+                <button style="margin: 30px;" class="btn btn-primary" type="submit">Найти</button>
+                <div class="row justify-content-md-center" th:if="${#fields.errors('name').size() != 0}">
+                    <div th:if="${#fields.errors('name')}" style="padding: 10px; margin: 10px;"
+                         class="alert alert-dismissible alert-danger error">
+                        <ul style="list-style-type: none; padding: 0">
+                            <li style="margin: 0;" th:each="err : ${#fields.errors('name')}"
+                                th:text="${err}"></li>
+                        </ul>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="container"  style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="row">
+            <th:block th:each="tag, iterStat : ${tags}">
+                <div class="col">
+                    <span>&#8226; &nbsp;</span>
+                    <span th:text="${tag.name}"></span>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>

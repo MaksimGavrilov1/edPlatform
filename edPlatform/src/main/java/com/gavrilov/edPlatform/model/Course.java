@@ -16,7 +16,6 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "name")
@@ -45,7 +44,7 @@ public class Course {
     private Set<CourseTheme> themes;
 
     @Enumerated(EnumType.STRING)
-    private CourseStatus status = CourseStatus.AWAITING_CONFIRMATION;
+    private CourseStatus status = CourseStatus.DRAFT;
 
     @ManyToMany(mappedBy = "joinedCourses")
     @ToString.Exclude
@@ -59,7 +58,12 @@ public class Course {
     @ToString.Exclude
     private CourseTest test;
 
-    @OneToMany(mappedBy = "course")
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "tags_courses",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
     @ToString.Exclude
     private List<Tag> tags;
 
@@ -85,5 +89,10 @@ public class Course {
 
     public Integer getActiveDays(){
         return Math.toIntExact(activeTime.getTime() / 1000 / 60 / 60 / 24);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

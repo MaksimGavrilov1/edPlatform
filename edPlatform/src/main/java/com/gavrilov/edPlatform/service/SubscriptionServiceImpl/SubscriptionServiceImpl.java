@@ -32,14 +32,24 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public void updateSubscriptionStatus(PlatformUser user) {
         List<Subscription> userSubs = subscriptionRepository.findByUser(user);
         for (Subscription sub : userSubs){
-            long timeNow = new Date().getTime();
-            if (sub.getCourseEndDate().getTime() - timeNow <= 0 && sub.getCourse().getIsAlwaysOpen()){
-                sub.setStatus(CourseSubscriptionStatus.EXPIRED);
-                subscriptionRepository.save(sub);
-            } else if (sub.getCourseEndDate().getTime() - timeNow <= 0 && !sub.getCourse().getIsAlwaysOpen()){
-                sub.setStatus(CourseSubscriptionStatus.CLOSED);
-                subscriptionRepository.save(sub);
-            }
+            updateSub(sub);
+        }
+    }
+
+    @Override
+    public void updateSubscriptionStatusByUserAndCourse(PlatformUser user, Course course) {
+        Subscription sub = subscriptionRepository.findByUserAndCourse(user, course);
+        updateSub(sub);
+    }
+
+    private void updateSub(Subscription sub){
+        long timeNow = new Date().getTime();
+        if (sub.getCourseEndDate().getTime() - timeNow <= 0 && sub.getCourse().getIsAlwaysOpen()){
+            sub.setStatus(CourseSubscriptionStatus.EXPIRED);
+            subscriptionRepository.save(sub);
+        } else if (sub.getCourseEndDate().getTime() - timeNow <= 0 && !sub.getCourse().getIsAlwaysOpen()){
+            sub.setStatus(CourseSubscriptionStatus.CLOSED);
+            subscriptionRepository.save(sub);
         }
     }
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container" style="background: white; margin: 20px; border-radius: 7px;">
+        <div class="py-5 text-center">
+            <h2>Модераторы</h2>
+            <p class="lead">Ниже представлена таблица с действующими модераторами</p>
+        </div>
+        <table class="table">
+            <caption th:if="${moderators.size() == 0}">На данный
+                момент нет действующих модераторов
+            </caption>
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Количество подтвержденных курсов</th>
+<!--                <th scope="col">Дата окончания</th>-->
+<!--                <th scope="col">Статус</th>-->
+            </tr>
+            </thead>
+            <tbody th:if="${moderators.size() != 0}">
+            <tr th:each="moder, iter : ${moderators}">
+                <th scope="row" th:utext="${iter.index}+1"></th>
+                <td th:text="${moder.key.getProfile().getName()}"></td>
+                <td th:text="${moder.key.getProfile().getSurname()}" ></td>
+                <td th:text="${moder.value}" ></td>
+                <td><a href="#">Выгнать</a></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

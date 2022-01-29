@@ -2,10 +2,12 @@ package com.gavrilov.edPlatform.validator;
 
 import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.dto.FormCourse;
+import com.gavrilov.edPlatform.dto.TagDto;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.repo.CourseRepository;
 import com.gavrilov.edPlatform.service.CourseService;
+import com.gavrilov.edPlatform.service.TagService;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,14 +15,14 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class FormCourseValidator implements Validator {
 
-    private final CourseService courseService;
-    private final UserService userService;
     private final CourseRepository courseRepository;
+    private final TagService tagService;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -45,6 +47,7 @@ public class FormCourseValidator implements Validator {
             PlatformUser courseAuthor = course.getAuthor();
             List<Course> authorCourses = courseRepository.findCourseByAuthor(courseAuthor);
             List<Course> allCourses = courseRepository.findAll();
+            List<TagDto> tags = course.getTags();
 
             if (authorCourses.stream().anyMatch((x) -> x.getName().equals(course.getName()))) {
 
@@ -58,6 +61,24 @@ public class FormCourseValidator implements Validator {
 
             if (course.getDays() > PlatformValidationUtilities.MAX_TEST_ACTIVE_TIME){
                 errors.rejectValue("days", "", PlatformValidationUtilities.INCORRECT_TEST_MAX_ACTIVE_TIME);
+            } else if (course.getDays() < PlatformValidationUtilities.MIN_TEST_ACTIVE_TIME){
+                errors.rejectValue("days", "", PlatformValidationUtilities.INCORRECT_TEST_MIN_ACTIVE_TIME);
+            }
+
+            if (course.getIsAlwaysOpen() == null) {
+                errors.rejectValue("isAlwaysOpen", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_ALWAYS_OPEN);
+            }
+
+            tags = tags.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+            if (tags.size() != 3){
+                errors.rejectValue("tags", "", PlatformValidationUtilities.DUPLICATE_COURSE_TAGS);
+            }
+            for (TagDto tag : tags){
+                if (tagService.findByName(tag.getName().trim()) == null){
+                    errors.rejectValue("tags", "", String.format(PlatformValidationUtilities.TAG_NOT_EXIST_MODIFYING, tag.getName()));
+                }
             }
 
         }

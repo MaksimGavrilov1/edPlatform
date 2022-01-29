@@ -41,6 +41,9 @@
             <li class="nav-item" sec:authorize="hasAnyAuthority('MODERATOR')" >
                 <a class="nav-link" th:href="@{/courses/newCourses}">Курсы для подтверждения</a>
             </li>
+            <li class="nav-item" sec:authorize="hasAnyAuthority('MODERATOR')" >
+                <a class="nav-link" th:href="@{/tag/all}">Добавление тегов</a>
+            </li>
             <li class="nav-item" sec:authorize="hasAnyAuthority('ADMIN')" >
                 <a class="nav-link" th:href="@{/user/moderators}">Модераторы</a>
             </li>

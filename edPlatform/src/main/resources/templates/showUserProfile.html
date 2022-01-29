@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
       th:include="layout :: page" lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -26,25 +26,25 @@
                     <a class="btn btn-outline-primary"
                        style="margin-right: 3px; margin-bottom: 3px;" th:href="@{/user/changePassword}">Сменить
                         пароль</a>
-                    <a class="btn btn-outline-primary"
+                    <a sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="btn btn-outline-primary"
                        style="margin-top: 2px;" th:href="@{/user/editProfile}">Редактировать профиль</a>
                 </div>
 
-                <div class="list-group" style="margin-top: 30px; margin-bottom: 20px;">
+                <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="list-group" style="margin-top: 30px; margin-bottom: 20px;">
                     <a href="#" id="personalInfoOption" class="list-group-item " onclick="showPersonalInfo()">
                         О себе
                     </a>
-                    <a href="#" id="coursesOption" class="list-group-item active" onclick="showCourse()">
+                    <a  href="#" id="coursesOption" class="list-group-item active" onclick="showCourse()">
                         Подписки <span class="badge"
-                                       th:text="${user.getJoinedCourses().size()}"></span>
+                                       th:text="${subs.size()}"></span>
                     </a>
-                    <a href="#" id="attemptsOption" onclick="showAttempt()" class="list-group-item">
+                    <a  href="#" id="attemptsOption" onclick="showAttempt()" class="list-group-item">
                         Тесты <span class="badge"
                                     th:text="${attempts.size()}"></span>
                     </a>
                 </div>
             </div>
-            <div class="col-8">
+            <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="col-8">
                 <div id="courses" style="background-color:white; border-radius: 3px; padding: 20px;">
                     <div style="padding:10px;">
                         <h4 style="margin: 20px;">Подписки</h4>
@@ -74,7 +74,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="attempts"
+                <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" id="attempts"
                      style="background-color:white; border-radius: 3px; display: none; padding: 20px;">
                     <div style="padding:10px;">
                         <h4 style="margin: 20px;">Последние попытки прохождения тестов</h4>
@@ -107,7 +107,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="userInfo"
+                <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" id="userInfo"
                      style="display: none; background-color:white; border-radius: 3px; display: none; padding-top: 20px; padding-left: 40px; padding-bottom: 30px;">
                     <div class="row">
                         <h4 style="" th:text="${user.getProfile.getSurname() + ' '}">&nbsp;</h4>

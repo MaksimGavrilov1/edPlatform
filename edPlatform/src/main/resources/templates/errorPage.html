@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="row align-items-center" style="min-height: 70vh">
+        <div class="container align-self-center">
+            <div class="row justify-content-md-center">
+                <div class="alert alert-danger" role="alert" style="max-width: 450px; padding: 20px;">
+                    <div class="row justify-content-md-center">
+                        <h4 class="alert-heading" style="margin-left: 20px; margin-right: 20px" th:text="${errorName}"></h4>
+                    </div>
+                    <hr>
+                    <p class="mb-0" th:text="${errorMessage}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

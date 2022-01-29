@@ -48,7 +48,7 @@
             </div>
             <div class="form-group">
                 <label for="minThreshold">Минимальное количество вопросов для прохождения (по умолчанию - 50%)</label>
-                <input type="number" min="0" class="form-control" id="minThreshold"
+                <input type="number" min="1" class="form-control" id="minThreshold"
                        th:field="*{minThreshold}" required>
                 <div class="row" th:if="${#fields.errors('minThreshold').size() != 0}">
                     <div th:if="${#fields.errors('minThreshold')}" style="padding: 10px; margin: 10px;"

@@ -1,7 +1,7 @@
 package com.gavrilov.edPlatform.model.enumerator;
 
 public enum CourseSubscriptionStatus {
-    CLOSED("Закрыт"), OPEN("Открыт"), EXPIRED("Не активен")
+    CLOSED("Закрыт"), OPEN("Открыт"), EXPIRED("Время истекло")
     ;
 
     private final String value;

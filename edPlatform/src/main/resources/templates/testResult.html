@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
       th:include="layout :: page">
 <head>
     <meta charset="UTF-8">
@@ -37,9 +37,7 @@
             </ul>
         </div>
         <div class="row justify-content-md-center" style="margin: 15px;">
-            <form th:action="@{/user/profile}" th:method="get">
-            <button type="submit"  class="btn btn-primary">Завершить просмотр</button>
-            </form>
+            <a class="btn  btn-primary" th:href="@{/user/profile}"></a>
         </div>
     </div>
 </div>

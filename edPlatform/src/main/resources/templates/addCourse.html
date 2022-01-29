@@ -32,7 +32,7 @@
                             <span style="margin-bottom: 4px;" class="badge rounded-pill bg-success"
                                   id="max-courseName"></span>
                             <input type="text" max="80" class="form-control" th:field="*{name}" id="courseName"
-                                   placeholder="Название"
+                                   placeholder="Название..."
                                    required="required">
                             <div class="row" th:if="${#fields.errors('name').size() != 0}">
                                 <div th:if="${#fields.errors('name')}" style="padding: 10px; margin: 10px;"
@@ -45,12 +45,13 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="row justify-content-md-center">
                         <div class="col-md-8 mb-3">
                             <label for="description">Описание</label>
                             <div class="input-group">
                                 <textarea rows="5" th:field="*{description}" class="form-control" id="description"
-                                          placeholder="Описание"
+                                          placeholder="Описание..."
                                           required="required"></textarea>
                             </div>
                         </div>
@@ -64,11 +65,12 @@
                             </ul>
                         </div>
                     </div>
+                    <hr>
                     <div class="row justify-content-md-center">
                         <div class="col-md-8 mb-3">
                             <label for="days">Количество дней для прохождения курса</label>
                             <div class="input-group">
-                                <input type="number" min="0" max="365" th:field="*{days}" class="form-control" id="days"
+                                <input type="number" min="1" max="365" th:field="*{days}" class="form-control" id="days"
                                        placeholder="Количество дней"
                                        required="required">
                             </div>
@@ -83,16 +85,18 @@
                             </ul>
                         </div>
                     </div>
+                    <hr>
                     <div class="row justify-content-md-center">
                         <div class="col-md-8 mb-3">
                             <p>Разрешить доступ к содержимому курса, после его окончания</p>
                             <div class="form-check">
                                 <input type="radio" th:field="*{isAlwaysOpen}" class="form-check-input"
-                                       id="isAlwaysOpen" th:value="true" checked>
+                                       id="isAlwaysOpen" th:value="true" th:checked="checked" checked="checked">
                                 <label class="form-check-label" for="isAlwaysOpen">Да</label>
                             </div>
                             <div class="form-check">
-                                <input type="radio" th:field="*{isAlwaysOpen}" class="form-check-input" id="isAlwaysOpen2"
+                                <input type="radio" th:field="*{isAlwaysOpen}" class="form-check-input"
+                                       id="isAlwaysOpen2"
                                        th:value="false">
                                 <label class="form-check-label" for="isAlwaysOpen2">Нет</label>
                             </div>
@@ -102,11 +106,38 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row justify-content-md-center" th:if="${#fields.errors('isAlwaysOpen').size() != 0}">
                         <div style="padding: 10px; margin: 10px;"
                              class="alert alert-dismissible alert-danger error">
                             <ul style="list-style-type: none; padding: 0">
                                 <li style="margin: 0;" th:each="err : ${#fields.errors('isAlwaysOpen')}"
+                                    th:text="${err}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row justify-content-md-center">
+                        <div class="col-md-8 mb-3">
+                            Настроить теги
+                        </div>
+                    </div>
+                    <th:block th:each="tag, iter: *{tags}">
+                        <div class="row justify-content-md-center">
+                            <div class="col-md-8 mb-3">
+                            <input th:id="${'tag' + iter.index}" type="text" th:list="${iter.index}" th:field="*{tags[__${iter.index}__].name}" style="margin:10px;">
+                            <datalist th:id="${iter.index}">
+                                <option th:class="${'class' + iter.index}" th:each="tagFromDB : ${tagCollection}"
+                                        th:value="${tagFromDB.getName()}"></option>
+                            </datalist>
+                            </div>
+                        </div>
+                    </th:block>
+                    <div class="row justify-content-md-center" th:if="${#fields.errors('tags').size() != 0}">
+                        <div style="padding: 10px; margin: 10px;"
+                             class="alert alert-dismissible alert-danger error">
+                            <ul style="list-style-type: none; padding: 0">
+                                <li style="margin: 0;" th:each="err : ${#fields.errors('tags')}"
                                     th:text="${err}"></li>
                             </ul>
                         </div>
@@ -120,6 +151,7 @@
     </div>
 
     <script>
+
         courseName.oninput = courseName.onkeyp = courseName.onchange = function () {
             let len = this.value.length;
             if (len > this.max) {
@@ -132,8 +164,8 @@
                 document.getElementById('max-courseName').classList.add('bg-success');
             }
             document.getElementById('max-' + this.id).innerHTML = '' + (this.max - len) + '/' + this.max;
-
         }
+
     </script>
 </div>
 

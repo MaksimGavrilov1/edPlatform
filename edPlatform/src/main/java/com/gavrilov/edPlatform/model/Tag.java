@@ -5,6 +5,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "tag")
@@ -19,7 +23,7 @@ public class Tag {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<Course> courses = new HashSet<>();
 }

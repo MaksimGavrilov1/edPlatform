@@ -2,6 +2,7 @@ package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.UserDto;
 import com.gavrilov.edPlatform.model.*;
+import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.PlatformUserProfileRepository;
 import com.gavrilov.edPlatform.service.*;
@@ -50,15 +51,33 @@ public class AuthorizationRegistrationController {
             PlatformUser admin = new PlatformUser();
             PlatformUserProfile profile = new PlatformUserProfile();
             admin.setRole(Role.ADMIN);
-            admin.setUsername("admin123");
-            admin.setPassword(encoder.encode("qwerty12"));
+            admin.setUsername("superadmin");
+            admin.setPassword(encoder.encode("superadmin"));
             admin.setProfile(profile);
+            PlatformUser newAdm = userService.saveUser(admin);
             profile.setName("Ivan");
             profile.setSurname("Ivanov");
             profile.setMiddleName("Ivanovich");
             profile.setSelfDescription("I m admin");
-            profile.setPlatformUser(admin);
-            userService.saveUser(admin);
+            profile.setPlatformUser(newAdm);
+            platformUserProfileRepository.save(profile);
+
+            PlatformUser moder1 = new PlatformUser();
+            PlatformUserProfile mprofile = new PlatformUserProfile();
+            moder1.setRole(Role.MODERATOR);
+            moder1.setUsername("moderator123");
+            moder1.setPassword(encoder.encode("qwerty12"));
+            moder1.setProfile(mprofile);
+            PlatformUser newMOd = userService.saveUser(moder1 );
+            mprofile.setName("Николай");
+            mprofile.setSurname("Иванов");
+            mprofile.setMiddleName("Николаевич");
+            mprofile.setSelfDescription("Я преподаю информатику с 2008 года, когда предмет ещё назывался ИКТ. Начинал со школы, учил детей разбираться\n" +
+                    "          в программировании и сдавать ЕГЭ на 90 баллов и выше. За два года вывел нашу школу на второе место в районе по\n" +
+                    "          олимпиадам по информатике. Вёл два класса коррекции — пятый и одиннадцатый — и знаю, как объяснить основы\n" +
+                    "          теории вероятности даже тем, кто не хочет ничему учиться.");
+            mprofile.setPlatformUser(newMOd);
+            platformUserProfileRepository.save(mprofile);
 
             PlatformUser student = new PlatformUser();
             PlatformUserProfile studProf = new PlatformUserProfile();
@@ -77,44 +96,65 @@ public class AuthorizationRegistrationController {
             platformUserProfileRepository.save(studProf);
             //PlatformUser newStudent = userService.saveUser(student);
 
+            PlatformUser tempUser = new PlatformUser();
+            tempUser.setRole(Role.STUDENT);
+            tempUser.setUsername("qwerty123");
+            tempUser.setPassword(encoder.encode("qwerty12"));
+            PlatformUser tempUser1 = userService.saveUser(tempUser);
+
 
             Course course = new Course();
             course.setAuthor(newStudent);
             course.setName("Введение в программирование. Курс для начинающих.");
             course.setDescription("Этот курс предназначен для тех, кто хочет стать программистом. Избранные разделы высшей математики в контексте Data Science с упором на решение задач. Для сильных духом.");
-            course.setActiveTime(new Timestamp(1000 * 60 * 60 * 25));
-            course.setIsAlwaysOpen(true);
+            course.setActiveTime(new Timestamp(10_000));
+            course.setIsAlwaysOpen(false);
             Course newCourse = courseService.save(course);
-            Tag tag = new Tag();
-            tag.setName("программирование");
-            tag.setCourse(course);
-            tagService.save(tag);
-            Tag tag1 = new Tag();
-            tag1.setName("алгоритмы");
-            tag1.setCourse(course);
-            tagService.save(tag1);
-            Tag tag2 = new Tag();
-            tag2.setName("java");
-            tag2.setCourse(course);
-            tagService.save(tag2);
+//            Subscription sub1 = new Subscription();
+//            sub1.setCourse(newCourse);
+//            sub1.setUser(newStudent);
+//            sub1.setStatus(CourseSubscriptionStatus.OPEN);
+//            sub1.setDateOfSubscription(new Timestamp(new Date().getTime()));
+//            sub1.setCourseEndDate(new Timestamp(new Date().getTime() + 5000));
+//            subscriptionService.save(sub1);
+
 
             Course course1 = new Course();
             course1.setAuthor(newStudent);
             course1.setName("Структуры данных предметной области");
             course1.setDescription("Целью курса «Структуры данных в предметной области» является изучение структур данных, которые используются при программировании решения задач из предметной области указанной специальности и освоение алгоритмов обработки данных (на примерах из предметной области деятельности).");
             courseService.save(course1);
-            Subscription sub1 = new Subscription();
-            sub1.setCourse(course1);
-            sub1.setUser(newStudent);
-            Subscription sub2 = new Subscription();
-            sub2.setCourse(course1);
-            sub2.setUser(newStudent);
-            Subscription sub3 = new Subscription();
-            sub3.setCourse(course1);
-            sub3.setUser(newStudent);
-            subscriptionService.save(sub1);
-            subscriptionService.save(sub2);
-            subscriptionService.save(sub3);
+//            Subscription sub2 = new Subscription();
+//            sub2.setCourse(course1);
+//            sub2.setUser(tempUser1);
+//            Subscription sub3 = new Subscription();
+//            sub3.setCourse(course1);
+//            sub3.setUser(admin);
+//            subscriptionService.save(sub2);
+//            subscriptionService.save(sub3);
+
+            //tags for 2 courses
+            Tag tag = new Tag();
+            tag.setName("программирование");
+            tag.getCourses().add(course);
+            tag.getCourses().add(course1);
+            tagService.save(tag);
+            Tag tag1 = new Tag();
+            tag1.setName("алгоритмы");
+            tag1.getCourses().add(course);
+            tag1.getCourses().add(course1);
+            tagService.save(tag1);
+            Tag tag2 = new Tag();
+            tag2.setName("java");
+            tag2.getCourses().add(course);
+            tagService.save(tag2);
+
+            Tag tagger = new Tag();
+            for(int i=0; i<100; i ++){
+                tagger.setName(" " + i);
+                tagService.save(tagger);
+            }
+
 
             Course course2 = new Course();
             course2.setAuthor(newStudent);
@@ -127,14 +167,14 @@ public class AuthorizationRegistrationController {
             course3.setName("Легкий старт в Java. Вводный курс для чайников");
             course3.setDescription("Вводный курс по языку программирования Java. Доступно изложенный материал и большое количество задач.");
             courseService.save(course3);
-            Subscription sub4 = new Subscription();
-            sub4.setCourse(course3);
-            sub4.setUser(newStudent);
-            Subscription sub5 = new Subscription();
-            sub5.setCourse(course3);
-            sub5.setUser(newStudent);
-            subscriptionService.save(sub4);
-            subscriptionService.save(sub5);
+//            Subscription sub4 = new Subscription();
+//            sub4.setCourse(course3);
+//            sub4.setUser(newStudent);
+//            Subscription sub5 = new Subscription();
+//            sub5.setCourse(course3);
+//            sub5.setUser(tempUser);
+//            subscriptionService.save(sub4);
+//            subscriptionService.save(sub5);
 
             CourseTheme theme1 = new CourseTheme();
             theme1.setName("Алгоритмы");

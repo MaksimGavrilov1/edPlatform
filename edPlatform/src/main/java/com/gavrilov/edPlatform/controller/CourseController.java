@@ -1,23 +1,22 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.FormCourse;
+import com.gavrilov.edPlatform.dto.TagDto;
+import com.gavrilov.edPlatform.exception.CourseEditingException;
+import com.gavrilov.edPlatform.exception.CourseSubmitException;
 import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.Subscription;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
-import com.gavrilov.edPlatform.model.enumerator.Role;
-import com.gavrilov.edPlatform.repo.CourseThemeRepository;
-import com.gavrilov.edPlatform.service.AttemptService;
-import com.gavrilov.edPlatform.service.CourseService;
-import com.gavrilov.edPlatform.service.SubscriptionService;
-import com.gavrilov.edPlatform.service.UserService;
-import com.gavrilov.edPlatform.validator.CourseEditValidator;
-import com.gavrilov.edPlatform.validator.CourseThemeValidator;
+import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
+import com.gavrilov.edPlatform.service.*;
+import com.gavrilov.edPlatform.validator.FormCourseEditValidator;
 import com.gavrilov.edPlatform.validator.FormCourseValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,12 +36,13 @@ public class CourseController {
     private final CourseService courseService;
     private final UserService userService;
     private final FormCourseValidator validator;
-    private final CourseThemeValidator courseThemeValidator;
-    private final CourseThemeRepository courseThemeRepository;
+    private final FormCourseEditValidator editValidator;
     private final AttemptService attemptService;
-    private final CourseEditValidator courseEditValidator;
     private final ConversionService conversionService;
     private final SubscriptionService subscriptionService;
+    private final TagService tagService;
+    private final CourseConfirmationRequestService courseConfirmationRequestService;
+
 
     @GetMapping("/all")
     public String showCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
@@ -59,11 +59,11 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public String viewCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
-        subscriptionService.updateSubscriptionStatus(user);
         Course course = courseService.findCourse(id);
-        Boolean joinedFlag = false;
-        if (subscriptionService.isUserSubOnCourse(user, course)) {
-            joinedFlag = true;
+
+        boolean joinedFlag = subscriptionService.isUserSubOnCourse(user, course);
+        if (joinedFlag) {
+            subscriptionService.updateSubscriptionStatusByUserAndCourse(user, course);
         }
         List<Attempt> userAttempts = attemptService.findByUserAndTest(user, course.getTest());
         int userAttemptsLeft = course.getTest().getAmountOfAttempts();
@@ -87,7 +87,7 @@ public class CourseController {
     public String viewOwnedCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
         Course course = courseService.findCourse(id);
         if (!course.getAuthor().equals(user)) {
-            return "redirect:/courses/all";
+            throw new CourseEditingException("Вы не являетесь автором этого курса");
         }
         model.addAttribute("course", course);
         model.addAttribute("userProfileName", user.getProfile().getName());
@@ -98,12 +98,21 @@ public class CourseController {
     public String showUserCourses(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("userCourses", courseService.findCoursesByAuthor(user));
         model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("requests", courseConfirmationRequestService.findByUser(user));
+        model.addAttribute("declined", RequestStatus.DECLINED);
+        model.addAttribute("draft", CourseStatus.DRAFT);
         return "showUserCourses";
     }
 
     @GetMapping("/addCourse")
     public String addCourse(Model model, @AuthenticationPrincipal PlatformUser user) {
-        model.addAttribute("course", new FormCourse());
+        FormCourse formCourse = new FormCourse();
+        int maxTagAmount = 3;
+        for (int i = 0; i < maxTagAmount; i++) {
+            formCourse.getTags().add(new TagDto());
+        }
+        model.addAttribute("course", formCourse);
+        model.addAttribute("tagCollection", tagService.findAll());
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "addCourse";
     }
@@ -123,28 +132,10 @@ public class CourseController {
             return "addCourse";
         }
         Course c = conversionService.convert(course, Course.class);
-        courseService.save(c);
+        Course newCourse = courseService.save(c);
+
 
         return "redirect:/courses/usersCourses";
-//        return String.format("redirect:/courses/addThemes/%d", c.getId());
-    }
-
-    @GetMapping("/newCourses")
-    public String showCoursesToAccept(Model model, @AuthenticationPrincipal PlatformUser user) {
-        model.addAttribute("courses", courseService.findCoursesAwaitingConfirmation());
-        model.addAttribute("userProfileName", user.getProfile().getName());
-        return "showNewCourses";
-    }
-
-    @GetMapping("/approve/{id}")
-    public String approveCourse(@PathVariable Long id) {
-        Course course = courseService.findCourse(id);
-        course.setStatus(CourseStatus.APPROVED);
-        courseService.save(course);
-        PlatformUser user = course.getAuthor();
-        user.setRole(Role.TEACHER);
-        userService.saveUser(user);
-        return "redirect:/courses/newCourses";
     }
 
     @GetMapping("/joinCourse/{courseId}")
@@ -158,10 +149,10 @@ public class CourseController {
         }
 
 
-        userFromDB.getJoinedCourses().add(courseFromDB);
-        courseFromDB.getJoinedUsers().add(userFromDB);
-        userService.saveUser(userFromDB);
-        Course newCourse = courseService.save(courseFromDB);
+//        userFromDB.getJoinedCourses().add(courseFromDB);
+//        courseFromDB.getJoinedUsers().add(userFromDB);
+//        userService.saveUser(userFromDB);
+//        Course newCourse = courseService.save(courseFromDB);
 
         Subscription sub = new Subscription();
         sub.setCourse(courseFromDB);
@@ -180,9 +171,19 @@ public class CourseController {
     public String renderEditCourse(Model model,
                                    @PathVariable Long courseId,
                                    @AuthenticationPrincipal PlatformUser user) {
+
         model.addAttribute("userProfileName", user.getProfile().getName());
         Course course = courseService.findCourse(courseId);
+
+        if (!course.getAuthor().equals(user)) {
+            throw new CourseEditingException("Вы не являетесь автором этого курса");
+        }
+        if (!course.getStatus().equals(CourseStatus.DRAFT)){
+            throw new CourseEditingException("Вы больше не имеете возможности редактировать этот курс");
+        }
+
         FormCourse formCourse = conversionService.convert(course, FormCourse.class);
+        model.addAttribute("tagCollection", tagService.findAll());
         model.addAttribute("course", formCourse);
         return "editCourse";
     }
@@ -193,31 +194,110 @@ public class CourseController {
                              @AuthenticationPrincipal PlatformUser user,
                              BindingResult result) {
         course.setAuthor(user);
-        validator.validate(course, result);
+        editValidator.validate(course, result);
         if (result.hasErrors()) {
             model.addAttribute("course", course);
             model.addAttribute("userProfileName", user.getProfile().getName());
             return "editCourse";
         }
-
-        Course courseFromDB = courseService.findCourse(course.getId());
-        courseFromDB.setName(course.getName());
-        courseFromDB.setDescription(course.getDescription());
-        courseService.save(courseFromDB);
+        Course newCourse = conversionService.convert(course, Course.class);
+        courseService.save(newCourse);
         return String.format("redirect:/courses/owned/%d", course.getId());
     }
 
+    @GetMapping("/approve/request/{id}")
+    public String submitCourseToApprove(Model model, @AuthenticationPrincipal PlatformUser user, @PathVariable Long id){
+        Course course = courseService.findCourse(id);
+        if (!course.getAuthor().equals(user)){
+            throw new CourseSubmitException("Вы не можете отправить этот курс на проверку, так как не являетесь его автором");
+        }
+        courseService.submitToApprove(course, user);
+        return "redirect:/courses/usersCourses";
+    }
+
+
     @GetMapping("/search")
-    public String renderCourseSearch(Model model,
-                                     @AuthenticationPrincipal PlatformUser user,
-                                     @RequestParam(value = "name", required = false) String name) {
+    public String courseSearch(Model model,
+                               @AuthenticationPrincipal PlatformUser user,
+                               @RequestParam(value = "name", required = false) String name) {
 
         model.addAttribute("userProfileName", user.getProfile().getName());
         if (name != null){
             model.addAttribute("courses", courseService.findByPartName(name));
-        } else {
-            model.addAttribute("courses", courseService.getAll());
         }
-        return "courseSearch";
+        return "course/courseSearch";
+    }
+
+    @PostMapping("/search")
+    public String findCourse(Model model,
+                             @AuthenticationPrincipal PlatformUser user,
+                             @RequestParam(value = "name", required = true) String name) {
+
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        if (name != null) {
+            model.addAttribute("name", name);
+            model.addAttribute("courses", courseService.findByPartName(name));
+        }
+        return "course/courseSearch";
+    }
+
+    @GetMapping("/search/tag")
+    public String courseSearchByTag(Model model,
+                                    @AuthenticationPrincipal PlatformUser user,
+                                    @RequestParam(value = "name", required = false) String name) {
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        if (name != null) {
+            model.addAttribute("name", name);
+            model.addAttribute("courses", courseService.findCoursesByTag(name));
+        }
+        model.addAttribute("tagCollection", tagService.findAll());
+        return "courseSearchByTag";
+    }
+
+    @PostMapping("/search/tag")
+    public String findCourseByTag(Model model,
+                                    @AuthenticationPrincipal PlatformUser user,
+                                    @RequestParam(value = "name", required = true) String name) {
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        if (name != null) {
+            model.addAttribute("name", name);
+            model.addAttribute("courses", courseService.findCoursesByTag(name));
+        }
+        model.addAttribute("tagCollection", tagService.findAll());
+        return "courseSearchByTag";
+    }
+
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    @GetMapping("/viewToApprove/{id}")
+    public String viewCourseToApprove(Model model, @AuthenticationPrincipal PlatformUser user, @PathVariable Long id){
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("course", courseService.findCourse(id));
+        return "viewCourseToApprove";
+    }
+
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    @GetMapping("/approve/{id}")
+    public String approveCourse(@PathVariable Long id, @AuthenticationPrincipal PlatformUser user) {
+
+        Course course = courseService.findCourse(id);
+        courseService.approveCourse(course, course.getAuthor());
+        return "redirect:/courses/newCourses";
+    }
+
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    @GetMapping("/newCourses")
+    public String showCoursesToAccept(Model model, @AuthenticationPrincipal PlatformUser user) {
+        model.addAttribute("courses", courseService.findCoursesAwaitingConfirmation());
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        return "showNewCourses";
+    }
+
+    @PreAuthorize("hasAuthority('MODERATOR')")
+    @PostMapping("/deny/{id}")
+    public String showCoursesToAccept(Model model, @AuthenticationPrincipal PlatformUser user,
+                                      @PathVariable(name="id") Long id,
+                                      @RequestParam(name = "reason") String reason) {
+        courseService.denyCourse(courseService.findCourse(id), reason);
+        return "redirect:/courses/newCourses";
     }
 }

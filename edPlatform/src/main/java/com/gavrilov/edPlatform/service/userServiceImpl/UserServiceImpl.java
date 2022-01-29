@@ -4,15 +4,17 @@ import com.gavrilov.edPlatform.exception.UserNotFoundException;
 import com.gavrilov.edPlatform.exception.UserProfileNotValidException;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.PlatformUserProfile;
+import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.PlatformUserProfileRepository;
 import com.gavrilov.edPlatform.repo.UserRepository;
+import com.gavrilov.edPlatform.service.CourseConfirmationRequestService;
 import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     private final PlatformUserProfileRepository userProfileRepository;
     private final UserRepository userRepository;
+    private final CourseConfirmationRequestService courseConfirmationRequestService;
    // private final Validator validator;
 
 
@@ -68,6 +71,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public PlatformUser findById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public PlatformUser saveUser(PlatformUser user) {
         return userRepository.save(user);
     }
@@ -76,4 +84,19 @@ public class UserServiceImpl implements UserService {
     public List<PlatformUser> findAll() {
         return userRepository.findAll();
     }
+
+
+    private List<PlatformUser> findByRole(Role role) {
+        return userRepository.findByRole(role).orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public Map<PlatformUser, Integer> findModeratorsAndApprovedCoursesSize() {
+        Map<PlatformUser,Integer> result = new HashMap<>();
+        List<PlatformUser> moderators = findByRole(Role.MODERATOR);
+        moderators.forEach(x->result.put(x, courseConfirmationRequestService.findByUser(x).size()));
+        return result;
+    }
+
+
 }
