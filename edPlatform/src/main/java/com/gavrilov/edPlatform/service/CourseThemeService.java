@@ -3,6 +3,8 @@ package com.gavrilov.edPlatform.service;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 
+import java.util.List;
+
 public interface CourseThemeService {
 
     public CourseTheme saveTheme(CourseTheme courseTheme);
@@ -10,5 +12,7 @@ public interface CourseThemeService {
     CourseTheme findTheme(Long id);
 
     void deleteTheme(Long id);
+
+    List<CourseTheme> findThemesByCourse(Course course);
 
 }

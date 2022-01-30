@@ -34,6 +34,9 @@ public class TagValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, "name", PlatformValidationUtilities.NOT_EMPTY_TAG_NAME);
 
         if (!errors.hasErrors()) {
+            if (tag.getName().trim().length() > PlatformValidationUtilities.MAX_TAG_SIZE){
+                errors.rejectValue("name", "", PlatformValidationUtilities.LENGTH_TAG);
+            }
             if (tag.getName().trim().contains(" ")){
                 errors.rejectValue("name", "", PlatformValidationUtilities.FORBIDDEN_SYMBOL_TAG);
             }

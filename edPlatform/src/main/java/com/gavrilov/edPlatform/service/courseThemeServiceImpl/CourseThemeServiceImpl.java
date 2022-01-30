@@ -1,10 +1,13 @@
 package com.gavrilov.edPlatform.service.courseThemeServiceImpl;
 
+import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.repo.CourseThemeRepository;
 import com.gavrilov.edPlatform.service.CourseThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +28,10 @@ public class CourseThemeServiceImpl implements CourseThemeService {
     @Override
     public void deleteTheme(Long id) {
         courseThemeRepository.deleteById(id);
+    }
+
+    @Override
+    public List<CourseTheme> findThemesByCourse(Course course) {
+        return courseThemeRepository.findByCourse(course);
     }
 }

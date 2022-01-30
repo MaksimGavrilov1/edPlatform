@@ -4,6 +4,7 @@ import com.gavrilov.edPlatform.dto.FormCourse;
 import com.gavrilov.edPlatform.dto.TagDto;
 import com.gavrilov.edPlatform.exception.CourseEditingException;
 import com.gavrilov.edPlatform.exception.CourseSubmitException;
+import com.gavrilov.edPlatform.exception.CourseSubscribeException;
 import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
@@ -128,6 +129,7 @@ public class CourseController {
 
         if (result.hasErrors()) {
             model.addAttribute("course", course);
+            model.addAttribute("tagCollection", tagService.findAll());
             model.addAttribute("userProfileName", user.getProfile().getName());
             return "addCourse";
         }
@@ -145,14 +147,8 @@ public class CourseController {
         Course courseFromDB = courseService.findCourse(courseId);
         PlatformUser userFromDB = userService.findByUsername(user.getUsername());
         if (subscriptionService.isUserSubOnCourse(user, courseFromDB)) {
-            return String.format("redirect:/courses/%d", courseFromDB.getId());
+            throw new CourseSubscribeException("Вы уже подписаны на этот курс");
         }
-
-
-//        userFromDB.getJoinedCourses().add(courseFromDB);
-//        courseFromDB.getJoinedUsers().add(userFromDB);
-//        userService.saveUser(userFromDB);
-//        Course newCourse = courseService.save(courseFromDB);
 
         Subscription sub = new Subscription();
         sub.setCourse(courseFromDB);
@@ -163,7 +159,6 @@ public class CourseController {
         sub.setStatus(CourseSubscriptionStatus.OPEN);
         subscriptionService.save(sub);
         //user.getJoinedCourses().add(courseFromDB);
-        model.addAttribute("course", courseFromDB);
         return String.format("redirect:/courses/%d", courseFromDB.getId());
     }
 
@@ -194,13 +189,22 @@ public class CourseController {
                              @AuthenticationPrincipal PlatformUser user,
                              BindingResult result) {
         course.setAuthor(user);
+        Course courseFromDB = courseService.findCourse(course.getId());
+        if (!courseFromDB.getAuthor().equals(user)) {
+            throw new CourseEditingException("Вы не являетесь автором этого курса");
+        }
+        if (!courseFromDB.getStatus().equals(CourseStatus.DRAFT)){
+            throw new CourseEditingException("Вы больше не имеете возможности редактировать этот курс");
+        }
         editValidator.validate(course, result);
         if (result.hasErrors()) {
             model.addAttribute("course", course);
+            model.addAttribute("tagCollection", tagService.findAll());
             model.addAttribute("userProfileName", user.getProfile().getName());
             return "editCourse";
         }
         Course newCourse = conversionService.convert(course, Course.class);
+
         courseService.save(newCourse);
         return String.format("redirect:/courses/owned/%d", course.getId());
     }
@@ -228,18 +232,6 @@ public class CourseController {
         return "course/courseSearch";
     }
 
-    @PostMapping("/search")
-    public String findCourse(Model model,
-                             @AuthenticationPrincipal PlatformUser user,
-                             @RequestParam(value = "name", required = true) String name) {
-
-        model.addAttribute("userProfileName", user.getProfile().getName());
-        if (name != null) {
-            model.addAttribute("name", name);
-            model.addAttribute("courses", courseService.findByPartName(name));
-        }
-        return "course/courseSearch";
-    }
 
     @GetMapping("/search/tag")
     public String courseSearchByTag(Model model,
@@ -254,18 +246,6 @@ public class CourseController {
         return "courseSearchByTag";
     }
 
-    @PostMapping("/search/tag")
-    public String findCourseByTag(Model model,
-                                    @AuthenticationPrincipal PlatformUser user,
-                                    @RequestParam(value = "name", required = true) String name) {
-        model.addAttribute("userProfileName", user.getProfile().getName());
-        if (name != null) {
-            model.addAttribute("name", name);
-            model.addAttribute("courses", courseService.findCoursesByTag(name));
-        }
-        model.addAttribute("tagCollection", tagService.findAll());
-        return "courseSearchByTag";
-    }
 
     @PreAuthorize("hasAuthority('MODERATOR')")
     @GetMapping("/viewToApprove/{id}")
@@ -299,5 +279,12 @@ public class CourseController {
                                       @RequestParam(name = "reason") String reason) {
         courseService.denyCourse(courseService.findCourse(id), reason);
         return "redirect:/courses/newCourses";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/archive/{id}")
+    public String archiveCourse(@PathVariable Long id, @AuthenticationPrincipal PlatformUser user){
+        courseService.archiveCourseByCourseId(id);
+        return "redirect:/courses/all";
     }
 }

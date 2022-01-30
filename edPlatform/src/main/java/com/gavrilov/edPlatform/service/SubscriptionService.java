@@ -23,4 +23,6 @@ public interface SubscriptionService {
 
     List<Subscription> findByCourse (Course course);
 
+    Long countByUser(PlatformUser user);
+
 }

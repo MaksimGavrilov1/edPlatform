@@ -27,5 +27,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query( value = "select course.* from course join tags_courses on course.id = tags_courses.course_id join tag on tag.id = tags_courses.tag_id where tag.name = :name ",
     nativeQuery = true)
     Optional<List<Course>> findCoursesByTagName(@Param("name")String tagName);
+
+    long countByAuthor(PlatformUser author);
     //Optional<List<Course>> findFirst10ById();
 }

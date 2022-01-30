@@ -1,10 +1,9 @@
 package com.gavrilov.edPlatform.service.courseServiceImpl;
 
-import com.gavrilov.edPlatform.model.Course;
-import com.gavrilov.edPlatform.model.CourseConfirmationRequest;
-import com.gavrilov.edPlatform.model.PlatformUser;
-import com.gavrilov.edPlatform.model.Tag;
+import com.gavrilov.edPlatform.exception.ResourceNotFoundException;
+import com.gavrilov.edPlatform.model.*;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
+import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
 import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.CourseRepository;
@@ -119,6 +118,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Long countByAuthor(PlatformUser author) {
+        return courseRepository.countByAuthor(author);
+    }
+
+    @Override
     public void denyCourse(Course course, String reason) {
         course.setStatus(CourseStatus.DRAFT);
         courseRepository.save(course);
@@ -152,5 +156,15 @@ public class CourseServiceImpl implements CourseService {
         request.setSubmitDate(new Timestamp(new Date().getTime()));
         request.setStatus(RequestStatus.PENDING);
         courseConfirmationRequestService.save(request);
+    }
+
+    @Override
+    public void archiveCourseByCourseId(Long courseId) {
+        Course course = courseRepository.findById(courseId).orElseThrow(ResourceNotFoundException::new);
+        course.setStatus(CourseStatus.ARCHIVED);
+        List<Subscription> subscriptions = subscriptionService.findByCourse(course);
+        subscriptions.forEach(x->x.setStatus(CourseSubscriptionStatus.ARCHIVED));
+        subscriptions.forEach(subscriptionService::save);
+        courseRepository.save(course);
     }
 }

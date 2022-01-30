@@ -23,6 +23,7 @@ public class FormCourseValidator implements Validator {
 
     private final CourseRepository courseRepository;
     private final TagService tagService;
+    private boolean repeatedTagFlag = false;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -69,16 +70,20 @@ public class FormCourseValidator implements Validator {
                 errors.rejectValue("isAlwaysOpen", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_ALWAYS_OPEN);
             }
 
-            tags = tags.stream()
-                    .distinct()
-                    .collect(Collectors.toList());
-            if (tags.size() != 3){
-                errors.rejectValue("tags", "", PlatformValidationUtilities.DUPLICATE_COURSE_TAGS);
-            }
             for (TagDto tag : tags){
-                if (tagService.findByName(tag.getName().trim()) == null){
-                    errors.rejectValue("tags", "", String.format(PlatformValidationUtilities.TAG_NOT_EXIST_MODIFYING, tag.getName()));
+                if (!tag.getName().isBlank()){
+                    List<TagDto> dupTags =  tags.stream()
+                            .filter(x->x.equals(tag))
+                            .collect(Collectors.toList());
+                    if (dupTags.size() > 1 && !repeatedTagFlag){
+                        errors.rejectValue("tags", "", PlatformValidationUtilities.DUPLICATE_COURSE_TAGS);
+                        repeatedTagFlag = true;
+                    }
+                    if (tagService.findByName(tag.getName().trim()) == null){
+                        errors.rejectValue("tags", "", String.format(PlatformValidationUtilities.TAG_NOT_EXIST_MODIFYING, tag.getName()));
+                    }
                 }
+
             }
 
         }

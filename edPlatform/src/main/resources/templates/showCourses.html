@@ -57,13 +57,41 @@
                     <div class="card-body">
                         <h5 class="card-title courseName"
                             th:utext="${course.name}">..</h5>
-                        <h6 class="card-subtitle mb-2 text-muted"
+                        <span class="card-subtitle mb-2 text-muted">Автор: </span>
+                        <a class="card-subtitle mb-2 text-muted"
+                           th:href="@{/user/view/profile/{id}(id=${course.getAuthor().getId()})}"
                             th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
-                        </h6>
+                        </a>
                         <p style="text-overflow: ellipsis" class="card-text courseDescription"
                            th:utext="${course.description}"></p>
                         <a th:href="@{/courses/{id}(id=${course.id})}" class="card-link">Перейти</a>
-                        <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
+                            <a style="font-size: 0.875rem" class="btn btn-danger btn-sm card-link" th:data-toggle="${'modal'}"
+                                    th:data-target="${'#archive' + iterStat.index}" >
+                                Архивировать курс
+                            </a>
+                        <div th:class="${'modal'+ ' fade'}" th:id="${'archive' + iterStat.index}" tabindex="-1" role="dialog"
+                             th:aria-labelledby="${'archive' + iterStat.index}"
+                              aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" th:id="${'archive' + iterStat.index + 'Title'}">Архивация курса</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Вы уверены, что хотите архивировать этот курс?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отменить
+                                        </button>
+                                        <a class="btn btn-danger" th:href="@{/courses/archive/{id}(id=${course.id})}">Подтвердить</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </th:block>

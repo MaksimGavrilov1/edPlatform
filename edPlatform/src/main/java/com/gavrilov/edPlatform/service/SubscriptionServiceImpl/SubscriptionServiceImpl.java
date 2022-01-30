@@ -44,10 +44,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private void updateSub(Subscription sub){
         long timeNow = new Date().getTime();
-        if (sub.getCourseEndDate().getTime() - timeNow <= 0 && sub.getCourse().getIsAlwaysOpen()){
+        if (sub.getCourseEndDate().getTime() - timeNow <= 0 && sub.getCourse().getIsAlwaysOpen() && !sub.getStatus().equals(CourseSubscriptionStatus.ARCHIVED)){
             sub.setStatus(CourseSubscriptionStatus.EXPIRED);
             subscriptionRepository.save(sub);
-        } else if (sub.getCourseEndDate().getTime() - timeNow <= 0 && !sub.getCourse().getIsAlwaysOpen()){
+        } else if (sub.getCourseEndDate().getTime() - timeNow <= 0 && !sub.getCourse().getIsAlwaysOpen() && !sub.getStatus().equals(CourseSubscriptionStatus.ARCHIVED)){
             sub.setStatus(CourseSubscriptionStatus.CLOSED);
             subscriptionRepository.save(sub);
         }
@@ -72,5 +72,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public List<Subscription> findByCourse(Course course) {
         return subscriptionRepository.findByCourse(course);
+    }
+
+    @Override
+    public Long countByUser(PlatformUser user) {
+        return subscriptionRepository.countByUser(user);
     }
 }

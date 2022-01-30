@@ -47,4 +47,8 @@ public class Subscription {
         int timeValWithoutNanosIndex = 0;
         return splitTime[timeValWithoutNanosIndex];
     }
+
+    public CourseSubscriptionStatus getStatus() {
+        return status;
+    }
 }

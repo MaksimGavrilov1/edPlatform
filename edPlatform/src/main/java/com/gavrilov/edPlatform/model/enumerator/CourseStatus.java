@@ -1,7 +1,7 @@
 package com.gavrilov.edPlatform.model.enumerator;
 
 public enum CourseStatus {
-    DRAFT("В разработке"), AWAITING_CONFIRMATION("Ожидает подтверждения"), APPROVED("Одобрен");
+    DRAFT("В разработке"), AWAITING_CONFIRMATION("Ожидает подтверждения"), APPROVED("Одобрен"), ARCHIVED("Архивирован");
 
     private final String value;
 

@@ -15,4 +15,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     List<Subscription> findByCourse(Course course);
 
+    long countByUser(PlatformUser user);
+
 }

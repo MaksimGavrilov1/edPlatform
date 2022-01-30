@@ -33,16 +33,14 @@
 
         </div>
     </div>
-    <div class="container"  style="background: white; margin: 20px; border-radius: 7px;">
-        <div class="row">
-            <th:block th:each="tag, iterStat : ${tags}">
-                <div class="col">
-                    <span>&#8226; &nbsp;</span>
-                    <span th:text="${tag.name}"></span>
+    <div class="row" style="margin: 5px;">
+        <div class="col-sm" th:each="tag, iterStat : ${tags}" style="margin-top: 5px;">
+            <div class="card" style="width: 15rem">
+                <div class="card-body text-center">
+                    <h5 class="card-title" th:text="${tag.getName()}"></h5>
                 </div>
-            </th:block>
+            </div>
         </div>
-    </div>
 </div>
 </body>
 </html>

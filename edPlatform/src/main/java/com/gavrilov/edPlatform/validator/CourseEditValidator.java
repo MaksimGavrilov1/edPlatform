@@ -7,6 +7,7 @@ import com.gavrilov.edPlatform.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.util.List;
@@ -27,8 +28,8 @@ public class CourseEditValidator implements Validator {
         Course course = (Course) target;
         course.setName(course.getName().trim());
         // Check the fields of course.
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_NAME);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_NAME);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
 
         if (course.getName().length() > PlatformValidationUtilities.MAX_COURSE_NAME_SIZE){
             errors.rejectValue("name", "", PlatformValidationUtilities.LENGTH_COURSE_NAME);

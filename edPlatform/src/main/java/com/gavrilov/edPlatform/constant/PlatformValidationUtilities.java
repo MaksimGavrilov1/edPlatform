@@ -30,6 +30,7 @@ public class PlatformValidationUtilities {
     public static String NO_RIGHT_ANSWER_MODIFYING = "В вопросе №%d должен быть хотя бы один правильный ответ";
     public static String REPEATABLE_ANSWER_MODIFYING = "В вопросе №%d ответ №%d имеет определенное количество дубликатов(%d)";
     public static String TAG_NOT_EXIST_MODIFYING = "Не существует тега '%s'";
+    public static String EMPTY_ANSWER_MODIFYING = "Необходимо указать ответ в вопросе №%d";
 
     public static String DUPLICATE_AUTHOR_COURSE = "Ранее вами уже был создан курс с таким именем";
     public static String DUPLICATE_COURSE_NAME = "Курс с таким названием уже существует";
@@ -40,6 +41,7 @@ public class PlatformValidationUtilities {
     public static String LENGTH_USERNAME = "Логин должен быть больше 8 символов";
     public static String LENGTH_PASSWORD = "Пароль должен быть больше 8 символов";
     public static String LENGTH_COURSE_NAME = "Название курса не может содержать более 80 символов";
+    public static String LENGTH_TAG = "Длина тегов не может быть более 50 символов";
 
     public static String FORBIDDEN_SYMBOL_USERNAME = "Логин может включать в себя только латинские буквы и цифры без пробелов";
     public static String FORBIDDEN_SYMBOL_USER_INITIALS = "Только латинские и кириллические буквы";
@@ -58,9 +60,11 @@ public class PlatformValidationUtilities {
     public static String INCORRECT_TEST_MAX_ACTIVE_TIME = "Невозможно установить для курса время прохождения более 366 дней";
     public static String INCORRECT_TEST_MIN_ACTIVE_TIME = "Невозможно установить для курса время прохождения менее 1 дня";
 
+
     public static Integer MIN_USERNAME_SIZE = 8;
     public static Integer MIN_PASSWORD_SIZE = 8;
     public static Integer MAX_COURSE_NAME_SIZE = 80;
+    public static Integer MAX_TAG_SIZE = 50;
     public static Integer MAX_TEST_QUESTION_AMOUNT = 100;
     public static Integer MIN_TEST_QUESTION_AMOUNT = 2;
     public static Integer MAX_TEST_ATTEMPT_AMOUNT = 5;

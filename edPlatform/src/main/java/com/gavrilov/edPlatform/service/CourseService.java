@@ -29,9 +29,13 @@ public interface CourseService {
 
     List<Course> findCoursesByTag(String tag);
 
+    Long countByAuthor(PlatformUser author);
+
     void denyCourse(Course course, String reason);
 
     void approveCourse(Course course, PlatformUser user);
 
     void submitToApprove(Course course, PlatformUser user);
+
+    void archiveCourseByCourseId(Long id);
 }

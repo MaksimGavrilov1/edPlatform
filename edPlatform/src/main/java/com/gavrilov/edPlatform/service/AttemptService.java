@@ -21,4 +21,12 @@ public interface AttemptService {
 
     Attempt findLastAttemptByUserAndTest(PlatformUser user, CourseTest test);
 
+    Long countUserTestResult(PlatformUser user, Boolean passed);
+
+    Long countUserAttempts(PlatformUser user);
+
+    Boolean anyAttemptsLeft(PlatformUser user, CourseTest test);
+
+    Attempt initAttempt(PlatformUser user, CourseTest test);
+
 }

@@ -24,23 +24,10 @@ public class UserServiceImpl implements UserService {
     private final PlatformUserProfileRepository userProfileRepository;
     private final UserRepository userRepository;
     private final CourseConfirmationRequestService courseConfirmationRequestService;
-   // private final Validator validator;
 
 
     @Override
     public PlatformUser addProfileInfo(@Validated PlatformUserProfile userProfile, Long id) {
-
-
-
-//        Set<ConstraintViolation<PlatformUserProfile>> violations = validator.validate(userProfile);
-//
-//        if (!violations.isEmpty()) {
-//            StringBuilder sb = new StringBuilder();
-//            for (ConstraintViolation<PlatformUserProfile> constraintViolation : violations) {
-//                sb.append(constraintViolation.getMessage());
-//            }
-//            throw new ConstraintViolationException("Error occurred: " + sb.toString(), violations);
-//        }
 
         PlatformUser userDB = userRepository.findById(id).orElse(null);
         if (userProfile == null) {
@@ -96,6 +83,21 @@ public class UserServiceImpl implements UserService {
         List<PlatformUser> moderators = findByRole(Role.MODERATOR);
         moderators.forEach(x->result.put(x, courseConfirmationRequestService.findByUser(x).size()));
         return result;
+    }
+
+    @Override
+    public Boolean compareAccessLevel(PlatformUser userToView, PlatformUser requester) {
+        Role requesterRole = requester.getRole();
+        Role targetRole = userToView.getRole();
+        if (requesterRole.equals(Role.ADMIN)){
+            return true;
+        } else if (requesterRole.equals(Role.MODERATOR) && !targetRole.equals(Role.ADMIN)) {
+            return true;
+        } else if ((requesterRole.equals(Role.STUDENT) || requester.getRole().equals(Role.TEACHER))
+                && !(targetRole.equals(Role.MODERATOR) || targetRole.equals(Role.ADMIN))) {
+            return true;
+        }
+        return false;
     }
 
 

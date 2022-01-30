@@ -21,4 +21,6 @@ public interface UserService {
    // List<PlatformUser> findByRole(Role role);
 
     Map<PlatformUser, Integer> findModeratorsAndApprovedCoursesSize();
+
+    Boolean compareAccessLevel(PlatformUser userToView, PlatformUser requester);
 }

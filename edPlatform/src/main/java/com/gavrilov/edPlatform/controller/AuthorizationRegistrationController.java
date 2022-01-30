@@ -107,8 +107,8 @@ public class AuthorizationRegistrationController {
             course.setAuthor(newStudent);
             course.setName("Введение в программирование. Курс для начинающих.");
             course.setDescription("Этот курс предназначен для тех, кто хочет стать программистом. Избранные разделы высшей математики в контексте Data Science с упором на решение задач. Для сильных духом.");
-            course.setActiveTime(new Timestamp(10_000));
-            course.setIsAlwaysOpen(false);
+            course.setActiveTime(new Timestamp(7_000));
+            course.setIsAlwaysOpen(true);
             Course newCourse = courseService.save(course);
 //            Subscription sub1 = new Subscription();
 //            sub1.setCourse(newCourse);
@@ -197,7 +197,7 @@ public class AuthorizationRegistrationController {
             CourseTest test = new CourseTest();
             test.setName("Тест для проверки знаний");
             test.setCourse(newCourse);
-            test.setAmountOfAttempts(2);
+            test.setAmountOfAttempts(7);
             test.setMinThreshold(1);
             CourseTest newTest = testService.initSave(test);
 

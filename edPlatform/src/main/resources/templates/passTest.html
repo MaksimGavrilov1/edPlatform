@@ -44,24 +44,26 @@
                     <input type="hidden"
                            th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].questionId}"
                            th:value="${question.id}"/>
+                    <input type="hidden"
+                           th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].title}"
+                           th:value="${question.title}"/>
                     <div>
                         <input type="checkbox" th:id="' ' + ${iterat.index} + ' ' + ${iter.index} + 'checkbox'"
                                th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}">
                         <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index} + 'checkbox'"
                                th:text="${answer.title}"></label>
                     </div>
-                    <!--                    <div th:if="${question.rightAnswerAmount == 1}" class="custom-control custom-radio custom-control-inline">-->
-                    <!--                        <input class="custom-control-input" type="radio"-->
-                    <!--                               th:id="' ' + ${iterat.index} + ' ' + ${iter.index}"-->
-                    <!--                               th:field="*{questions[__${iter.index}__].answers[__${iterat.index}__].checked}"-->
-                    <!--                               th:value="true">-->
-                    <!--                        <label th:for="' ' + ${iterat.index} + ' ' + ${iter.index}"-->
-                    <!--                               th:text="${answer.getTitle()}"></label>-->
-                    <!--                    </div>-->
-
-
                 </li>
             </ul>
+        </div>
+        <div class="row justify-content-md-center" th:if="${#fields.errors('questions').size() != 0}">
+            <div th:if="${#fields.errors('questions')}" style="padding: 10px; margin: 10px;"
+                 class="alert alert-dismissible alert-danger error">
+                <ul style="list-style-type: none; padding: 0">
+                    <li style="margin: 0;" th:each="err : ${#fields.errors('questions')}"
+                        th:text="${err}"></li>
+                </ul>
+            </div>
         </div>
         <div class="row justify-content-md-center" style="margin-bottom: 20px;">
             <button class="btn btn-primary" type="submit">Завершить</button>

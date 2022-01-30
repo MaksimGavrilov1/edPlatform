@@ -1,9 +1,7 @@
 package com.gavrilov.edPlatform.configuration;
 
 import com.gavrilov.edPlatform.converter.*;
-import com.gavrilov.edPlatform.service.CourseService;
-import com.gavrilov.edPlatform.service.TagService;
-import com.gavrilov.edPlatform.service.TestQuestionService;
+import com.gavrilov.edPlatform.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -14,6 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
     private final CourseService courseService;
+    private final SubscriptionService subscriptionService;
+    private final AttemptService attemptService;
     private final TagService tagService;
 
     @Override
@@ -25,5 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new UserDtoToPlatformUser());
         registry.addConverter(new FormCourseToCourseConverter(tagService));
         registry.addConverter(new CourseToFormCourse());
+        registry.addConverter(new PlatformUserToUserProfileDtoConverter(courseService, subscriptionService, attemptService));
     }
 }

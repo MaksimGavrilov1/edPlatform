@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+  <div class="card" style="margin: 70px;">
+    <div class="card-header">
+      <p th:text="${'Профиль пользователя: ' + user.getSurname() + ' ' + user.getName()}"></p>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title" th:text="${user.toString()}" ></h5>
+      <h6 class="card-text" th:text="${user.getRole()}" style="margin: 20px;"></h6>
+      <p class="card-text" th:text="${user.getSelfDescription()}"></p>
+    </div>
+    <ul th:if="${!(user.getRole().equals('Администратор') or user.getRole().equals('Модератор'))}" class="list-group list-group-flush">
+      <li class="list-group-item" th:text="${'Созданных курсов: ' + user.getCreatedCoursesAmount()}"></li>
+      <li class="list-group-item" th:text="${'Подписок: ' + user.getSubscriptionsAmount()}"></li>
+      <li class="list-group-item" th:text="${'Показатель успеваемости: ' + user.getTestSuccessRate() + '%'}"></li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

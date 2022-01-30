@@ -110,7 +110,7 @@ public class PlatformUser implements UserDetails {
     @Override
     public String toString() {
         if (profile != null){
-            return String.format("%s %s", profile.getName(), profile.getSurname());
+            return String.format("%s %s %s", profile.getSurname(), profile.getName(), profile.getMiddleName());
         } else {
             return username;
         }

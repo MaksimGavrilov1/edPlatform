@@ -8,6 +8,8 @@ import com.gavrilov.edPlatform.service.AttemptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -41,7 +43,7 @@ public class AttemptServiceImpl implements AttemptService {
     public List<Attempt> findLastTenAttempts(PlatformUser user) {
         List<Attempt> attempts = attemptRepository.findByUserOrderByTimeDesc(user);
         int size = attempts.size();
-        if (size < ATTEMPTS_TO_SHOW_AMOUNT){
+        if (size < ATTEMPTS_TO_SHOW_AMOUNT) {
             return attempts;
         } else {
             return attempts.subList(0, ATTEMPTS_TO_SHOW_AMOUNT);
@@ -50,6 +52,33 @@ public class AttemptServiceImpl implements AttemptService {
 
     @Override
     public Attempt findLastAttemptByUserAndTest(PlatformUser user, CourseTest test) {
-        return attemptRepository.findFirstByUserAndCourseTestOrderByTimeDesc(user,test);
+        return attemptRepository.findFirstByUserAndCourseTestOrderByTimeDesc(user, test);
+    }
+
+    @Override
+    public Long countUserTestResult(PlatformUser user, Boolean passed) {
+        return attemptRepository.countByUserAndPass(user, passed);
+    }
+
+    @Override
+    public Long countUserAttempts(PlatformUser user) {
+        return attemptRepository.countByUser(user);
+    }
+
+    @Override
+    public Boolean anyAttemptsLeft(PlatformUser user, CourseTest test) {
+        List<Attempt> userAttempts = attemptRepository.findByCourseTestAndUser(test, user);
+        return userAttempts.size() < test.getAmountOfAttempts();
+    }
+
+    @Override
+    public Attempt initAttempt(PlatformUser user, CourseTest test) {
+        Attempt attempt = new Attempt();
+        attempt.setUser(user);
+        attempt.setTime(new Timestamp(new Date().getTime()));
+        attempt.setCourseTest(test);
+        attempt.setMark(0);
+        attempt.setPass(false);
+        return attemptRepository.save(attempt);
     }
 }

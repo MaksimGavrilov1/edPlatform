@@ -12,6 +12,7 @@ import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
 import com.gavrilov.edPlatform.service.*;
 import com.gavrilov.edPlatform.validator.CourseTestValidator;
 import com.gavrilov.edPlatform.validator.FormTestValidator;
+import com.gavrilov.edPlatform.validator.TestDtoValidator;
 import com.gavrilov.edPlatform.validator.ThemeTestValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -34,7 +35,6 @@ public class TestController {
     private final CourseService courseService;
     private final ThemeTestService themeTestService;
     private final ConversionService conversionService;
-    private final ThemeTestValidator themeTestValidator;
     private final QuestionStandardAnswerService questionStandardAnswerService;
     private final TestQuestionService testQuestionService;
     private final UserAnswerService userAnswerService;
@@ -42,6 +42,7 @@ public class TestController {
     private final CourseTestValidator courseTestValidator;
     private final FormTestValidator formTestValidator;
     private final SubscriptionService subscriptionService;
+    private final TestDtoValidator testDtoValidator;
 
     @GetMapping("/constructor")
     public String testConstructor(Model model, @AuthenticationPrincipal PlatformUser user) {
@@ -134,20 +135,11 @@ public class TestController {
         }
 
         CourseTest randAnswerTest = themeTestService.randomizeAnswers(courseFromDB.getTest());
-        List<Attempt> userAttempts = attemptService.findByUserAndTest(user, randAnswerTest);
-
-        if (userAttempts.size() >= randAnswerTest.getAmountOfAttempts()){
+        if (!attemptService.anyAttemptsLeft(user, randAnswerTest)){
             throw new OutOfAttemptsException("У вас закончились попытки");
         }
+        attemptService.initAttempt(user, randAnswerTest);
         TestDto testDto = conversionService.convert(randAnswerTest, TestDto.class);
-
-        Attempt attempt = new Attempt();
-        attempt.setUser(user);
-        attempt.setTime(new Timestamp(new Date().getTime()));
-        attempt.setCourseTest(randAnswerTest);
-        attempt.setMark(0);
-        attempt.setPass(false);
-        attemptService.save(attempt);
 
         model.addAttribute("test", testDto);
         model.addAttribute("courseName", courseFromDB.getName());
@@ -160,7 +152,22 @@ public class TestController {
                            BindingResult result,
                            Model model,
                            @AuthenticationPrincipal PlatformUser user) {
-        //TestResultDto testResult = conversionService.convert(test, TestResultDto.class);
+        Course courseFromDB = courseService.findCourse(test.getCourseId());
+        if (!subscriptionService.isUserSubOnCourse(user, courseFromDB)){
+            throw new AccessTestException("Вы не подписаны на курс");
+        } else {
+            subscriptionService.updateSubscriptionStatus(user);
+        }
+        if (!subscriptionService.findByUserAndCourse(user,courseFromDB).getStatus().equals(CourseSubscriptionStatus.OPEN)){
+            throw new CourseExpiredException("Ваше время для выполнения теста закончилось");
+        }
+        testDtoValidator.validate(test, result);
+        if (result.hasErrors()){
+            model.addAttribute("test", test);
+            model.addAttribute("courseName", courseFromDB.getName());
+            model.addAttribute("userProfileName", user.getProfile().getName());
+            return "passTest";
+        }
         TestResultDto testResult = themeTestService.calculateResult(test, user);
         model.addAttribute("result", testResult);
         model.addAttribute("chosenRight", AnswerStatus.CHOSEN_RIGHT);

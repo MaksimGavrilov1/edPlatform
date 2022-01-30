@@ -8,19 +8,30 @@
 </head>
 <body>
 <div th:fragment="content" style="max-width: 100%;">
-    <div th:if="${joinedFlag and sub.getStatus().getValue().equals('Закрыт')}" class="container" style="width: 90%; background: #ffffff; margin-top: 10px; border: 1px; border-radius: 5px;">
-        <h5 th:text="${'Курс' + course.getName() + 'закрыт'}">Курс закрыт</h5>
+    <div th:if="${joinedFlag and sub.getStatus().getValue().equals('Закрыт')}" class="container">
+        <div class="row justify-content-md-center">
+            <div class="jumbotron" style="margin: 40px; max-width: 70rem; background-color: white ">
+                <h3 class="display-4" th:text="${course.getName()}"></h3>
+                <h3 class="display-4" style="font-weight: 400">Курс закрыт</h3>
+                <p class="lead">Автор ограничил содержимое курса по истечении отведенного времени</p>
+            </div>
+        </div>
     </div>
-    <div th:if="${(joinedFlag and  !sub.getStatus().getValue().equals('Закрыт')) or (!joinedFlag)}" class="container" style="width: 90%; background: #ffffff; margin-top: 10px; border: 1px; border-radius: 5px;">
+    <div th:if="${(joinedFlag and  !sub.getStatus().getValue().equals('Закрыт')) or (!joinedFlag)}" class="container"
+         style="width: 90%; background: #ffffff; margin-top: 10px; border: 1px; border-radius: 5px;">
         <div class="row" style="padding:10px;">
             <h3 th:text="${course.getName()}"></h3>
             <br>
-            <div class="row" style="margin-left:10px;">
-                <a th:each="tag : ${course.getTags()}" th:href="@{/courses/search/tag(name=${'#' + tag.getName()})}" th:text="${'#' + tag.getName() + ' '}"></a>
-            </div>
+
+        </div>
+        <div class="row" style="margin:5px;">
+            <a th:each="tag : ${course.getTags()}" th:href="@{/courses/search/tag(name=${tag.getName()})}"
+               th:text="${'#' + tag.getName() + ' '}"></a>
         </div>
         <div class="row" style="margin: 5px">
-            <h5 th:text="${'Автор: ' + course.getAuthor().toString()}"></h5>
+            <span>Автор: &nbsp;</span>
+            <a th:href="@{/user/view/profile/{id}(id=${course.getAuthor().getId()})}"
+                th:text="${course.getAuthor().getProfile().getSurname() + ' ' + course.getAuthor().getProfile().getName()}"></a>
         </div>
         <div class="row" style="margin: 3px">
             <p th:text="${course.getDescription()}"></p>
@@ -50,7 +61,8 @@
                th:href="@{/courses/joinCourse/{id}(id=${course.id})}">Подписаться</a>
         </div>
     </div>
-    <div th:if="${joinedFlag and !sub.getStatus().getValue().equals('Закрыт') and !sub.getStatus().getValue().equals('Не активен')}" class="container"
+    <div th:if="${joinedFlag and !sub.getStatus().getValue().equals('Закрыт') and !sub.getStatus().getValue().equals('Не активен')}"
+         class="container"
          style="width: 70%; background: #ffffff; margin-top: 10px; margin-bottom: 20px; border: 1px; border-radius: 5px;">
         <div class="row justify-content-md-center">
             <h6 style="margin: 15px;">Результаты прохождения теста</h6>
@@ -67,7 +79,7 @@
                 Пройти тест
             </a>
         </div>
-        <div  class="row justify-content-md-center" style="margin: 5px;">
+        <div class="row justify-content-md-center" style="margin: 5px;">
             <table class="table">
                 <caption th:if="${attempts.size()}  == 0">На данный
                     момент вы еще не проходили этот тест
@@ -87,8 +99,8 @@
                     <td th:text="${attempt.getFormattedTime()}"></td>
                     <td align="center" valign="center" th:text="${attempt.getMark()} + '/' + ${maxMark}"></td>
                     <td>
-                        <span class="badge badge-success" th:if="${attempt.getPass()}" >Пройден</span>
-                        <span class="badge badge-danger" th:if="${!attempt.getPass()}" >Не пройден</span>
+                        <span class="badge badge-success" th:if="${attempt.getPass()}">Пройден</span>
+                        <span class="badge badge-danger" th:if="${!attempt.getPass()}">Не пройден</span>
                     </td>
                     <td align="center" valign="center"><a
                             th:href="@{/test/showResult/{id}(id=${attempt.id})}">Подробнее</a></td>

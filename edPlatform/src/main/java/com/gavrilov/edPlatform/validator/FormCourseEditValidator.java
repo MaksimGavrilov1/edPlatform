@@ -21,6 +21,7 @@ public class FormCourseEditValidator implements Validator {
 
     private final CourseRepository courseRepository;
     private final TagService tagService;
+    private boolean repeatedTagFlag = false;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -67,8 +68,9 @@ public class FormCourseEditValidator implements Validator {
                     List<TagDto> dupTags =  tags.stream()
                             .filter(x->x.equals(tag))
                             .collect(Collectors.toList());
-                    if (dupTags.size() > 1){
+                    if (dupTags.size() > 1  && !repeatedTagFlag){
                         errors.rejectValue("tags", "", PlatformValidationUtilities.DUPLICATE_COURSE_TAGS);
+                        repeatedTagFlag = true;
                     }
                     if (tagService.findByName(tag.getName().trim()) == null){
                         errors.rejectValue("tags", "", String.format(PlatformValidationUtilities.TAG_NOT_EXIST_MODIFYING, tag.getName()));

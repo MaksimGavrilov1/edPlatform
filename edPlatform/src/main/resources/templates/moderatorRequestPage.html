@@ -22,7 +22,7 @@
                 </div>
             </div>
         </div>
-        <div th:if="${isApprovedRequest}" class="row justify-content-md-center" style="margin: 5px;">
+        <div th:if="${isApprovedRequest}" class="row justify-content-md-center" style="margin: 25px;">
             <a th:href="@{/user/moderator/ready}" class="btn btn-success">Стать модератором</a>
         </div>
         <form th:if="${!isActiveRequest and !isApprovedRequest}" th:method="post" th:object="${request}"
@@ -56,7 +56,7 @@
                 <tr th:each="request, iter : ${requests}">
                     <th scope="row" th:utext="${iter.index}+1"></th>
                     <td th:text="${request.getExperience()}"></td>
-                    <td align="center" valign="center" th:text="${request.getStatus()}"></td>
+                    <td th:text="${request.getStatus().getValue()}"></td>
                     <td th:if="${request.getStatus().equals(declined)}" th:text="${request.getReason()}">
                     </td>
 
