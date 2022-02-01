@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:with="user=${user}"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <style>
+        .container {
+            margin: 0 auto;
+            height: auto;
+        }
+
+        .jumbotron {
+            width: content-box;
+        }
+
+        .card {
+            margin: 5px;
+        }
+
+    </style>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <div class="row justify-content-md-center" style="margin: 30px;">
+            <div style="margin: 10px;">
+                <a href="#" id="popularCoursesOption" class="list-group-item active" onclick="showPopularCourses()">
+                    Самые популярные курсы
+                </a>
+            </div>
+            <div style="margin: 10px;">
+                <a href="#" id="newestCoursesOption" class="list-group-item " onclick="showNewCourses()">
+                    Недавно добавленные курсы
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="max-width: 40%">
+        <div class="row justify-content-md-center" style="margin: 10px;">
+            <a th:href="@{/courses/search}" class="list-group-item ">
+                Поиск по курсам
+            </a>
+            <a th:href="@{/courses/search/tag}" class="list-group-item " style="margin-left: 40px;">
+                Поиск по тегам
+            </a>
+        </div>
+
+    </div>
+    <div class="container" id="popular">
+        <div class="row">
+            <th:block th:each="course, iterStat : ${popularCourses}">
+                <!--        <div th:class="${iterStat.index} % 3 == 0 ? 'row': ''">-->
+                <div class="card" style="width: 22rem; margin: 5px;">
+                    <div class="card-body">
+                        <h5 class="card-title courseName"
+                            th:utext="${course.name}">..</h5>
+                        <span class="card-subtitle mb-2 text-muted">Автор: </span>
+                        <a class="card-subtitle mb-2 text-muted"
+                           th:href="@{/user/view/profile/{id}(id=${course.getAuthor().getId()})}"
+                           th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
+                        </a>
+                        <p style="text-overflow: ellipsis" class="card-text courseDescription"
+                           th:utext="${course.description}"></p>
+                        <a th:href="@{/courses/view/{id}(id=${course.id})}" class="card-link">Перейти</a>
+                        <div sec:authorize="hasAuthority('ADMIN')">
+                            <a style="font-size: 0.875rem" class="btn btn-outline-danger btn-sm"
+                               th:data-toggle="${'modal'}"
+                               th:data-target="${'#archive' + iterStat.index}">
+                                Архивировать курс
+                            </a>
+                            <div th:class="${'modal'+ ' fade'}" th:id="${'archive' + iterStat.index}" tabindex="-1"
+                                 role="dialog"
+                                 th:aria-labelledby="${'archive' + iterStat.index}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" th:id="${'archive' + iterStat.index + 'Title'}">
+                                                Архивация курса</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Вы уверены, что хотите архивировать этот курс?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                Отменить
+                                            </button>
+                                            <a class="btn btn-danger"
+                                               th:href="@{/courses/archive/{id}(id=${course.id})}">Подтвердить</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <div class="container" id="new" style="display: none">
+        <div class="row">
+            <th:block th:each="course, iterStat : ${newCourses}">
+
+                <div class="card" style="width: 22rem; margin: 5px;">
+                    <div class="card-body">
+                        <h5 class="card-title courseName"
+                            th:utext="${course.name}">..</h5>
+                        <span class="card-subtitle mb-2 text-muted">Автор: </span>
+                        <a class="card-subtitle mb-2 text-muted"
+                           th:href="@{/user/view/profile/{id}(id=${course.getAuthor().getId()})}"
+                           th:utext="${course.author.getProfile().getName() + ' ' + course.author.getProfile().getSurname()}">
+                        </a>
+                        <p style="text-overflow: ellipsis" class="card-text courseDescription"
+                           th:utext="${course.description}"></p>
+                        <a th:href="@{/courses/view/{id}(id=${course.id})}" class="card-link">Перейти</a>
+                        <div sec:authorize="hasAuthority('ADMIN')">
+                            <a style="font-size: 0.875rem" class="btn btn-outline-danger btn-sm "
+                               th:data-toggle="${'modal'}"
+                               th:data-target="${'#archive' + iterStat.index}">
+                                Архивировать курс
+                            </a>
+                            <div th:class="${'modal'+ ' fade'}" th:id="${'archive' + iterStat.index}" tabindex="-1"
+                                 role="dialog"
+                                 th:aria-labelledby="${'archive' + iterStat.index}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" th:id="${'archive' + iterStat.index + 'Title'}">
+                                                Архивация курса</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Вы уверены, что хотите архивировать этот курс?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                Отменить
+                                            </button>
+                                            <a class="btn btn-danger"
+                                               th:href="@{/courses/archive/{id}(id=${course.id})}">Подтвердить</a>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <script>
+        function showNewCourses() {
+            document.getElementById("new").style.display = "block";
+            document.getElementById("popular").style.display = "none";
+            document.getElementById("newestCoursesOption").classList.add("active");
+            document.getElementById("popularCoursesOption").classList.remove("active");
+        }
+
+        function showPopularCourses() {
+            document.getElementById("popular").style.display = "block";
+            document.getElementById("new").style.display = "none";
+            document.getElementById("popularCoursesOption").classList.add("active");
+            document.getElementById("newestCoursesOption").classList.remove("active");
+        }
+
+        function cutDescription() {
+            let elem, size, text;
+            elem = document.getElementsByClassName('courseDescription');
+            size = 150;
+
+            for (let i = 0; i < elem.length; i++) {
+                text = elem[i].innerText;
+                if (elem[i].innerHTML.length > size) {
+                    text = elem[i].innerHTML.substr(0, size);
+                }
+                elem[i].innerHTML = text + '...';
+            }
+        }
+
+        cutDescription()
+    </script>
+
+</div>
+</body>
+</html>

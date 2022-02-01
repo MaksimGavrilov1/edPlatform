@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
       th:include="layout :: page">
 <head>
     <meta charset="UTF-8">
@@ -56,9 +56,15 @@
         <div th:if="${!joinedFlag}" class="row justify-content-md-center">
             <h6 th:text="${'Дней для прохождения курса: ' + course.getActiveDays()}"></h6>
         </div>
-        <div class="row justify-content-md-center">
-            <a style="margin-bottom: 15px;" class="btn btn-primary" th:if="${!joinedFlag}"
+        <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="row justify-content-md-center">
+            <a style="margin-bottom: 15px;" class="btn btn-primary" th:if="${!joinedFlag and !authorFlag}"
                th:href="@{/courses/joinCourse/{id}(id=${course.id})}">Подписаться</a>
+        </div>
+        <div class="row justify-content-md-center" sec:authorize="!isAuthenticated()" style="margin: 20px;">
+            <p><a th:href="@{/register}">Зарегистрируйтесь</a> или пройдите <a th:href="@{/login}">авторизацию</a> для того, чтобы иметь возможность подписаться на курс</p>
+        </div>
+        <div th:if="${authorFlag}" style="margin: 20px;">
+            <h5>Это ваш курс!</h5>
         </div>
     </div>
     <div th:if="${joinedFlag and !sub.getStatus().getValue().equals('Закрыт') and !sub.getStatus().getValue().equals('Не активен')}"

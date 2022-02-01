@@ -1,5 +1,6 @@
 package com.gavrilov.edPlatform.service;
 
+import com.gavrilov.edPlatform.dto.FormTest;
 import com.gavrilov.edPlatform.dto.TestDto;
 import com.gavrilov.edPlatform.dto.TestResultDto;
 import com.gavrilov.edPlatform.model.CourseTest;
@@ -21,4 +22,6 @@ public interface ThemeTestService {
     TestResultDto calculateResult(TestDto source, PlatformUser user);
 
     TestResultDto formResult(List<UserAnswer> answers, Long courseId);
+
+    void initTestContent(FormTest formTest, CourseTest test);
 }

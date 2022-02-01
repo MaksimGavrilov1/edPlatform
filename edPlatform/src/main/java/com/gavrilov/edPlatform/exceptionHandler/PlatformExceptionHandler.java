@@ -20,7 +20,7 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка доступа к тесту");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({OutOfAttemptsException.class})
@@ -28,7 +28,7 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка доступа к тесту");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({CourseExpiredException.class})
@@ -36,7 +36,7 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка доступа к тесту");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({CourseEditingException.class})
@@ -44,7 +44,7 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка редактирования курса");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({RoleChangeException.class})
@@ -52,7 +52,7 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка смены роли");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({CourseSubmitException.class})
@@ -60,14 +60,14 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка отправки курса");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({UnauthorizedUserException.class})
     protected String handleUnauthorizedUserEx(HttpServletRequest req, Model model, RuntimeException ex, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("errorName", "Необходимо зарегистрироваться или авторизоваться");
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
     @ExceptionHandler({AccessProfileException.class})
@@ -75,15 +75,17 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Недостаточно прав");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String internalServerError( @AuthenticationPrincipal PlatformUser user, Model model) {
-        model.addAttribute("userProfileName", user.getProfile().getName());
-        return "error/500";
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public String internalServerError( @AuthenticationPrincipal PlatformUser user, Model model) {
+//        if (user != null){
+//            model.addAttribute("userProfileName", user.getProfile().getName());
+//        }
+//        return "error/500";
+//    }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -97,7 +99,15 @@ public class PlatformExceptionHandler {
         model.addAttribute("errorName", "Ошибка подписки на курс");
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("errorMessage", ex.getMessage());
-        return "errorPage";
+        return "error/errorPage";
+    }
+
+    @ExceptionHandler({CourseAccessException.class})
+    protected String handleCourseAccessEx(HttpServletRequest req, Model model, RuntimeException ex, @AuthenticationPrincipal PlatformUser user) {
+        model.addAttribute("errorName", "Ошибка доступа к курсу");
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        model.addAttribute("errorMessage", ex.getMessage());
+        return "error/errorPage";
     }
 
 }

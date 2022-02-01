@@ -3,6 +3,7 @@ package com.gavrilov.edPlatform.service;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.Tag;
+import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 
 import java.util.List;
 
@@ -17,17 +18,17 @@ public interface CourseService {
 
     List<Course> findCoursesByAuthor(PlatformUser user);
 
-    List<Course> findCoursesAwaitingConfirmation();
-
     List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user);
 
-    List<Course> findTenMostPopular();
+    List<Course> findTenMostPopular(PlatformUser user);
 
-    List<Course> findTenNewest();
+    List<Course> findTenNewest(PlatformUser user);
 
     List<Course> findByPartName(String partName);
 
     List<Course> findCoursesByTag(String tag);
+
+    List<Course> findByStatus(CourseStatus status);
 
     Long countByAuthor(PlatformUser author);
 
@@ -38,4 +39,6 @@ public interface CourseService {
     void submitToApprove(Course course, PlatformUser user);
 
     void archiveCourseByCourseId(Long id);
+
+    void unarchiveCourse(Long id);
 }

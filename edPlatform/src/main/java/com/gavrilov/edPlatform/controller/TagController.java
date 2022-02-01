@@ -29,7 +29,7 @@ public class TagController {
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("tags", tagService.findAll());
         model.addAttribute("formTag", new Tag());
-        return "tags";
+        return "tag/tags";
     }
 
     @PreAuthorize("hasAuthority('MODERATOR')")
@@ -43,7 +43,7 @@ public class TagController {
             model.addAttribute("userProfileName", user.getProfile().getName());
             model.addAttribute("tags", tagService.findAll());
             model.addAttribute("formTag", tag);
-            return "tags";
+            return "tag/tags";
         }
         tagService.save(tag);
         return "redirect:/tag/all";

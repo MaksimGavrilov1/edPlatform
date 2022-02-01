@@ -23,4 +23,6 @@ public interface UserService {
     Map<PlatformUser, Integer> findModeratorsAndApprovedCoursesSize();
 
     Boolean compareAccessLevel(PlatformUser userToView, PlatformUser requester);
+
+    void fillContent(boolean flag);
 }

@@ -24,7 +24,7 @@
                         </option>
                     </datalist>
                 </div>
-                <button style="margin: 30px;" class="btn btn-primary" type="submit">Найти</button>
+                <button style="margin: 30px;" class="btn btn-primary" type="submit">Поиск</button>
             </form>
         </div>
     </div>
@@ -41,7 +41,7 @@
                         </h6>
                         <p style="text-overflow: ellipsis" class="card-text courseDescription"
                            th:utext="${course.description}"></p>
-                        <a th:href="@{/courses/{id}(id=${course.id})}" class="card-link">Перейти</a>
+                        <a th:href="@{/courses/view/{id}(id=${course.id})}" class="card-link">Перейти</a>
                         <a sec:authorize="hasAuthority('ADMIN')" href="#" class="card-link">Удалить курс</a>
                     </div>
                 </div>

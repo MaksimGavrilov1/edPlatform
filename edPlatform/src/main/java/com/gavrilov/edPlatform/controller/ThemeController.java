@@ -11,6 +11,7 @@ import com.gavrilov.edPlatform.validator.CourseThemeEditValidator;
 import com.gavrilov.edPlatform.validator.CourseThemeValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,14 +29,16 @@ public class ThemeController {
     private final CourseThemeValidator courseThemeValidator;
     private final CourseThemeEditValidator editValidator;
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @GetMapping("/constructor")
     public String themesConstructor(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("courses", courseService.findCoursesByAuthor(user));
         model.addAttribute("formTheme", new FormTheme());
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "themeConstructor";
+        return "theme/themeConstructor";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @PostMapping("/addTheme")
     public String addTheme(Model model,
                            @ModelAttribute("formTheme") FormTheme formTheme,
@@ -52,13 +55,14 @@ public class ThemeController {
             model.addAttribute("courses", courseService.findCoursesByAuthor(user));
             model.addAttribute("formTheme", formTheme);
             model.addAttribute("userProfileName", user.getProfile().getName());
-            return "themeConstructor";
+            return "theme/themeConstructor";
         }
 
         courseThemeService.saveTheme(ct);
         return "redirect:/courses/usersCourses";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @GetMapping("/edit/{themeId}")
     public String renderEditTheme(Model model,
                                   @AuthenticationPrincipal PlatformUser user,
@@ -69,9 +73,10 @@ public class ThemeController {
         }
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("theme", theme);
-        return "editTheme";
+        return "theme/editTheme";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @PostMapping("/edit")
     public String editTheme(@ModelAttribute(name = "theme") CourseTheme theme,
                             Model model,
@@ -84,12 +89,13 @@ public class ThemeController {
         if (result.hasErrors()){
             model.addAttribute("userProfileName", user.getProfile().getName());
             model.addAttribute("theme", theme);
-            return "editTheme";
+            return "theme/editTheme";
         }
         courseThemeService.saveTheme(theme);
-        return String.format("redirect:/courses/owned/%d", theme.getId());
+        return String.format("redirect:/courses/owned/%d", theme.getCourse().getId());
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @GetMapping("/delete/{id}")
     public String deleteTheme(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
 

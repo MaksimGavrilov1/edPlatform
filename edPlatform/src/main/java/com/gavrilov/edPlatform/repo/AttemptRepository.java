@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AttemptRepository extends JpaRepository<Attempt, Long> {
@@ -16,7 +17,7 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
     List<Attempt> findByUserOrderByTimeDesc(PlatformUser user);
     List<Attempt> findByUser(PlatformUser user);
 
-    List<Attempt> findByCourseTestAndUser(CourseTest courseTest, PlatformUser user);
+    Optional<List<Attempt>> findByCourseTestAndUser(CourseTest courseTest, PlatformUser user);
 
     Attempt findFirstByUserAndCourseTestOrderByTimeDesc(PlatformUser user, CourseTest courseTest);
 

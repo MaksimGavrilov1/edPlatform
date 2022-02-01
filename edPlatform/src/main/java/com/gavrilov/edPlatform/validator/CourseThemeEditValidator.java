@@ -1,6 +1,5 @@
 package com.gavrilov.edPlatform.validator;
 
-import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.service.CourseThemeService;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +24,19 @@ public class CourseThemeEditValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-         CourseTheme theme = (CourseTheme) target;
-         CourseTheme themeFromDB = courseThemeService.findTheme(theme.getId());
+        CourseTheme theme = (CourseTheme) target;
+        CourseTheme themeFromDB = courseThemeService.findTheme(theme.getId());
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_THEME_NAME);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "theme.name.empty");
 
         if (!errors.hasErrors()) {
             List<CourseTheme> themes = courseThemeService.findThemesByCourse(theme.getCourse());
             List<CourseTheme> repeatedThemes = themes.stream()
-                    .filter(x->x.getName().equals(theme.getName().trim()))
+                    .filter(x -> x.getName().equals(theme.getName().trim()))
                     .collect(Collectors.toList());
-            for (CourseTheme repeatedTheme : repeatedThemes){
+            for (CourseTheme repeatedTheme : repeatedThemes) {
                 if (!repeatedTheme.equals(themeFromDB)) {
-                    errors.rejectValue("name", "", PlatformValidationUtilities.DUPLICATE_COURSE_THEME);
+                    errors.rejectValue("name", "theme.name.nonUnique");
                 }
             }
         }

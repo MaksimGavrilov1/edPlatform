@@ -4,12 +4,9 @@ import com.gavrilov.edPlatform.constant.PlatformValidationUtilities;
 import com.gavrilov.edPlatform.model.Tag;
 import com.gavrilov.edPlatform.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.validator.internal.engine.groups.ValidationOrder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import javax.validation.Valid;
 
 import java.util.Locale;
 
@@ -31,17 +28,17 @@ public class TagValidator implements Validator {
         Tag tag = (Tag) target;
         tag.setName(tag.getName().toLowerCase(Locale.ROOT));
 
-        rejectIfEmptyOrWhitespace(errors, "name", PlatformValidationUtilities.NOT_EMPTY_TAG_NAME);
+        rejectIfEmptyOrWhitespace(errors, "name", "tag.name.empty");
 
         if (!errors.hasErrors()) {
-            if (tag.getName().trim().length() > PlatformValidationUtilities.MAX_TAG_SIZE){
-                errors.rejectValue("name", "", PlatformValidationUtilities.LENGTH_TAG);
+            if (tag.getName().trim().length() > PlatformValidationUtilities.MAX_TAG_SIZE) {
+                errors.rejectValue("name", "tag.name.length");
             }
-            if (tag.getName().trim().contains(" ")){
-                errors.rejectValue("name", "", PlatformValidationUtilities.FORBIDDEN_SYMBOL_TAG);
+            if (tag.getName().trim().contains(" ")) {
+                errors.rejectValue("name", "tag.name.forbiddenSymbol");
             }
-            if (tagService.findByName(tag.getName().trim()) != null){
-                errors.rejectValue("name", "", PlatformValidationUtilities.DUPLICATE_TAG);
+            if (tagService.findByName(tag.getName().trim()) != null) {
+                errors.rejectValue("name", "tag.name.nonUnique");
             }
         }
 

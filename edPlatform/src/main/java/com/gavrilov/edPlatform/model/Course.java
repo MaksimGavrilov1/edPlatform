@@ -46,9 +46,7 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private CourseStatus status = CourseStatus.DRAFT;
 
-    @ManyToMany(mappedBy = "joinedCourses")
-    @ToString.Exclude
-    private Set<PlatformUser> joinedUsers;
+
 
     @OneToMany(mappedBy = "course")
     @ToString.Exclude

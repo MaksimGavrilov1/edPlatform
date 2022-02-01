@@ -53,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         //configure url authorization
         http
                 .authorizeRequests()
-                .antMatchers("/register", "/courses/all", "/css/*", "/successfulRegistration")
+                .antMatchers("/register", "/courses/all", "/css/*", "/successfulRegistration", "/courses/search/**", "/courses/view/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

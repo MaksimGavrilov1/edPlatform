@@ -1,6 +1,7 @@
 package com.gavrilov.edPlatform.service.attemptServiceImpl;
 
 import com.gavrilov.edPlatform.model.Attempt;
+import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.repo.AttemptRepository;
@@ -9,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class AttemptServiceImpl implements AttemptService {
 
     @Override
     public List<Attempt> findByUserAndTest(PlatformUser user, CourseTest test) {
-        return attemptRepository.findByCourseTestAndUser(test, user);
+        return attemptRepository.findByCourseTestAndUser(test, user).orElseGet(Collections::emptyList);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class AttemptServiceImpl implements AttemptService {
 
     @Override
     public Boolean anyAttemptsLeft(PlatformUser user, CourseTest test) {
-        List<Attempt> userAttempts = attemptRepository.findByCourseTestAndUser(test, user);
+        List<Attempt> userAttempts = attemptRepository.findByCourseTestAndUser(test, user).orElseGet(Collections::emptyList);
         return userAttempts.size() < test.getAmountOfAttempts();
     }
 
@@ -81,4 +81,8 @@ public class AttemptServiceImpl implements AttemptService {
         attempt.setPass(false);
         return attemptRepository.save(attempt);
     }
+
+
+
+
 }

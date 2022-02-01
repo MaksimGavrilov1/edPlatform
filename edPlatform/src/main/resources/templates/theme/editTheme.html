@@ -19,7 +19,8 @@
                 <form class="needs-validation" novalidate="" th:method="post" th:object="${theme}"
                       th:action="@{/themes/edit}">
                     <input type="hidden" th:field="*{id}" th:value="${theme.getId()}">
-                    <input type="hidden" th:field="*{course}" th:value="${theme.getCourse()}">
+                    <input type="hidden" th:field="*{course.id}" th:value="${theme.getCourse().id}">
+                    <input type="hidden" th:field="*{course.author.id}" th:value="${theme.getCourse().author.id}">
                     <div class="row justify-content-md-center">
                         <div class="col-md-8 mb-3">
                             <label for="name">Название темы</label>

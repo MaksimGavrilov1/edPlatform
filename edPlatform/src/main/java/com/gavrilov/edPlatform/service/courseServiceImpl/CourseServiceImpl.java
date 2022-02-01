@@ -57,7 +57,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findCourse(Long id) {
-        return courseRepository.findById(id).orElse(null);
+        return courseRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -65,10 +65,7 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findCourseByAuthor(user);
     }
 
-    @Override
-    public List<Course> findCoursesAwaitingConfirmation() {
-        return courseRepository.findByStatus(CourseStatus.AWAITING_CONFIRMATION);
-    }
+
 
     @Override
     public List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user) {
@@ -78,16 +75,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findTenMostPopular() {
-        List<Course> courses = courseRepository.findAll();
+    public List<Course> findTenMostPopular(PlatformUser user) {
+        List<Course> courses = courseRepository.findByStatus(CourseStatus.APPROVED).orElseGet(Collections::emptyList);
+//        if (user != null){
+//            courses = courses.stream()
+//                    .filter(x->!x.getAuthor().equals(user))
+//                    .collect(Collectors.toList());
+//        }
         int size = courses.size();
         courses.sort(Comparator.comparingInt(c->c.getSubscriptions().size()));
-//        PriorityQueue<Course> res = new PriorityQueue<>(Comparator.comparingInt((c)->c.getSubscriptions().size()));
-//        res.addAll(courses);
-//        List<Course> result = new ArrayList<>();
-//        for (Course course : courses){
-//            result.add(res.poll());
-//        }
         Collections.reverse(courses);
         if (size < COURSES_TO_SHOW_AMOUNT){
             return courses;
@@ -97,8 +93,13 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> findTenNewest() {
+    public List<Course> findTenNewest(PlatformUser user) {
         List<Course> courses = courseRepository.findByOrderByIdDesc();
+//        if (user != null){
+//            courses = courses.stream()
+//                    .filter(x->!x.getAuthor().equals(user))
+//                    .collect(Collectors.toList());
+//        }
         int size = courses.size();
         if (size < COURSES_TO_SHOW_AMOUNT){
             return courses;
@@ -115,6 +116,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findCoursesByTag(String tag) {
         return courseRepository.findCoursesByTagName(tag).orElseGet(Collections::emptyList);
+    }
+
+    @Override
+    public List<Course> findByStatus(CourseStatus status) {
+        return courseRepository.findByStatus(status).orElseGet(Collections::emptyList);
     }
 
     @Override
@@ -160,11 +166,31 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void archiveCourseByCourseId(Long courseId) {
-        Course course = courseRepository.findById(courseId).orElseThrow(ResourceNotFoundException::new);
-        course.setStatus(CourseStatus.ARCHIVED);
+        Course course = changeStatus(courseId, CourseStatus.ARCHIVED);
         List<Subscription> subscriptions = subscriptionService.findByCourse(course);
-        subscriptions.forEach(x->x.setStatus(CourseSubscriptionStatus.ARCHIVED));
-        subscriptions.forEach(subscriptionService::save);
-        courseRepository.save(course);
+        for (Subscription sub : subscriptions){
+            sub.setStatus(CourseSubscriptionStatus.ARCHIVED);
+            sub.setCourseEndDate(new Timestamp(new Date().getTime()));
+            subscriptionService.save(sub);
+        }
+    }
+
+    @Override
+    public void unarchiveCourse(Long id) {
+        Course course = changeStatus(id, CourseStatus.APPROVED);
+        List<Subscription> subscriptions = subscriptionService.findByCourse(course);
+        for (Subscription sub : subscriptions){
+            sub.setStatus(CourseSubscriptionStatus.OPEN);
+            sub.setDateOfSubscription(new Timestamp(new Date().getTime()));
+            long endDate = new Date().getTime() + course.getActiveTime().getTime();
+            sub.setCourseEndDate(new Timestamp(endDate));
+            subscriptionService.save(sub);
+        }
+    }
+
+    private Course changeStatus(Long courseId, CourseStatus status) {
+        Course course = courseRepository.findById(courseId).orElseThrow(ResourceNotFoundException::new);
+        course.setStatus(status);
+        return courseRepository.save(course);
     }
 }

@@ -25,4 +25,6 @@ public interface SubscriptionService {
 
     Long countByUser(PlatformUser user);
 
+    Subscription subscribeUser(PlatformUser user, Course course);
+
 }

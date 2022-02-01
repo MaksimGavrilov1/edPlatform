@@ -6,9 +6,7 @@ import com.gavrilov.edPlatform.dto.TagDto;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.repo.CourseRepository;
-import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.TagService;
-import com.gavrilov.edPlatform.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -35,11 +33,11 @@ public class FormCourseValidator implements Validator {
         FormCourse course = (FormCourse) target;
         course.setName(course.getName().trim());
         // Check the fields of course.
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_NAME);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "course.name.empty");
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "course.description.empty");
 
-        if (course.getName().length() > PlatformValidationUtilities.MAX_COURSE_NAME_SIZE){
-            errors.rejectValue("name", "", PlatformValidationUtilities.LENGTH_COURSE_NAME);
+        if (course.getName().length() > PlatformValidationUtilities.MAX_COURSE_NAME_SIZE) {
+            errors.rejectValue("name", "course.name.length");
         }
 
         //validate if all fields are not empty and check if author have the same course
@@ -52,34 +50,31 @@ public class FormCourseValidator implements Validator {
 
             if (authorCourses.stream().anyMatch((x) -> x.getName().equals(course.getName()))) {
 
-                errors.rejectValue("name", "", PlatformValidationUtilities.DUPLICATE_AUTHOR_COURSE);
+                errors.rejectValue("name", "course.name.nonUniqueAmongExisting");
             }
 
-            if (allCourses.stream().anyMatch(x->x.getName().equals(course.getName())
-                    && !x.getAuthor().equals(courseAuthor))){
-                errors.rejectValue("name", "", PlatformValidationUtilities.DUPLICATE_COURSE_NAME);
+            if (allCourses.stream().anyMatch(x -> x.getName().equals(course.getName()) && !x.getAuthor().equals(courseAuthor))) {
+                errors.rejectValue("name", "course.name.nonUnique");
             }
 
-            if (course.getDays() > PlatformValidationUtilities.MAX_TEST_ACTIVE_TIME){
-                errors.rejectValue("days", "", PlatformValidationUtilities.INCORRECT_TEST_MAX_ACTIVE_TIME);
-            } else if (course.getDays() < PlatformValidationUtilities.MIN_TEST_ACTIVE_TIME){
-                errors.rejectValue("days", "", PlatformValidationUtilities.INCORRECT_TEST_MIN_ACTIVE_TIME);
+            if (course.getDays() > PlatformValidationUtilities.MAX_TEST_ACTIVE_TIME) {
+                errors.rejectValue("days", "course.days.valueOverMax");
+            } else if (course.getDays() < PlatformValidationUtilities.MIN_TEST_ACTIVE_TIME) {
+                errors.rejectValue("days", "course.days.valueUnderMin");
             }
 
             if (course.getIsAlwaysOpen() == null) {
-                errors.rejectValue("isAlwaysOpen", "", PlatformValidationUtilities.NOT_EMPTY_COURSE_ALWAYS_OPEN);
+                errors.rejectValue("isAlwaysOpen", "course.isAlwaysOpen.empty");
             }
-
-            for (TagDto tag : tags){
-                if (!tag.getName().isBlank()){
-                    List<TagDto> dupTags =  tags.stream()
-                            .filter(x->x.equals(tag))
-                            .collect(Collectors.toList());
-                    if (dupTags.size() > 1 && !repeatedTagFlag){
-                        errors.rejectValue("tags", "", PlatformValidationUtilities.DUPLICATE_COURSE_TAGS);
+            repeatedTagFlag = false;
+            for (TagDto tag : tags) {
+                if (!tag.getName().isBlank()) {
+                    List<TagDto> dupTags = tags.stream().filter(x -> x.equals(tag)).collect(Collectors.toList());
+                    if (dupTags.size() > 1 && !repeatedTagFlag) {
+                        errors.rejectValue("tags", "course.tags.nonUnique");
                         repeatedTagFlag = true;
                     }
-                    if (tagService.findByName(tag.getName().trim()) == null){
+                    if (tagService.findByName(tag.getName().trim()) == null) {
                         errors.rejectValue("tags", "", String.format(PlatformValidationUtilities.TAG_NOT_EXIST_MODIFYING, tag.getName()));
                     }
                 }

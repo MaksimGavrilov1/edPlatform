@@ -9,6 +9,7 @@ import com.gavrilov.edPlatform.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -77,5 +78,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public Long countByUser(PlatformUser user) {
         return subscriptionRepository.countByUser(user);
+    }
+
+    @Override
+    public Subscription subscribeUser(PlatformUser user, Course course) {
+        Subscription sub = new Subscription();
+        sub.setCourse(course);
+        sub.setUser(user);
+        sub.setDateOfSubscription(new Timestamp(new Date().getTime()));
+        long endOfSub = sub.getDateOfSubscription().getTime() + course.getActiveTime().getTime();
+        sub.setCourseEndDate(new Timestamp(endOfSub));
+        sub.setStatus(CourseSubscriptionStatus.OPEN);
+        return subscriptionRepository.save(sub);
     }
 }

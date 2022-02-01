@@ -10,31 +10,27 @@
 <div th:fragment="content" style="max-width: 95%">
     <div class="container" style="max-width:95%">
         <div class="row justify-content-md-center" style="margin: 30px;">
-            <div class="col col-lg-3" style="background-color:white; margin-right:10px; border-radius: 3px;">
+            <div class="col col-lg-3" style="background-color:white; margin-right:10px; border-radius: 3px; margin-bottom:20px;">
                 <div class="row justify-content-md-center" style="margin-top: 30px; padding-bottom:20px">
-                    <h4 th:text="${user.getProfile().getName()} + '&nbsp;'"></h4>
-                    <h4 th:text="${user.getProfile().getSurname()}"></h4>
+                    <h4 th:text="${user.getName()} + '&nbsp;'"></h4>
+                    <h4 th:text="${user.getSurname()}"></h4>
                 </div>
                 <div class="row justify-content-md-center">
-                    <h5 style="padding-bottom:20px;" th:if="${user.getRole().name().equals('ADMIN')}">Администратор</h5>
-                    <h5 style="padding-bottom:20px;" th:if="${user.getRole().name().equals('TEACHER')}">
-                        Преподаватель</h5>
-                    <h5 style="padding-bottom:20px;" th:if="${user.getRole().name().equals('STUDENT')}">Студент</h5>
-                    <h5 style="padding-bottom:20px;" th:if="${user.getRole().name().equals('MODERATOR')}">Модератор</h5>
+                    <h5 th:text="${user.getRole()}"></h5>
                 </div>
                 <div class="row justify-content-md-center">
                     <a class="btn btn-outline-primary"
                        style="margin-right: 3px; margin-bottom: 3px;" th:href="@{/user/changePassword}">Сменить
                         пароль</a>
-                    <a sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="btn btn-outline-primary"
+                    <a  class="btn btn-outline-primary"
                        style="margin-top: 2px;" th:href="@{/user/editProfile}">Редактировать профиль</a>
                 </div>
 
                 <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="list-group" style="margin-top: 30px; margin-bottom: 20px;">
-                    <a href="#" id="personalInfoOption" class="list-group-item " onclick="showPersonalInfo()">
+                    <a href="#" id="personalInfoOption" class="list-group-item active" onclick="showPersonalInfo()">
                         О себе
                     </a>
-                    <a  href="#" id="coursesOption" class="list-group-item active" onclick="showCourse()">
+                    <a  href="#" id="coursesOption" class="list-group-item " onclick="showCourse()">
                         Подписки <span class="badge"
                                        th:text="${subs.size()}"></span>
                     </a>
@@ -44,8 +40,40 @@
                     </a>
                 </div>
             </div>
-            <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" class="col-8">
-                <div id="courses" style="background-color:white; border-radius: 3px; padding: 20px;">
+
+            <div  class="col">
+                <div  id="userInfo"
+                      style=" background-color:white; border-radius: 3px; padding-top: 20px; padding-left: 40px; padding-bottom: 30px;">
+                    <div class="row">
+                        <h4 style="" th:text="${user.getSurname() + ' '}">&nbsp;</h4>
+                        &nbsp;
+                        <h4 style="" th:text="${user.getName()+ ' '}">&nbsp;</h4>
+                        &nbsp;
+                        <h4 style=""
+                            th:text="${user.getMiddleName() != null ? user.getMiddleName() : ''}"></h4>
+                    </div>
+                    <hr>
+                    <p th:text="${user.getRole()}"></p>
+                    <hr>
+                    <div style="padding:10px;">
+
+                        <h4>О себе</h4>
+                    </div>
+                    <p th:text="${user.getSelfDescription() != null ? user.getSelfDescription() : ''}"></p>
+                    <div th:if="${!(user.getRole().equals('Администратор') or user.getRole().equals('Модератор'))}" class="list-group list-group-flush">
+
+
+                    <div style="padding: 10px">
+                        <h4>Статистика</h4>
+                    </div>
+                    <ul th:if="${!(user.getRole().equals('Администратор') or user.getRole().equals('Модератор'))}" class="list-group list-group-flush">
+                        <li class="list-group-item" th:text="${'Созданных курсов: ' + user.getCreatedCoursesAmount()}"></li>
+                        <li class="list-group-item" th:text="${'Подписок: ' + user.getSubscriptionsAmount()}"></li>
+                        <li class="list-group-item" th:text="${'Показатель успеваемости: ' + user.getTestSuccessRate() + '%'}"></li>
+                    </ul>
+                    </div>
+                </div>
+                <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" id="courses" style="background-color:white; border-radius: 3px; padding: 20px; display: none">
                     <div style="padding:10px;">
                         <h4 style="margin: 20px;">Подписки</h4>
                     </div>
@@ -65,7 +93,7 @@
                         <tbody th:if="${subs != null and subs.size() != 0}">
                         <tr th:each="sub, iter : ${subs}">
                             <th scope="row" th:utext="${iter.index}+1"></th>
-                            <td><a th:href="@{/courses/{id}(id=${sub.getCourse().getId()})}"
+                            <td><a th:href="@{/courses/view/{id}(id=${sub.getCourse().getId()})}"
                                    th:utext="${sub.getCourse().getName()}"></a></td>
                             <td th:text="${sub.getFormattedBeginDate()}" ></td>
                             <td th:text="${sub.getFormattedEndDate()}"></td>
@@ -107,29 +135,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" id="userInfo"
-                     style="display: none; background-color:white; border-radius: 3px; display: none; padding-top: 20px; padding-left: 40px; padding-bottom: 30px;">
-                    <div class="row">
-                        <h4 style="" th:text="${user.getProfile.getSurname() + ' '}">&nbsp;</h4>
-                        &nbsp;
-                        <h4 style="" th:text="${user.getProfile.getName()+ ' '}">&nbsp;</h4>
-                        &nbsp;
-                        <h4 style=""
-                            th:text="${user.getProfile.getMiddleName() != null ? user.getProfile.getMiddleName() : ''}"></h4>
-                    </div>
-                    <hr>
-                    <p th:if="${user.getRole().name().equals('ADMIN')}">Статус: Администратор</p>
-                    <p th:if="${user.getRole().name().equals('TEACHER')}">
-                        Статус: Преподаватель</p>
-                    <p th:if="${user.getRole().name().equals('STUDENT')}">Статус: Студент</p>
-                    <p th:if="${user.getRole().name().equals('MODERATOR')}">Статус: Модератор</p>
-                    <hr>
-                    <div style="padding:10px;">
 
-                        <h4>О себе</h4>
-                    </div>
-                    <p th:text="${user.getProfile().getSelfDescription() != null ? user.getProfile().getSelfDescription() : ''}"></p>
-                </div>
             </div>
         </div>
     </div>

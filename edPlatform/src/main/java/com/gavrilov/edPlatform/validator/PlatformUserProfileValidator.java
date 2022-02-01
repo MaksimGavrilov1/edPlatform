@@ -19,23 +19,23 @@ public class PlatformUserProfileValidator implements Validator {
     public void validate(Object target, Errors errors) {
         PlatformUserProfile profile = (PlatformUserProfile) target;
 
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty.platformUserProfile.name", PlatformValidationUtilities.NOT_EMPTY_USER_NAME);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", "NotEmpty.platformUserProfile.surname", PlatformValidationUtilities.NOT_EMPTY_USER_SURNAME);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "platformUserProfile.name.empty");
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", "platformUserProfile.surname.empty");
 
-        if (!errors.hasFieldErrors("name")){
-            if (isNotValidString(profile.getName(), PlatformValidationUtilities.RU_AND_ENG_PATTERN)){
-                errors.rejectValue("name", "ForbiddenSymbol.platformUserProfile.name", PlatformValidationUtilities.FORBIDDEN_SYMBOL_USER_INITIALS);
+        if (!errors.hasFieldErrors("name")) {
+            if (isNotValidString(profile.getName(), PlatformValidationUtilities.RU_AND_ENG_PATTERN)) {
+                errors.rejectValue("name", "platformUserProfile.initials.forbiddenSymbol");
             }
         }
-        if (!errors.hasFieldErrors("surname")){
-            if (isNotValidString(profile.getSurname(), PlatformValidationUtilities.RU_AND_ENG_PATTERN)){
-                errors.rejectValue("surname", "ForbiddenSymbol.platformUserProfile.surname", PlatformValidationUtilities.FORBIDDEN_SYMBOL_USER_INITIALS);
+        if (!errors.hasFieldErrors("surname")) {
+            if (isNotValidString(profile.getSurname(), PlatformValidationUtilities.RU_AND_ENG_PATTERN)) {
+                errors.rejectValue("surname", "platformUserProfile.initials.forbiddenSymbol");
             }
         }
-        if (!errors.hasFieldErrors("middleName")){
-            if (!profile.getMiddleName().isBlank()){
-                if (isNotValidString(profile.getMiddleName(), PlatformValidationUtilities.RU_AND_ENG_PATTERN)){
-                    errors.rejectValue("middleName", "ForbiddenSymbol.platformUserProfile.middleName", PlatformValidationUtilities.FORBIDDEN_SYMBOL_USER_INITIALS);
+        if (!errors.hasFieldErrors("middleName")) {
+            if (!profile.getMiddleName().isBlank()) {
+                if (isNotValidString(profile.getMiddleName(), PlatformValidationUtilities.RU_AND_ENG_PATTERN)) {
+                    errors.rejectValue("middleName", "platformUserProfile.initials.forbiddenSymbol");
                 }
             }
         }

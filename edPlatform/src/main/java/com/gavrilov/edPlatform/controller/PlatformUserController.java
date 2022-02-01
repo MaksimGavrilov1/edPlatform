@@ -21,6 +21,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,23 +44,31 @@ public class PlatformUserController {
     private final ConversionService conversionService;
 
 
+
+
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String showUserProfile(Model model, @AuthenticationPrincipal PlatformUser user) {
-        model.addAttribute("user", user);
+
+
         subscriptionService.updateSubscriptionStatus(user);
+        UserProfileDto userProfileDto = conversionService.convert(user, UserProfileDto.class);
+        model.addAttribute("user", userProfileDto);
         model.addAttribute("subs", subscriptionService.findByUser(user));
         model.addAttribute("attempts", attemptService.findLastTenAttempts(user));
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "showUserProfile";
+        return "user/showUserProfile";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/editProfile")
     public String editUserProfile(Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("userProfile", user.getProfile());
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "editUserProfile";
+        return "user/editUserProfile";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/editProfile")
     public String saveUserProfile (@ModelAttribute("userProfile") PlatformUserProfile profile,
                                    @AuthenticationPrincipal PlatformUser user,
@@ -68,7 +78,7 @@ public class PlatformUserController {
         if(result.hasErrors()){
             model.addAttribute("userProfile", profile);
             model.addAttribute("userProfileName", user.getProfile().getName());
-            return "editUserProfile";
+            return "user/editUserProfile";
         }
         user.setProfile(profile);
         model.addAttribute("userProfileName", user.getProfile().getName());
@@ -76,13 +86,15 @@ public class PlatformUserController {
         return "redirect:/user/profile";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/changePassword")
     public String renderChangePasswordPage(Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("formPassword", new PasswordDto());
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "changePassword";
+        return "user/changePassword";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/changePassword")
     public String changePassword(@ModelAttribute("formPassword") PasswordDto formPassword,
                                  @AuthenticationPrincipal PlatformUser user,
@@ -93,14 +105,15 @@ public class PlatformUserController {
         PlatformUser userFromDB = userService.findByUsername(user.getUsername());
         if (result.hasErrors()){
             model.addAttribute("userProfileName", user.getProfile().getName());
-            return "changePassword";
+            return "user/changePassword";
         }
         userFromDB.setPassword(encoder.encode(formPassword.getNewPassword()));
         userService.saveUser(userFromDB);
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "successfulPasswordChange";
+        return "user/successfulPasswordChange";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @GetMapping("/moderatorRequest")
     public String showModeratorRequestPage (Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("request", new ModeratorRoleRequest());
@@ -109,9 +122,10 @@ public class PlatformUserController {
         model.addAttribute("isActiveRequest", moderatorRoleRequestService.isUserHaveAnyActiveRequest(user));
         model.addAttribute("declined", RequestStatus.DECLINED);
         model.addAttribute("userProfileName", user.getProfile().getName());
-        return "moderatorRequestPage";
+        return "user/student_teacher/moderatorRequestPage";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @PostMapping("/moderatorRequest")
     public String saveModeratorRequest (@ModelAttribute("request") ModeratorRoleRequest request,
                                         @AuthenticationPrincipal PlatformUser user,
@@ -121,6 +135,7 @@ public class PlatformUserController {
         return "redirect:/courses/all";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/view/profile/{id}")
     public String viewUserProfile(@PathVariable Long id, @AuthenticationPrincipal PlatformUser user, Model model){
         if (user == null){
@@ -131,7 +146,7 @@ public class PlatformUserController {
             UserProfileDto profileDto = conversionService.convert(userToView, UserProfileDto.class);
             model.addAttribute("userProfileName", user.getProfile().getName());
             model.addAttribute("user", profileDto);
-            return "viewProfile";
+            return "user/viewProfile";
         } else {
             throw new AccessProfileException("Вы не можете просматривать профиль этого пользователя");
         }
@@ -144,7 +159,7 @@ public class PlatformUserController {
 
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("moderators", userService.findModeratorsAndApprovedCoursesSize());
-        return "moderatorsList";
+        return "user/admin/moderatorsList";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -152,7 +167,7 @@ public class PlatformUserController {
     public String showModeratorRequests(Model model, @AuthenticationPrincipal PlatformUser user){
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("requests", moderatorRoleRequestService.findByStatus(RequestStatus.PENDING));
-        return "newModerators";
+        return "user/admin/newModerators";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -172,6 +187,7 @@ public class PlatformUserController {
         return "redirect:/user/newModerators";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @GetMapping("/moderator/ready")
     public String readyToChangeRole(@AuthenticationPrincipal PlatformUser user){
         if (moderatorRoleRequestService.isUserHaveApproved(user)){

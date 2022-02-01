@@ -11,6 +11,7 @@
     <form th:action="@{/test/saveTest}" th:object="${test}" method="post">
         <input type="hidden" th:field="*{course}" th:value="${test.course.id}">
         <input type="hidden" th:field="*{id}" th:value="${test.getId()}"/>
+        <input type="hidden" th:field="*{minThreshold}" th:value="${test.getMinThreshold()}"/>
         <div class="form-group">
             <label for="name">Название теста</label>
             <textarea class="form-control" id="name" th:field="*{name}"></textarea>

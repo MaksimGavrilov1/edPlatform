@@ -24,27 +24,27 @@ public class PasswordDtoValidator implements Validator {
     public void validate(Object target, Errors errors) {
         PasswordDto formPassword = (PasswordDto) target;
         PlatformUser user = formPassword.getUser();
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "Empty.passwordDto.currentPassword", PlatformValidationUtilities.NOT_EMPTY_COURSE_NAME);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "Empty.passwordDto.newPassword", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
-        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "Empty.passwordDto.confirmPassword", PlatformValidationUtilities.NOT_EMPTY_COURSE_DESCRIPTION);
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "passwordDto.currentPassword.empty");
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "passwordDto.newPassword.empty");
+        org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "passwordDto.confirmPassword.empty");
 
         if (!errors.hasErrors()) {
             if (!encoder.matches(formPassword.getCurrentPassword().trim(), user.getPassword())) {
-                errors.rejectValue("currentPassword", "PasswordMismatch.passwordDto.currentPassword", PlatformValidationUtilities.USER_CURRENT_PASSWORD_MISMATCH);
+                errors.rejectValue("currentPassword", "passwordDto.currentPassword.passwordMismatch");
             }
             if (!errors.hasFieldErrors("newPassword") && !errors.hasFieldErrors("confirmPassword")) {
                 if (formPassword.getNewPassword().contains(" ")) {
-                    errors.rejectValue("newPassword", "ForbiddenSymbol.passwordDto.newPassword", PlatformValidationUtilities.FORBIDDEN_SYMBOL_WHITESPACE_PASSWORD);
+                    errors.rejectValue("newPassword", "passwordDto.newPassword.forbiddenSymbol");
                 }
                 if (formPassword.getNewPassword().length() < PlatformValidationUtilities.MIN_PASSWORD_SIZE) {
-                    errors.rejectValue("newPassword", "Length.passwordDto.newPassword", PlatformValidationUtilities.LENGTH_PASSWORD);
+                    errors.rejectValue("newPassword", "passwordDto.newPassword.length");
                 }
                 if (!formPassword.getNewPassword().trim().equals(formPassword.getConfirmPassword().trim())) {
-                    errors.rejectValue("confirmPassword", "PasswordMismatch.passwordDto.confirmPassword", PlatformValidationUtilities.USER_PASSWORD_MISMATCH);
+                    errors.rejectValue("confirmPassword", "passwordDto.confirmPassword.passwordMismatch");
                 }
             }
             if (encoder.matches(formPassword.getNewPassword().trim(), user.getPassword())) {
-                errors.rejectValue("newPassword", "PasswordMatch.passwordDto.newPassword", PlatformValidationUtilities.USER_NEW_CURRENT_PASSWORD_MATCH);
+                errors.rejectValue("newPassword", "passwordDto.newPassword.passwordMatch");
             }
 
         }

@@ -146,11 +146,7 @@ public class ThemeTestServiceImpl implements ThemeTestService {
             }
 
         }
-        if (mark >= testFromDB.getMinThreshold()){
-            attemptFromDB.setPass(true);
-        } else {
-            attemptFromDB.setPass(false);
-        }
+        attemptFromDB.setPass(mark >= testFromDB.getMinThreshold());
         result.setMark(mark);
         attemptFromDB.setMark(mark);
         attemptService.save(attemptFromDB);
@@ -220,6 +216,26 @@ public class ThemeTestServiceImpl implements ThemeTestService {
         }
 
         return result;
+    }
+
+    @Override
+    public void initTestContent(FormTest formTest, CourseTest test) {
+        //fill test with empty questions for next render
+        for (int i = 0; i < formTest.getQuestionAmount(); i++) {
+            TestQuestion quest = new TestQuestion();
+            quest.setCourseTest(test);
+            testQuestionService.save(quest);
+        }
+
+        //fill test question's with default answers for next render
+        for (TestQuestion question :
+                testQuestionService.findByTest(test)) {
+            for (int i = 0; i < 6; i++) {
+                QuestionStandardAnswer answer = new QuestionStandardAnswer();
+                answer.setTestQuestion(question);
+                questionStandardAnswerService.save(answer);
+            }
+        }
     }
 
 //    @Override
