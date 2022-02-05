@@ -31,7 +31,7 @@ public class AttemptServiceImpl implements AttemptService {
 
     @Override
     public List<Attempt> findByUser(PlatformUser user) {
-        return attemptRepository.findByUser(user);
+        return attemptRepository.findByUser(user).orElseGet(Collections::emptyList);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class AttemptServiceImpl implements AttemptService {
 
     @Override
     public List<Attempt> findLastTenAttempts(PlatformUser user) {
-        List<Attempt> attempts = attemptRepository.findByUserOrderByTimeDesc(user);
+        List<Attempt> attempts = attemptRepository.findByUserOrderByTimeDesc(user).orElseGet(Collections::emptyList);
         int size = attempts.size();
         if (size < ATTEMPTS_TO_SHOW_AMOUNT) {
             return attempts;

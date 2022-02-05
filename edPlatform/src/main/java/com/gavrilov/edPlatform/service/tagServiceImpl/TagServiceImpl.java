@@ -1,13 +1,11 @@
 package com.gavrilov.edPlatform.service.tagServiceImpl;
 
-import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.Tag;
 import com.gavrilov.edPlatform.repo.TagRepository;
 import com.gavrilov.edPlatform.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 

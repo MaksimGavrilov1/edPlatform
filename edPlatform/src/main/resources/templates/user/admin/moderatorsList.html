@@ -23,6 +23,7 @@
                 <th scope="col">Фамилия</th>
                 <th scope="col">Имя</th>
                 <th scope="col">Количество подтвержденных курсов</th>
+                <th scope="col">Профиль</th>
 <!--                <th scope="col">Дата окончания</th>-->
 <!--                <th scope="col">Статус</th>-->
             </tr>
@@ -33,7 +34,7 @@
                 <td th:text="${moder.key.getProfile().getName()}"></td>
                 <td th:text="${moder.key.getProfile().getSurname()}" ></td>
                 <td th:text="${moder.value}" ></td>
-                <td><a href="#">Выгнать</a></td>
+                <td><a th:href="@{/user/view/profile/{id}(id=${moder.key.getId()})}">Подробнее</a></td>
 
             </tr>
             </tbody>

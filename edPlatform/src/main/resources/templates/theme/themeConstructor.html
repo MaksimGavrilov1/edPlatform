@@ -16,7 +16,6 @@
         <div class="row justify-content-md-center">
             <form th:action="@{/themes/addTheme}" th:object="${formTheme}" method="post">
                 <input type="hidden" th:field="*{id}"/>
-
                 <div class="form-group">
                     <label for="name">Название темы</label>
                     <input class="form-control" id="name" th:field="*{name}" required>
@@ -44,9 +43,12 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div th:if="${courses.size() == 0}" class="form-group">
+                    <p>На данный момент у вас нет курсов. Создайте курс и вы сможете прикреплять к нему темы.</p>
+                </div>
+                <div th:if="${courses.size() != 0}" class="form-group">
                     <label for="course">Выберите курс, к которому будет прикреплена тема</label>
-                    <select id="course" class="form-control" th:field="*{courseId}">
+                    <select  id="course" class="form-control" th:field="*{courseId}">
                         <option th:each="course : ${courses}"
                                 th:value="${course.id}"
                                 th:text="${course.name}"></option>
@@ -61,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row justify-content-md-center">
+                <div th:if="${courses.size() != 0}" class="row justify-content-md-center">
                     <button style="margin: 5px" type="submit" class="btn btn-primary">Готово</button>
                 </div>
             </form>

@@ -1,18 +1,14 @@
 package com.gavrilov.edPlatform.configuration;
 
 import com.gavrilov.edPlatform.converter.*;
-import com.gavrilov.edPlatform.service.*;
+import com.gavrilov.edPlatform.service.AttemptService;
+import com.gavrilov.edPlatform.service.CourseService;
+import com.gavrilov.edPlatform.service.SubscriptionService;
+import com.gavrilov.edPlatform.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.session.Session;
-import org.springframework.session.SessionRepository;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
-
-import java.util.Locale;
 
 @Configuration
 @RequiredArgsConstructor
@@ -22,7 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final SubscriptionService subscriptionService;
     private final AttemptService attemptService;
     private final TagService tagService;
-
 
 
     @Override

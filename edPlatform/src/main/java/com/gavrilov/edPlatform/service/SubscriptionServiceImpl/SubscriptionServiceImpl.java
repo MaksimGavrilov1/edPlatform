@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,12 +27,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public List<Subscription> findByUser(PlatformUser user) {
-        return subscriptionRepository.findByUser(user);
+        return subscriptionRepository.findByUser(user).orElseGet(Collections::emptyList);
     }
 
     @Override
     public void updateSubscriptionStatus(PlatformUser user) {
-        List<Subscription> userSubs = subscriptionRepository.findByUser(user);
+        List<Subscription> userSubs = subscriptionRepository.findByUser(user).orElseGet(Collections::emptyList);
         for (Subscription sub : userSubs){
             updateSub(sub);
         }
@@ -56,13 +57,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public boolean isUserSubOnCourse(PlatformUser user, Course course) {
-        List<Subscription> userSubs = subscriptionRepository.findByUser(user);
-        for (Subscription sub : userSubs){
-            if (sub.getCourse().equals(course)){
-                return true;
-            }
-        }
-        return false;
+        Subscription sub = subscriptionRepository.findByUserAndCourse(user, course);
+        return sub != null;
     }
 
     @Override
@@ -72,7 +68,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public List<Subscription> findByCourse(Course course) {
-        return subscriptionRepository.findByCourse(course);
+        return subscriptionRepository.findByCourse(course).orElseGet(Collections::emptyList);
     }
 
     @Override

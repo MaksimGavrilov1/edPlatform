@@ -3,7 +3,9 @@ package com.gavrilov.edPlatform.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -22,8 +24,6 @@ import java.util.Set;
 @Table(name = "course")
 public class Course {
 
-
-
     @Id
     @GeneratedValue
     private Long id;
@@ -32,7 +32,6 @@ public class Course {
     @JoinColumn(name = "platform_user_id", referencedColumnName = "id")
     @ToString.Exclude
     private PlatformUser author;
-
 
     private String name;
 
@@ -46,8 +45,6 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private CourseStatus status = CourseStatus.DRAFT;
 
-
-
     @OneToMany(mappedBy = "course")
     @ToString.Exclude
     private List<Subscription> subscriptions = new ArrayList<>();
@@ -55,7 +52,6 @@ public class Course {
     @OneToOne(mappedBy = "course")
     @ToString.Exclude
     private CourseTest test;
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -85,7 +81,7 @@ public class Course {
         return getClass().hashCode();
     }
 
-    public Integer getActiveDays(){
+    public Integer getActiveDays() {
         return Math.toIntExact(activeTime.getTime() / 1000 / 60 / 60 / 24);
     }
 

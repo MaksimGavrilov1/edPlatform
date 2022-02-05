@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="minThreshold">Минимальное количество вопросов для прохождения (по умолчанию - 50%)</label>
+                <label for="minThreshold">Минимальное количество вопросов для прохождения</label>
                 <input type="number" min="1" class="form-control" id="minThreshold"
                        th:field="*{minThreshold}" required>
                 <div class="row" th:if="${#fields.errors('minThreshold').size() != 0}">
@@ -74,8 +74,10 @@
                     </div>
                 </div>
             </div>
-
-            <div class="form-group">
+            <div th:if="${courses.size() == 0}" class="form-group">
+                <p>На данный момент у вас нет курсов. Создайте курс и вы сможете создать для него тест.</p>
+            </div>
+            <div th:if="${courses.size() != 0}" class="form-group">
                 <label for="course">Выберите курс, для которого будет создан тест</label>
                 <select id="course" class="form-control" th:field="*{courseId}" required>
                     <option th:each="course : ${courses}"
@@ -92,7 +94,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-md-center">
+            <div th:if="${courses.size() != 0}" class="row justify-content-md-center">
                 <button style="margin: 5px;" type="submit" class="btn btn-primary">Готово</button>
             </div>
         </form>

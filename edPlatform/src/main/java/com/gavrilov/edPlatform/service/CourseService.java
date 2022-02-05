@@ -10,11 +10,9 @@ import java.util.List;
 public interface CourseService {
     Course save(Course course);
 
-    public Course createCourse(Course course, Long aLong);
+    List<Course> getAll();
 
-    public List<Course> getAll();
-
-    public Course findCourse(Long id);
+    Course findCourse(Long id);
 
     List<Course> findCoursesByAuthor(PlatformUser user);
 
@@ -30,7 +28,11 @@ public interface CourseService {
 
     List<Course> findByStatus(CourseStatus status);
 
+    List<Course> findByAuthorAndStatus(PlatformUser user, CourseStatus status);
+
     Long countByAuthor(PlatformUser author);
+
+    boolean isValidToApprove(Course course);
 
     void denyCourse(Course course, String reason);
 

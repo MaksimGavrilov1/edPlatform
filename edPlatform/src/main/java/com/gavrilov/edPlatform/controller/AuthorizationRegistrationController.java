@@ -1,8 +1,8 @@
 package com.gavrilov.edPlatform.controller;
 
 import com.gavrilov.edPlatform.dto.UserDto;
-import com.gavrilov.edPlatform.model.*;
-import com.gavrilov.edPlatform.service.*;
+import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.service.UserService;
 import com.gavrilov.edPlatform.validator.UserDtoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.ConversionService;
@@ -70,7 +70,7 @@ public class AuthorizationRegistrationController {
     }
 
     @GetMapping("/successfulRegistration")
-    public String renderSuccessfulRegistration(){
+    public String renderSuccessfulRegistration() {
         return "user/successfulRegister";
     }
 }

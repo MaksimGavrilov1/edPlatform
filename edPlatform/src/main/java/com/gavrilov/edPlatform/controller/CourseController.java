@@ -15,22 +15,16 @@ import com.gavrilov.edPlatform.service.*;
 import com.gavrilov.edPlatform.validator.FormCourseEditValidator;
 import com.gavrilov.edPlatform.validator.FormCourseValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.session.ExpiringSession;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.MapSessionRepository;
-import org.springframework.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-
-import static com.gavrilov.edPlatform.constant.PlatformValidationUtilities.maxTagAmount;
 
 @Controller
 @RequestMapping("/courses")
@@ -46,8 +40,8 @@ public class CourseController {
     private final SubscriptionService subscriptionService;
     private final TagService tagService;
     private final CourseConfirmationRequestService courseConfirmationRequestService;
-    private final MapSessionRepository sessionRepository;
-
+    @Value("${app.max.tag.amount}")
+    private Integer maxTagAmount;
 
 
     @GetMapping("/all")
@@ -66,10 +60,10 @@ public class CourseController {
     @GetMapping("/view/{id}")
     public String viewCourse(@PathVariable Long id, Model model, @AuthenticationPrincipal PlatformUser user) {
         Course course = courseService.findCourse(id);
-        if (course.getStatus().equals(CourseStatus.DRAFT) || course.getStatus().equals(CourseStatus.AWAITING_CONFIRMATION)){
+        if (course.getStatus().equals(CourseStatus.DRAFT) || course.getStatus().equals(CourseStatus.AWAITING_CONFIRMATION)) {
             throw new CourseAccessException("Вы не можете просматривать этот курс, так как он еще не одобрен");
         }
-        if (course.getStatus().equals(CourseStatus.ARCHIVED)){
+        if (course.getStatus().equals(CourseStatus.ARCHIVED)) {
             throw new CourseAccessException("Курс архивирован");
         }
         if (user != null) {
@@ -77,7 +71,7 @@ public class CourseController {
             if (joinedFlag) {
                 subscriptionService.updateSubscriptionStatusByUserAndCourse(user, course);
             }
-            if (user.equals(course.getAuthor())){
+            if (user.equals(course.getAuthor())) {
                 model.addAttribute("authorFlag", true);
             } else {
                 model.addAttribute("authorFlag", false);
@@ -120,7 +114,6 @@ public class CourseController {
         model.addAttribute("requests", courseConfirmationRequestService.findByUser(user));
         model.addAttribute("declined", RequestStatus.DECLINED);
         model.addAttribute("draft", CourseStatus.DRAFT);
-        ExpiringSession session = sessionRepository.getSession(user.getUsername());
         return "course/showUserCourses";
     }
 
@@ -128,7 +121,7 @@ public class CourseController {
     @GetMapping("/addCourse")
     public String addCourse(Model model, @AuthenticationPrincipal PlatformUser user) {
         FormCourse formCourse = new FormCourse();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < maxTagAmount; i++) {
             formCourse.getTags().add(new TagDto());
         }
         model.addAttribute("course", formCourse);
@@ -167,7 +160,7 @@ public class CourseController {
         if (subscriptionService.isUserSubOnCourse(user, courseFromDB)) {
             throw new CourseSubscribeException("Вы уже подписаны на этот курс");
         }
-        if (user.equals(courseFromDB.getAuthor())){
+        if (user.equals(courseFromDB.getAuthor())) {
             throw new CourseSubscribeException("Вы являетесь автором этого курса, поэтому не можете подписаться на него");
         }
         subscriptionService.subscribeUser(userFromDB, courseFromDB);
@@ -226,6 +219,9 @@ public class CourseController {
     @GetMapping("/approve/request/{id}")
     public String submitCourseToApprove(Model model, @AuthenticationPrincipal PlatformUser user, @PathVariable Long id) {
         Course course = courseService.findCourse(id);
+        if (!courseService.isValidToApprove(course)) {
+            throw new CourseSubmitException("Ваш курс не закончен. Убедитесь, что вы создали темы и тест для этого курса");
+        }
         if (!course.getAuthor().equals(user)) {
             throw new CourseSubmitException("Вы не можете отправить этот курс на проверку, так как не являетесь его автором");
         }

@@ -19,9 +19,6 @@ import static org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhit
 @Component
 public class CourseTestValidator implements Validator {
 
-    @Value("${app.max.test.attempts}")
-    private Integer maxTestAttempts;
-
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz == CourseTest.class;
@@ -35,15 +32,16 @@ public class CourseTestValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, "name", "test.name.empty");
         rejectIfEmptyOrWhitespace(errors, "amountOfAttempts", "test.amountOfAttempts.empty");
 
-        if (courseTest.getAmountOfAttempts() < PlatformValidationUtilities.MIN_TEST_ATTEMPT_AMOUNT || courseTest.getAmountOfAttempts() > maxTestAttempts) {
+        if (courseTest.getAmountOfAttempts() < PlatformValidationUtilities.MIN_TEST_ATTEMPT_AMOUNT || courseTest.getAmountOfAttempts() > PlatformValidationUtilities.MAX_TEST_ATTEMPT_AMOUNT) {
             errors.rejectValue("amountOfAttempts", "test.amountOfAttempts.invalid");
+
         }
 
         //validate questions
         for (int i = 0; i < courseTest.getTestQuestions().size(); i++) {
             TestQuestion question = courseTest.getTestQuestions().get(i);
             if (question.getText().trim().isBlank()) {
-                errors.rejectValue("testQuestions", "", String.format(PlatformValidationUtilities.NOT_EMPTY_QUESTION_TEXT_MODIFYING, i + 1));
+                errors.rejectValue("testQuestions", "test.questions.empty", new Object[]{i + 1}, "");
             }
             rightAnswerIter = 0;
 
@@ -59,7 +57,7 @@ public class CourseTestValidator implements Validator {
 
                 //validate if empty
                 if (answer.getText().isBlank()) {
-                    errors.rejectValue("testQuestions", "", String.format(PlatformValidationUtilities.NOT_EMPTY_ANSWER_TEXT_MODIFYING, j + 1, i + 1));
+                    errors.rejectValue("testQuestions", "test.answers.empty", new Object[]{j+1, i+1}, "");
 
                     //check if list with repeatable answer contains an answer
                 } else if (doubleAnswers.contains(answer)) {
@@ -69,7 +67,7 @@ public class CourseTestValidator implements Validator {
                     List<QuestionStandardAnswer> repeatedAnswers = doubleAnswers.stream().filter(x -> x.getText().equals(answer.getText())).collect(Collectors.toList());
                     //remove every repeatable answer with same text
                     if (repeatedAnswers.size() != 0) {
-                        errors.rejectValue("testQuestions", "", String.format(PlatformValidationUtilities.REPEATABLE_ANSWER_MODIFYING, i + 1, j + 1, repeatedAnswers.size()));
+                        errors.rejectValue("testQuestions", "test.answers.repeated",new Object[]{i+1, j+1, repeatedAnswers.size()}, "");
                         repeatedAnswers.forEach(doubleAnswers::remove);
                     }
                 }
@@ -81,7 +79,7 @@ public class CourseTestValidator implements Validator {
 
             //validate if no right answers in one question
             if (rightAnswerIter == 0) {
-                errors.rejectValue("testQuestions", "", String.format(PlatformValidationUtilities.NO_RIGHT_ANSWER_MODIFYING, i + 1));
+                errors.rejectValue("testQuestions", "test.answers.emptyRight", new Object[]{i+1}, "");
             }
         }
     }

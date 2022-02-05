@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import static com.gavrilov.edPlatform.constant.PlatformValidationUtilities.MIN_USERNAME_SIZE;
 import static com.gavrilov.edPlatform.constant.PlatformValidationUtilities.isNotValidString;
 
 @Component
 @RequiredArgsConstructor
 public class UserDtoValidator implements Validator {
 
-    private final int MIN_USERNAME_SIZE = 8;
     private final UserService userService;
 
     @Override
@@ -32,7 +32,6 @@ public class UserDtoValidator implements Validator {
         org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "passwordDto.confirmPassword.empty");
         org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "platformUserProfile.name.empty");
         org.springframework.validation.ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", "platformUserProfile.surname.empty");
-
 
         //validate if fields are not empty
         if (!errors.hasFieldErrors("username")) {

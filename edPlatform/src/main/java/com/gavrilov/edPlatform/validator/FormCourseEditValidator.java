@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ public class FormCourseEditValidator implements Validator {
         if (!errors.hasErrors()) {
 
             PlatformUser courseAuthor = course.getAuthor();
-            List<Course> authorCourses = courseRepository.findCourseByAuthor(courseAuthor);
+            List<Course> authorCourses = courseRepository.findCourseByAuthor(courseAuthor).orElseGet(Collections::emptyList);
             List<Course> allCourses = courseRepository.findAll();
             List<TagDto> tags = course.getTags();
 
@@ -73,7 +74,7 @@ public class FormCourseEditValidator implements Validator {
                         repeatedTagFlag = true;
                     }
                     if (tagService.findByName(tag.getName().trim()) == null) {
-                        errors.rejectValue("tags", "", String.format(PlatformValidationUtilities.TAG_NOT_EXIST_MODIFYING, tag.getName()));
+                        errors.rejectValue("tags", "tag.name.notExist", new Object[]{tag.getName()}, "");
                     }
                 }
 

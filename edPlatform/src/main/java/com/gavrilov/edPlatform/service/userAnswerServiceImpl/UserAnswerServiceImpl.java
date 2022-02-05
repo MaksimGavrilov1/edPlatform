@@ -9,6 +9,7 @@ import com.gavrilov.edPlatform.service.UserAnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 public class UserAnswerServiceImpl implements UserAnswerService {
 
     private final UserAnswerRepository userAnswerRepository;
-    private final CourseService courseService;
 
     @Override
     public UserAnswer save(UserAnswer answer) {
@@ -26,14 +26,13 @@ public class UserAnswerServiceImpl implements UserAnswerService {
 
     @Override
     public List<UserAnswer> findAnswersByUser(PlatformUser user) {
-        return userAnswerRepository.findByUser(user);
+        return userAnswerRepository.findByUser(user).orElseGet(Collections::emptyList);
     }
 
     @Override
     public List<UserAnswer> findByUserAndCourse(PlatformUser user, Long courseId) {
 
-        List<UserAnswer> answers = userAnswerRepository.findByUser(user);
-
+        List<UserAnswer> answers = userAnswerRepository.findByUser(user).orElseGet(Collections::emptyList);
         return answers.stream()
                 .filter(x-> x.getQuestion().getCourseTest().getCourse().getId().equals(courseId))
                 .collect(Collectors.toList());
@@ -41,6 +40,6 @@ public class UserAnswerServiceImpl implements UserAnswerService {
 
     @Override
     public List<UserAnswer> findByAttempt(Attempt attempt) {
-        return userAnswerRepository.findByAttempt(attempt);
+        return userAnswerRepository.findByAttempt(attempt).orElseGet(Collections::emptyList);
     }
 }

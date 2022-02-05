@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
     Subscription findByUserAndCourse(PlatformUser user, Course course);
-    List<Subscription> findByUser(PlatformUser user);
+    Optional<List<Subscription>> findByUser(PlatformUser user);
 
-    List<Subscription> findByCourse(Course course);
+    Optional<List<Subscription>> findByCourse(Course course);
 
     long countByUser(PlatformUser user);
 

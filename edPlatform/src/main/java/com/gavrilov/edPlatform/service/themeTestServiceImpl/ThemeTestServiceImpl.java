@@ -84,12 +84,13 @@ public class ThemeTestServiceImpl implements ThemeTestService {
     public TestResultDto calculateResult(TestDto source, PlatformUser user) {
         CourseTest testFromDB = courseService.findCourse(source.getCourseId()).getTest();
         testFromDB = randomizeAnswers(testFromDB);
+
         //form a result object that will render at view
         TestResultDto result = new TestResultDto();
         result.setName(source.getName());
 
         //create attempt
-        Attempt attempt = attemptService.findLastAttemptByUserAndTest(user,testFromDB);
+        Attempt attempt = attemptService.findLastAttemptByUserAndTest(user, testFromDB);
         attempt.setCourseTest(testFromDB);
         attempt.setUser(user);
         attempt.setTime(new Timestamp(new Date().getTime()));
@@ -159,16 +160,13 @@ public class ThemeTestServiceImpl implements ThemeTestService {
         test = randomizeAnswers(test);
         //variable with right answer amount
         TestDto testDto = conversionService.convert(test, TestDto.class);
-
         TestResultDto result = new TestResultDto();
         result.setName(test.getName());
         result.setMark(attempt.getMark());
         int rightAnswerIter;
         int wrongAnswerIter;
         boolean skipStandardAnswerFlag;
-
         for (int i = 0; i < test.getTestQuestions().size(); i++) {
-
             TestQuestion questionFromDB = test.getTestQuestions().get(i);
             QuestionDto questionWithRightAnswerAmount = testDto.getQuestions().get(i);
             QuestionResultDto questionDto = new QuestionResultDto();
@@ -177,21 +175,15 @@ public class ThemeTestServiceImpl implements ThemeTestService {
             result.getQuestions().add(questionDto);
             rightAnswerIter = 0;
             wrongAnswerIter = 0;
-
             for (QuestionStandardAnswer questionStandardAnswer : questionFromDB.getQuestionStandardAnswers()) {
-
                 skipStandardAnswerFlag = false;
-
-
                 for (UserAnswer userAnswer : answers) {
-
                     //comparing standard answer with user answer by text and question they belong
                     if ((questionStandardAnswer.getText().equals(userAnswer.getText()))
                             && (questionStandardAnswer.getTestQuestion().equals(userAnswer.getQuestion()))) {
                         //collect only user chosen answer
                         questionDto.getAnswers().add(userAnswer);
                         skipStandardAnswerFlag = true;
-
                         if (userAnswer.getStatus().equals(AnswerStatus.CHOSEN_RIGHT)) {
                             rightAnswerIter++;
                         } else if (userAnswer.getStatus().equals(AnswerStatus.CHOSEN_WRONG)) {
@@ -199,7 +191,6 @@ public class ThemeTestServiceImpl implements ThemeTestService {
                         }
                     }
                 }
-
                 //collect answers that were not chosen by user
                 if (!skipStandardAnswerFlag) {
                     UserAnswer answer = new UserAnswer();
@@ -214,7 +205,6 @@ public class ThemeTestServiceImpl implements ThemeTestService {
             }
             wrongAnswerIter = 0;
         }
-
         return result;
     }
 
@@ -238,24 +228,4 @@ public class ThemeTestServiceImpl implements ThemeTestService {
         }
     }
 
-//    @Override
-//    @Transactional
-//    public CourseTest save(CourseTest courseTest) {
-//
-//        CourseTest courseTestFromDB = themeTestRepository.getById(courseTest.getId());
-//
-//
-//        courseTestFromDB.setTestQuestions(courseTest.getTestQuestions());
-//        themeTestRepository.save(courseTestFromDB);
-//
-//        for (TestQuestion question :
-//                courseTest.getTestQuestions()) {
-//            testQuestionService.save(question);
-////            for (QuestionStandardAnswer answer: question.getQuestionStandardAnswers()){
-////                questionStandardAnswerService.save(answer);
-////            }
-//        }
-//
-//        return courseTestFromDB;
-//    }
 }

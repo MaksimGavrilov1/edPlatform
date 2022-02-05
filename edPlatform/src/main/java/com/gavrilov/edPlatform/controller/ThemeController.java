@@ -5,6 +5,7 @@ import com.gavrilov.edPlatform.exception.CourseEditingException;
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.CourseThemeService;
 import com.gavrilov.edPlatform.validator.CourseThemeEditValidator;
@@ -32,7 +33,7 @@ public class ThemeController {
     @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
     @GetMapping("/constructor")
     public String themesConstructor(Model model, @AuthenticationPrincipal PlatformUser user) {
-        model.addAttribute("courses", courseService.findCoursesByAuthor(user));
+        model.addAttribute("courses", courseService.findByAuthorAndStatus(user, CourseStatus.DRAFT));
         model.addAttribute("formTheme", new FormTheme());
         model.addAttribute("userProfileName", user.getProfile().getName());
         return "theme/themeConstructor";
@@ -45,7 +46,11 @@ public class ThemeController {
                            BindingResult result,
                            @AuthenticationPrincipal PlatformUser user) {
 
-        if (!courseService.findCourse(formTheme.getCourseId()).getAuthor().equals(user)) {
+        Course course = courseService.findCourse(formTheme.getCourseId());
+        if (!course.getStatus().equals(CourseStatus.DRAFT)) {
+            throw new CourseEditingException("Вы не можете создать тему для этого курса, так как он не находится в разработке");
+        }
+        if (!course.getAuthor().equals(user)) {
             throw new CourseEditingException("Вы не можете создать тему для этого курса, потому что вы не являетесь его автором");
         }
         CourseTheme ct = conversionService.convert(formTheme, CourseTheme.class);

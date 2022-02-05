@@ -1,7 +1,5 @@
 package com.gavrilov.edPlatform.service.userServiceImpl;
 
-import com.gavrilov.edPlatform.exception.UserNotFoundException;
-import com.gavrilov.edPlatform.exception.UserProfileNotValidException;
 import com.gavrilov.edPlatform.model.*;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.model.enumerator.Role;
@@ -13,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import java.sql.Timestamp;
 import java.util.Collections;
@@ -38,32 +35,6 @@ public class UserServiceImpl implements UserService {
     private final TagService tagService;
     private final BCryptPasswordEncoder encoder;
 
-
-    @Override
-    public PlatformUser addProfileInfo(@Validated PlatformUserProfile userProfile, Long id) {
-
-        PlatformUser userDB = userRepository.findById(id).orElse(null);
-        if (userProfile == null) {
-            log.error("IN addProfileInfo: user profile is null");
-            throw new UserProfileNotValidException("Invalid user profile");
-        }
-        if (userDB != null) {
-            //save profile in database and get profile entity with id
-            PlatformUserProfile profile = userProfileRepository.save(userProfile);
-            userDB.setProfile(profile);
-            userRepository.save(userDB);
-            profile.setPlatformUser(userDB);
-            userProfileRepository.save(profile);
-
-            log.info(String.format("IN addProfileInfo: added profile info to user - %d", id));
-            return userDB;
-        } else {
-            log.error(String.format("IN addProfileInfo: no user found with id %d", id));
-            throw new UserNotFoundException("User with this login doesn't exists");
-        }
-        //exception and handler , userProfileNotValidException
-
-    }
 
     @Override
     public PlatformUser findByUsername(String username) {
@@ -168,7 +139,7 @@ public class UserServiceImpl implements UserService {
             course.setAuthor(newStudent);
             course.setName("Введение в программирование. Курс для начинающих.");
             course.setDescription("Этот курс предназначен для тех, кто хочет стать программистом. Избранные разделы высшей математики в контексте Data Science с упором на решение задач. Для сильных духом.");
-            course.setActiveTime(new Timestamp(1_000));
+            course.setActiveTime(new Timestamp(100_000_000));
             course.setIsAlwaysOpen(false);
             course.setStatus(CourseStatus.APPROVED);
             Course newCourse = courseRepository.save(course);

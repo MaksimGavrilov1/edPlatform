@@ -7,6 +7,7 @@ import com.gavrilov.edPlatform.service.CourseThemeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,6 +33,6 @@ public class CourseThemeServiceImpl implements CourseThemeService {
 
     @Override
     public List<CourseTheme> findThemesByCourse(Course course) {
-        return courseThemeRepository.findByCourse(course);
+        return courseThemeRepository.findByCourse(course).orElseGet(Collections::emptyList);
     }
 }

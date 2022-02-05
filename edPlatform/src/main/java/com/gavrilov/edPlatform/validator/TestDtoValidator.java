@@ -30,7 +30,7 @@ public class TestDtoValidator implements Validator {
                 }
             }
             if (!answerFlag) {
-                errors.rejectValue("questions", "", String.format(PlatformValidationUtilities.EMPTY_ANSWER_MODIFYING,i+1));
+                errors.rejectValue("questions", "test.answer.noChosen", new Object[]{i+1}, "");
             }
         }
     }

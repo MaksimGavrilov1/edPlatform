@@ -28,25 +28,11 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final SubscriptionService subscriptionService;
-    private final TagService tagService;
     private final CourseConfirmationRequestService courseConfirmationRequestService;
     private final int COURSES_TO_SHOW_AMOUNT = 10;
 
     @Override
     public Course save(Course course) {
-        return courseRepository.save(course);
-    }
-
-    @Override
-    public Course createCourse(Course course, Long id) {
-
-        PlatformUser user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new IllegalArgumentException("No user with this id found");
-        }
-        course.setAuthor(user);
-//        user.addOwnedCourse(course);
-        //userRepository.save(user);
         return courseRepository.save(course);
     }
 
@@ -62,14 +48,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> findCoursesByAuthor(PlatformUser user) {
-        return courseRepository.findCourseByAuthor(user);
+        return courseRepository.findCourseByAuthor(user).orElseGet(Collections::emptyList);
     }
 
 
 
     @Override
     public List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user) {
-        return courseRepository.findCourseByAuthor(user).stream()
+        return courseRepository.findCourseByAuthor(user).orElseGet(Collections::emptyList).stream()
                 .filter(x -> x.getTest() == null)
                 .collect(Collectors.toList());
     }
@@ -77,29 +63,18 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findTenMostPopular(PlatformUser user) {
         List<Course> courses = courseRepository.findByStatus(CourseStatus.APPROVED).orElseGet(Collections::emptyList);
-//        if (user != null){
-//            courses = courses.stream()
-//                    .filter(x->!x.getAuthor().equals(user))
-//                    .collect(Collectors.toList());
-//        }
-        int size = courses.size();
         courses.sort(Comparator.comparingInt(c->c.getSubscriptions().size()));
         Collections.reverse(courses);
-        if (size < COURSES_TO_SHOW_AMOUNT){
-            return courses;
-        } else {
-            return courses.subList(0, COURSES_TO_SHOW_AMOUNT);
-        }
+        return cutCourses(courses);
     }
 
     @Override
     public List<Course> findTenNewest(PlatformUser user) {
-        List<Course> courses = courseRepository.findByOrderByIdDesc();
-//        if (user != null){
-//            courses = courses.stream()
-//                    .filter(x->!x.getAuthor().equals(user))
-//                    .collect(Collectors.toList());
-//        }
+        List<Course> courses = courseRepository.findByStatusOrderByIdDesc(CourseStatus.APPROVED).orElseGet(Collections::emptyList);
+        return cutCourses(courses);
+    }
+
+    private List<Course> cutCourses(List<Course> courses) {
         int size = courses.size();
         if (size < COURSES_TO_SHOW_AMOUNT){
             return courses;
@@ -124,8 +99,18 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<Course> findByAuthorAndStatus(PlatformUser user, CourseStatus status) {
+        return courseRepository.findByAuthorAndStatus(user, status).orElseGet(Collections::emptyList);
+    }
+
+    @Override
     public Long countByAuthor(PlatformUser author) {
         return courseRepository.countByAuthor(author);
+    }
+
+    @Override
+    public boolean isValidToApprove(Course course) {
+        return course.getTest() != null && course.getThemes() != null;
     }
 
     @Override

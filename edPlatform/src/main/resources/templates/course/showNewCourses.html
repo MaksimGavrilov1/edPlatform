@@ -23,6 +23,7 @@
             <tr th:each="course, iter : ${courses}">
                 <th scope="row" th:utext="${iter.index}+1">index</th>
                 <td th:utext="${course.name}">имя</td>
+                <td><a class="btn btn-dark btn-sm" th:href="@{/courses/viewToApprove/{id}(id = ${course.getId()})}">Подробнее</a></td>
                 <td>
                     <button style="font-size: 0.875rem" type="button" class="btn btn-success btn-sm" data-toggle="modal"
                             data-target="#acceptRequest">

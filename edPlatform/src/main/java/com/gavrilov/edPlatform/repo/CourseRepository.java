@@ -14,13 +14,16 @@ import java.util.Optional;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    List<Course> findByTagsContaining(Tag tag);
+    Optional<List<Course>> findByStatusOrderByIdDesc(CourseStatus status);
+    Optional<List<Course>> findByAuthorAndStatus(PlatformUser author, CourseStatus status);
 
-    List<Course> findCourseByAuthor(PlatformUser user);
+    Optional<List<Course>> findByTagsContaining(Tag tag);
+
+    Optional<List<Course>> findCourseByAuthor(PlatformUser user);
 
     Optional<List<Course>> findByStatus(CourseStatus status);
 
-    List<Course> findByOrderByIdDesc();
+    Optional<List<Course>> findByOrderByIdDesc();
 
     Optional<List<Course>> findCourseByNameContainingIgnoreCase(String name);
 

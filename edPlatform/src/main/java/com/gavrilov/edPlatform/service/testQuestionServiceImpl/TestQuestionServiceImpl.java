@@ -1,12 +1,13 @@
 package com.gavrilov.edPlatform.service.testQuestionServiceImpl;
 
-import com.gavrilov.edPlatform.model.TestQuestion;
 import com.gavrilov.edPlatform.model.CourseTest;
+import com.gavrilov.edPlatform.model.TestQuestion;
 import com.gavrilov.edPlatform.repo.TestQuestionRepository;
 import com.gavrilov.edPlatform.service.TestQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,7 +23,7 @@ public class TestQuestionServiceImpl implements TestQuestionService {
 
     @Override
     public List<TestQuestion> findByTest(CourseTest test) {
-        return testQuestionRepository.findByCourseTest(test);
+        return testQuestionRepository.findByCourseTest(test).orElseGet(Collections::emptyList);
     }
 
     @Override

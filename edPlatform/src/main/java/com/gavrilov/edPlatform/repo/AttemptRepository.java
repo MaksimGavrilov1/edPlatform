@@ -14,8 +14,10 @@ public interface AttemptRepository extends JpaRepository<Attempt, Long> {
     long countByUserAndPass(PlatformUser user, Boolean pass);
 
     long countByUser(PlatformUser user);
-    List<Attempt> findByUserOrderByTimeDesc(PlatformUser user);
-    List<Attempt> findByUser(PlatformUser user);
+
+    Optional<List<Attempt>>  findByUserOrderByTimeDesc(PlatformUser user);
+
+    Optional<List<Attempt>>  findByUser(PlatformUser user);
 
     Optional<List<Attempt>> findByCourseTestAndUser(CourseTest courseTest, PlatformUser user);
 

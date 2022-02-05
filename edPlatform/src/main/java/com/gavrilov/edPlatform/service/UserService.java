@@ -8,17 +8,14 @@ import java.util.Map;
 
 
 public interface UserService {
-    public PlatformUser addProfileInfo (PlatformUserProfile userProfile, Long id);
 
-    public PlatformUser findByUsername(String login);
+    PlatformUser findByUsername(String login);
 
     PlatformUser findById(Long id);
 
-    public PlatformUser saveUser(PlatformUser user);
+    PlatformUser saveUser(PlatformUser user);
 
-    public List<PlatformUser> findAll();
-
-   // List<PlatformUser> findByRole(Role role);
+    List<PlatformUser> findAll();
 
     Map<PlatformUser, Integer> findModeratorsAndApprovedCoursesSize();
 

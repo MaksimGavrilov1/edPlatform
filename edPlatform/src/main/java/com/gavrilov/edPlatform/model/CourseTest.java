@@ -1,6 +1,5 @@
 package com.gavrilov.edPlatform.model;
 
-import com.gavrilov.edPlatform.model.enumerator.RateMethod;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -10,8 +9,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -47,9 +44,6 @@ public class CourseTest {
     private Integer amountOfAttempts;
 
     private Integer minThreshold;
-
-    @Enumerated(EnumType.STRING)
-    private RateMethod method;
 
 
     @Override
