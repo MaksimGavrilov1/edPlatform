@@ -25,7 +25,7 @@ public class CourseTheme {
     @Column(length = 1_000)
     private String name;
 
-    @Column(length = 50_000)
+    @Column(length = 10_000)
     private String lectureMaterial;
 
     @Override

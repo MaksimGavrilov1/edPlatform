@@ -24,14 +24,12 @@ import java.util.*;
 )
 public class PlatformUser implements UserDetails {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @NonNull
-    @NotBlank(message = "username should be more than 8 symbols")
     private String username;
 
     @NonNull
@@ -43,14 +41,8 @@ public class PlatformUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role = Role.STUDENT;
 
-//    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
-//    @ToString.Exclude
-//    private Set<Course> ownedCourses;
-
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<ModeratorRoleRequest> requestsForModerator = new ArrayList<>();
-
 
     public PlatformUser() {
     }
@@ -97,8 +89,6 @@ public class PlatformUser implements UserDetails {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-
 
     @Override
     public String toString() {

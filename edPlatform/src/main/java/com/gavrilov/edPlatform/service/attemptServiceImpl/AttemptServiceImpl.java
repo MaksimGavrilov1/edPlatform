@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static com.gavrilov.edPlatform.constant.PlatformValidationUtilities.ATTEMPTS_TO_SHOW_AMOUNT;
+
 @Service
 @RequiredArgsConstructor
 public class AttemptServiceImpl implements AttemptService {
 
     private final AttemptRepository attemptRepository;
-    private final Integer ATTEMPTS_TO_SHOW_AMOUNT = 10;
 
     @Override
     public Attempt save(Attempt attempt) {

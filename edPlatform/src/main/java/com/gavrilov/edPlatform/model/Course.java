@@ -21,7 +21,8 @@ import java.util.Set;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "name")
-@Table(name = "course")
+@Table(name = "course",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Course {
 
     @Id
@@ -35,7 +36,7 @@ public class Course {
 
     private String name;
 
-    @Column(length = 50_000)
+    @Column(length = 5_000)
     private String description;
 
     @OneToMany(mappedBy = "course")

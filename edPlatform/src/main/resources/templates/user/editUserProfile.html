@@ -12,6 +12,7 @@
         <div class="row justify-content-md-center">
             <form th:action="@{/user/editProfile}" th:method="POST" th:object="${userProfile}" style="padding: 15px;
        background: white; margin: 10px; border: 1px; border-radius: 5px;">
+                <input type="hidden" th:field="*{id}">
                 <h3 style="margin-bottom: 30px; margin-top: 40px;">Редактирование данных профиля</h3>
                 <div class="form-group">
                     <label for="name">Имя</label>

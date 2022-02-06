@@ -21,5 +21,7 @@ public interface UserService {
 
     Boolean compareAccessLevel(PlatformUser userToView, PlatformUser requester);
 
+    void changePrivateInfo(PlatformUser user, PlatformUserProfile newProfile);
+
     void fillContent(boolean flag);
 }

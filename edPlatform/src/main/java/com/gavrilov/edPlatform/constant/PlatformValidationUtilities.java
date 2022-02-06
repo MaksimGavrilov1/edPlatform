@@ -15,6 +15,7 @@ public class PlatformValidationUtilities {
     public static final Integer MIN_TEST_ATTEMPT_AMOUNT = 1;
     public static final Integer MIN_TEST_ACTIVE_TIME = 1;
     public static final Integer MAX_TEST_ACTIVE_TIME = 366;
+    public static final Integer ATTEMPTS_TO_SHOW_AMOUNT = 10;
 
     public static String ENG_AND_NUMBERS_PATTERN = "^[a-zA-Z0-9]+$";
     public static String RU_AND_ENG_PATTERN = "^[а-яА-ЯёЁa-zA-Z ]+$";

@@ -14,7 +14,9 @@ public class CourseToFormCourse implements Converter<Course, FormCourse> {
         formCourse.setAuthor(source.getAuthor());
         formCourse.setName(source.getName());
         formCourse.setDescription(source.getDescription());
-        Integer days = Math.toIntExact(source.getActiveTime().getTime() / 1000 / 60 / 60 / 24);
+        //Integer days = Math.toIntExact(source.getActiveTime().getTime() / 1000 / 60 / 60 / 24);
+        long time = source.getActiveTime().getTime();
+        Integer days = source.getActiveDays();
         formCourse.setDays(days);
         formCourse.setIsAlwaysOpen(source.getIsAlwaysOpen());
         source.getTags().forEach(x->formCourse.getTags().add(new TagDto(x.getName(), true)));

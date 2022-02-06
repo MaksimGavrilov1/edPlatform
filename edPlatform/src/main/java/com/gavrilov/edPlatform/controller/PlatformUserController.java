@@ -76,9 +76,7 @@ public class PlatformUserController {
             model.addAttribute("userProfileName", user.getProfile().getName());
             return "user/editUserProfile";
         }
-        user.setProfile(profile);
-        model.addAttribute("userProfileName", user.getProfile().getName());
-        userService.saveUser(user);
+        userService.changePrivateInfo(user, profile);
         return "redirect:/user/profile";
     }
 
