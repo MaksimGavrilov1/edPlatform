@@ -23,5 +23,5 @@ public interface UserService {
 
     void changePrivateInfo(PlatformUser user, PlatformUserProfile newProfile);
 
-    void fillContent(boolean flag);
+
 }
