@@ -63,19 +63,6 @@ public class TestQuestion {
         return courseTest;
     }
 
-    //    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        TestQuestion question = (TestQuestion) o;
-//        return id.equals(question.id);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id);
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

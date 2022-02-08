@@ -25,7 +25,7 @@ public class TagController {
 
     @PreAuthorize("hasAuthority('MODERATOR')")
     @GetMapping("/all")
-    public String allTags(Model model, @AuthenticationPrincipal PlatformUser user){
+    public String allTags(Model model, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("userProfileName", user.getProfile().getName());
         model.addAttribute("tags", tagService.findAll());
         model.addAttribute("formTag", new Tag());
@@ -37,9 +37,9 @@ public class TagController {
     public String addTag(@ModelAttribute("formTag") Tag tag,
                          Model model,
                          @AuthenticationPrincipal PlatformUser user,
-                         BindingResult result){
+                         BindingResult result) {
         tagValidator.validate(tag, result);
-        if (result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("userProfileName", user.getProfile().getName());
             model.addAttribute("tags", tagService.findAll());
             model.addAttribute("formTag", tag);

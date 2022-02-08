@@ -32,5 +32,4 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<List<Course>> findCoursesByTagName(@Param("name")String tagName);
 
     long countByAuthor(PlatformUser author);
-    //Optional<List<Course>> findFirst10ById();
 }

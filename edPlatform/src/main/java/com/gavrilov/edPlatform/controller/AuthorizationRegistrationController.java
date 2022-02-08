@@ -27,15 +27,10 @@ public class AuthorizationRegistrationController {
     private final UserDtoValidator userDtoValidator;
     private final BCryptPasswordEncoder encoder;
     private final ConversionService conversionService;
-    boolean flag = false;
 
     @GetMapping("/login")
     public String login(Model model, String error, @AuthenticationPrincipal PlatformUser user) {
         model.addAttribute("error", error);
-        if (!flag) {
-            userService.fillContent(flag);
-            flag = true;
-        }
         if (user != null) {
             return "redirect:/courses/all";
         }
@@ -63,9 +58,6 @@ public class AuthorizationRegistrationController {
         String userPassword = Objects.requireNonNull(user).getPassword();
         user.setPassword(encoder.encode(userPassword));
         PlatformUser newUser = userService.saveUser(user);
-//        if (newUser != null){
-//            return
-//        }
         return "redirect:/successfulRegistration";
     }
 

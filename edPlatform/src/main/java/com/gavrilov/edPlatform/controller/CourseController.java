@@ -146,7 +146,7 @@ public class CourseController {
             return "course/addCourse";
         }
         Course c = conversionService.convert(course, Course.class);
-        Course newCourse = courseService.save(c);
+        courseService.save(c);
         return "redirect:/courses/usersCourses";
     }
 
@@ -229,6 +229,12 @@ public class CourseController {
         return "redirect:/courses/usersCourses";
     }
 
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
+    @GetMapping("/management")
+    public String coursesManagement(@AuthenticationPrincipal PlatformUser user, Model model){
+        model.addAttribute("userProfileName", user.getProfile().getName());
+        return "course/courseManagement";
+    }
 
     @GetMapping("/search")
     public String courseSearch(Model model,
@@ -239,6 +245,7 @@ public class CourseController {
             model.addAttribute("userProfileName", user.getProfile().getName());
         }
         if (name != null) {
+            model.addAttribute("name", name);
             model.addAttribute("courses", courseService.findByPartName(name));
         }
         return "course/courseSearch";

@@ -3,7 +3,6 @@ package com.gavrilov.edPlatform.service.moderatorRoleRequestServiceImpl;
 import com.gavrilov.edPlatform.model.ModeratorRoleRequest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
-import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.ModeratorRoleRequestRepository;
 import com.gavrilov.edPlatform.service.ModeratorRoleRequestService;
 import com.gavrilov.edPlatform.service.UserService;

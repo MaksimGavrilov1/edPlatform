@@ -25,9 +25,4 @@ public class TestQuestionServiceImpl implements TestQuestionService {
     public List<TestQuestion> findByTest(CourseTest test) {
         return testQuestionRepository.findByCourseTest(test).orElseGet(Collections::emptyList);
     }
-
-    @Override
-    public long deleteByCourseId(Long id) {
-        return testQuestionRepository.deleteByCourseTest_Id(id);
-    }
 }

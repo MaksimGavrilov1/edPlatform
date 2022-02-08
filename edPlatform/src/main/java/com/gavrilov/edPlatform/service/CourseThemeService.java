@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CourseThemeService {
 
-    public CourseTheme saveTheme(CourseTheme courseTheme);
+    CourseTheme saveTheme(CourseTheme courseTheme);
 
     CourseTheme findTheme(Long id);
 

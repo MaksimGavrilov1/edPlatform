@@ -1,7 +1,10 @@
 package com.gavrilov.edPlatform.service.courseServiceImpl;
 
 import com.gavrilov.edPlatform.exception.ResourceNotFoundException;
-import com.gavrilov.edPlatform.model.*;
+import com.gavrilov.edPlatform.model.Course;
+import com.gavrilov.edPlatform.model.CourseConfirmationRequest;
+import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.Subscription;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 import com.gavrilov.edPlatform.model.enumerator.CourseSubscriptionStatus;
 import com.gavrilov.edPlatform.model.enumerator.RequestStatus;
@@ -11,13 +14,16 @@ import com.gavrilov.edPlatform.repo.UserRepository;
 import com.gavrilov.edPlatform.service.CourseConfirmationRequestService;
 import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.SubscriptionService;
-import com.gavrilov.edPlatform.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,7 +58,6 @@ public class CourseServiceImpl implements CourseService {
     }
 
 
-
     @Override
     public List<Course> findCoursesWithEmptyTestByAuthor(PlatformUser user) {
         return courseRepository.findCourseByAuthor(user).orElseGet(Collections::emptyList).stream()
@@ -63,7 +68,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findTenMostPopular(PlatformUser user) {
         List<Course> courses = courseRepository.findByStatus(CourseStatus.APPROVED).orElseGet(Collections::emptyList);
-        courses.sort(Comparator.comparingInt(c->c.getSubscriptions().size()));
+        courses.sort(Comparator.comparingInt(c -> c.getSubscriptions().size()));
         Collections.reverse(courses);
         return cutCourses(courses);
     }
@@ -76,7 +81,7 @@ public class CourseServiceImpl implements CourseService {
 
     private List<Course> cutCourses(List<Course> courses) {
         int size = courses.size();
-        if (size < COURSES_TO_SHOW_AMOUNT){
+        if (size < COURSES_TO_SHOW_AMOUNT) {
             return courses;
         } else {
             return courses.subList(0, COURSES_TO_SHOW_AMOUNT);
@@ -110,7 +115,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public boolean isValidToApprove(Course course) {
-        return course.getTest() != null && course.getThemes() != null;
+        return course.getTest() != null && !CollectionUtils.isEmpty(course.getThemes());
     }
 
     @Override
@@ -153,7 +158,7 @@ public class CourseServiceImpl implements CourseService {
     public void archiveCourseByCourseId(Long courseId) {
         Course course = changeStatus(courseId, CourseStatus.ARCHIVED);
         List<Subscription> subscriptions = subscriptionService.findByCourse(course);
-        for (Subscription sub : subscriptions){
+        for (Subscription sub : subscriptions) {
             sub.setStatus(CourseSubscriptionStatus.ARCHIVED);
             sub.setCourseEndDate(new Timestamp(new Date().getTime()));
             subscriptionService.save(sub);
@@ -164,7 +169,7 @@ public class CourseServiceImpl implements CourseService {
     public void unarchiveCourse(Long id) {
         Course course = changeStatus(id, CourseStatus.APPROVED);
         List<Subscription> subscriptions = subscriptionService.findByCourse(course);
-        for (Subscription sub : subscriptions){
+        for (Subscription sub : subscriptions) {
             sub.setStatus(CourseSubscriptionStatus.OPEN);
             sub.setDateOfSubscription(new Timestamp(new Date().getTime()));
             long endDate = new Date().getTime() + course.getActiveTime().getTime();

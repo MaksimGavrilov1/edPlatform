@@ -11,11 +11,9 @@ import java.util.List;
 
 public interface ThemeTestService {
 
-//    CourseTest save(CourseTest themeTest);
-
     CourseTest initSave(CourseTest themeTest);
 
-    CourseTest findTest (Long id);
+    CourseTest findTest(Long id);
 
     CourseTest randomizeAnswers(CourseTest test);
 

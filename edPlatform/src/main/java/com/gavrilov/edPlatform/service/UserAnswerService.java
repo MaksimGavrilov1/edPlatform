@@ -10,9 +10,5 @@ public interface UserAnswerService {
 
     UserAnswer save(UserAnswer answer);
 
-    List<UserAnswer> findAnswersByUser(PlatformUser user);
-
-    List<UserAnswer> findByUserAndCourse(PlatformUser user, Long courseId);
-
     List<UserAnswer> findByAttempt(Attempt attempt);
 }

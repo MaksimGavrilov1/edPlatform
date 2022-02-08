@@ -4,7 +4,6 @@ import com.gavrilov.edPlatform.model.Attempt;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.model.UserAnswer;
 import com.gavrilov.edPlatform.repo.UserAnswerRepository;
-import com.gavrilov.edPlatform.service.CourseService;
 import com.gavrilov.edPlatform.service.UserAnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,19 +23,9 @@ public class UserAnswerServiceImpl implements UserAnswerService {
         return userAnswerRepository.save(answer);
     }
 
-    @Override
-    public List<UserAnswer> findAnswersByUser(PlatformUser user) {
-        return userAnswerRepository.findByUser(user).orElseGet(Collections::emptyList);
-    }
 
-    @Override
-    public List<UserAnswer> findByUserAndCourse(PlatformUser user, Long courseId) {
 
-        List<UserAnswer> answers = userAnswerRepository.findByUser(user).orElseGet(Collections::emptyList);
-        return answers.stream()
-                .filter(x-> x.getQuestion().getCourseTest().getCourse().getId().equals(courseId))
-                .collect(Collectors.toList());
-    }
+
 
     @Override
     public List<UserAnswer> findByAttempt(Attempt attempt) {

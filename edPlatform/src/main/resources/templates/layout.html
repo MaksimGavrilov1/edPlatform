@@ -27,13 +27,7 @@
                 <a class="nav-link" th:href="@{/courses/usersCourses}">Ваши курсы</a>
             </li>
             <li class="nav-item"  sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" >
-                <a class="nav-link" th:href="@{/courses/addCourse}">Создать курс</a>
-            </li>
-            <li class="nav-item"  sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" >
-                <a class="nav-link" th:href="@{/test/constructor}">Конструктор тестов</a>
-            </li>
-            <li class="nav-item"  sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" >
-                <a class="nav-link" th:href="@{/themes/constructor}">Конструктор тем</a>
+                <a class="nav-link" th:href="@{/courses/management}">Управление курсами</a>
             </li>
             <li class="nav-item"  sec:authorize="hasAnyAuthority('STUDENT','TEACHER')" >
                 <a class="nav-link" th:href="@{/user/moderatorRequest}">Заявка на должность модератора</a>

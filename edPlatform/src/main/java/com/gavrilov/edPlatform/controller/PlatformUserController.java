@@ -187,7 +187,7 @@ public class PlatformUserController {
         if (moderatorRoleRequestService.isUserHaveApproved(user)) {
             PlatformUser userFromDB = userService.findByUsername(user.getUsername());
             userFromDB.setRole(Role.MODERATOR);
-            PlatformUser newUser = userService.saveUser(userFromDB);
+            userService.saveUser(userFromDB);
             return "redirect:/logout";
         } else {
             throw new RoleChangeException("Ваша заявка на роль модератора еще не была одобрена");

@@ -2,7 +2,6 @@ package com.gavrilov.edPlatform.service;
 
 import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.PlatformUser;
-import com.gavrilov.edPlatform.model.Tag;
 import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
 
 import java.util.List;

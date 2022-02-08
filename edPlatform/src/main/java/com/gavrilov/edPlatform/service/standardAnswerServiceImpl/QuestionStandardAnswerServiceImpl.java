@@ -16,9 +16,4 @@ public class QuestionStandardAnswerServiceImpl implements QuestionStandardAnswer
     public QuestionStandardAnswer save(QuestionStandardAnswer answer) {
         return answerRepository.save(answer);
     }
-
-    @Override
-    public long deleteByQuestionId(Long id) {
-        return answerRepository.deleteByTestQuestion_Id(id);
-    }
 }

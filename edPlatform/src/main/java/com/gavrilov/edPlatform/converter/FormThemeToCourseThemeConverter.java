@@ -6,7 +6,6 @@ import com.gavrilov.edPlatform.model.CourseTheme;
 import com.gavrilov.edPlatform.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.format.Formatter;
 
 @RequiredArgsConstructor
 public class FormThemeToCourseThemeConverter implements Converter<FormTheme, CourseTheme> {

@@ -23,7 +23,7 @@ public class PlatformUserToUserProfileDtoConverter implements Converter<Platform
         dto.setName(profile.getName());
         dto.setSurname(profile.getSurname());
         dto.setMiddleName(profile.getMiddleName());
-        switch (source.getRole()){
+        switch (source.getRole()) {
             case ADMIN:
                 dto.setRole("Администратор");
                 break;
@@ -42,7 +42,7 @@ public class PlatformUserToUserProfileDtoConverter implements Converter<Platform
         dto.setSubscriptionsAmount(subscriptionService.countByUser(source));
         long successAmount = attemptService.countUserTestResult(source, true);
         long allAttempts = attemptService.countUserAttempts(source);
-        if (allAttempts == 0){
+        if (allAttempts == 0) {
             dto.setTestSuccessRate(0);
             return dto;
         }

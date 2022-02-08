@@ -78,14 +78,22 @@ public class PlatformExceptionHandler {
         return "error/errorPage";
     }
 
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    public String internalServerError( @AuthenticationPrincipal PlatformUser user, Model model) {
-//        if (user != null){
-//            model.addAttribute("userProfileName", user.getProfile().getName());
-//        }
-//        return "error/500";
-//    }
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String internalServerError( @AuthenticationPrincipal PlatformUser user, Model model) {
+        if (user != null){
+            model.addAttribute("userProfileName", user.getProfile().getName());
+        }
+        return "error/500";
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String notFoundError( @AuthenticationPrincipal PlatformUser user, Model model) {
+        if (user != null){
+            model.addAttribute("userProfileName", user.getProfile().getName());
+        }
+        return "error/404";
+    }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)

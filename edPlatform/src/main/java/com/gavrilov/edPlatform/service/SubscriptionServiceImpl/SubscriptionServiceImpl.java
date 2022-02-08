@@ -33,7 +33,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public void updateSubscriptionStatus(PlatformUser user) {
         List<Subscription> userSubs = subscriptionRepository.findByUser(user).orElseGet(Collections::emptyList);
-        for (Subscription sub : userSubs){
+        for (Subscription sub : userSubs) {
             updateSub(sub);
         }
     }
@@ -44,12 +44,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         updateSub(sub);
     }
 
-    private void updateSub(Subscription sub){
+    private void updateSub(Subscription sub) {
         long timeNow = new Date().getTime();
-        if (sub.getCourseEndDate().getTime() - timeNow <= 0 && sub.getCourse().getIsAlwaysOpen() && !sub.getStatus().equals(CourseSubscriptionStatus.ARCHIVED)){
+        if (sub.getCourseEndDate().getTime() - timeNow <= 0 && sub.getCourse().getIsAlwaysOpen() && !sub.getStatus().equals(CourseSubscriptionStatus.ARCHIVED)) {
             sub.setStatus(CourseSubscriptionStatus.EXPIRED);
             subscriptionRepository.save(sub);
-        } else if (sub.getCourseEndDate().getTime() - timeNow <= 0 && !sub.getCourse().getIsAlwaysOpen() && !sub.getStatus().equals(CourseSubscriptionStatus.ARCHIVED)){
+        } else if (sub.getCourseEndDate().getTime() - timeNow <= 0 && !sub.getCourse().getIsAlwaysOpen() && !sub.getStatus().equals(CourseSubscriptionStatus.ARCHIVED)) {
             sub.setStatus(CourseSubscriptionStatus.CLOSED);
             subscriptionRepository.save(sub);
         }

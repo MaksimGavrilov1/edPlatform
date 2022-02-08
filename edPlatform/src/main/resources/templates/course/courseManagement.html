@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      th:include="layout :: page">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="content">
+    <div class="container">
+        <div class="row justify-content-md-center" style="margin: 30px;">
+            <div class="py-5 text-center">
+                <h2>Управление курсами</h2>
+                <p class="lead">Здесь вы сможете создать свой курс, а также добавить тест и темы к уже существующим
+                    курсам. Процесс разработки курса разбит на несколько этапов.</p>
+            </div>
+        </div>
+        <div class="row justify-content-md-center">
+            <div class="card bg-light mb-3" style="max-width: 21rem; margin: 10px;">
+                <div class="card-header">Заполнение основной информации</div>
+                <div class="card-body">
+                    <a th:href="@{/courses/addCourse}" class="btn btn-primary card-title">Создать основу курса</a>
+                    <p class="card-text">Этот этап является необходимым для заполнения будущего курса основной
+                        информацией. Также, после завершения этого этапа, вам будет доступен созданный курс для
+                        редактирования в разделе "Ваши курсы"</p>
+                </div>
+            </div>
+            <div class="card bg-light mb-3" style="max-width: 21rem; margin: 10px;">
+                <div class="card-header">Создание тем</div>
+                <div class="card-body">
+                    <a th:href="@{/themes/constructor}" class="btn btn-primary card-title">Создать тему</a>
+                    <p class="card-text">На этом этапе вы можете создать тему для одного из своих курсов</p>
+                </div>
+            </div>
+            <div class="card bg-light mb-3" style="max-width: 21rem; margin: 10px;">
+                <div class="card-header">Создание теста</div>
+                <div class="card-body">
+                    <a th:href="@{/test/constructor}" class="btn btn-primary card-title">Создать тест</a>
+                    <p class="card-text">Последним этапом создания курса является прикрепление к нему теста. Нажав на
+                        кнопку выше, вы можете создать тест с основной информацией. Отредактировать вопросы и ответы теста, вы сможете на странице курса в разделе "Ваши курсы"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

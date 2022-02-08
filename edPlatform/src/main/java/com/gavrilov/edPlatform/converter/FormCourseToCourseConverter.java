@@ -22,7 +22,7 @@ public class FormCourseToCourseConverter implements Converter<FormCourse, Course
         course.setAuthor(source.getAuthor());
         course.setDescription(source.getDescription());
         course.setIsAlwaysOpen(source.getIsAlwaysOpen());
-        long time = (long)source.getDays() * 24 * 60 * 60 * 1000L;
+        long time = (long) source.getDays() * 24 * 60 * 60 * 1000L;
         course.setActiveTime(new Timestamp(time));
         course.setTags(new ArrayList<>());
         source.getTags().stream()

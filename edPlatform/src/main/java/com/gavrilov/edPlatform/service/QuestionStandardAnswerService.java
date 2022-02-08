@@ -5,6 +5,4 @@ import com.gavrilov.edPlatform.model.QuestionStandardAnswer;
 public interface QuestionStandardAnswerService {
 
     QuestionStandardAnswer save(QuestionStandardAnswer answer);
-
-    long deleteByQuestionId (Long id);
 }

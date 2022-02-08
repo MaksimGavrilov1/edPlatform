@@ -1,7 +1,6 @@
 package com.gavrilov.edPlatform.service.attemptServiceImpl;
 
 import com.gavrilov.edPlatform.model.Attempt;
-import com.gavrilov.edPlatform.model.Course;
 import com.gavrilov.edPlatform.model.CourseTest;
 import com.gavrilov.edPlatform.model.PlatformUser;
 import com.gavrilov.edPlatform.repo.AttemptRepository;
@@ -10,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static com.gavrilov.edPlatform.constant.PlatformValidationUtilities.ATTEMPTS_TO_SHOW_AMOUNT;
 
@@ -82,8 +83,6 @@ public class AttemptServiceImpl implements AttemptService {
         attempt.setPass(false);
         return attemptRepository.save(attempt);
     }
-
-
 
 
 }

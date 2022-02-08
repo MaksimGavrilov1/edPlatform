@@ -1,8 +1,8 @@
 package com.gavrilov.edPlatform.service.userServiceImpl;
 
 import com.gavrilov.edPlatform.exception.ResourceNotFoundException;
-import com.gavrilov.edPlatform.model.*;
-import com.gavrilov.edPlatform.model.enumerator.CourseStatus;
+import com.gavrilov.edPlatform.model.PlatformUser;
+import com.gavrilov.edPlatform.model.PlatformUserProfile;
 import com.gavrilov.edPlatform.model.enumerator.Role;
 import com.gavrilov.edPlatform.repo.CourseRepository;
 import com.gavrilov.edPlatform.repo.PlatformUserProfileRepository;
@@ -13,7 +13,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePrivateInfo(PlatformUser user, PlatformUserProfile newProfile) {
-        PlatformUser userFromDb = userRepository.findByUsername(user.getUsername()).orElseThrow(ResourceNotFoundException::new);
+
         PlatformUserProfile userProfile = user.getProfile();
         userProfile.setName(newProfile.getName());
         userProfile.setSurname(newProfile.getSurname());
@@ -95,6 +94,5 @@ public class UserServiceImpl implements UserService {
         userProfileRepository.save(userProfile);
         userRepository.save(user);
     }
-
 
 }

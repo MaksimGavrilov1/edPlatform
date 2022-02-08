@@ -28,5 +28,4 @@ public class ModeratorRoleRequest {
 
     private String reason;
 
-    private String approverUsername;
 }

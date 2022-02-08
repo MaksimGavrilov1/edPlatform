@@ -26,7 +26,7 @@ public class CourseThemeValidator implements Validator {
         rejectIfEmptyOrWhitespace(errors, "name", "theme.name.empty");
 
 
-        //
+
         if (!errors.hasErrors()) {
             Course course = courseTheme.getCourse();
 
